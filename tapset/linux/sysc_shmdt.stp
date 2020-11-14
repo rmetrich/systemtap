@@ -41,13 +41,13 @@ probe syscall.shmdt.return = dw_syscall.shmdt.return !,
 
 # dw_shmdt _____________________________________________________
 
-probe dw_syscall.shmdt = kernel.function("sys_shmdt").call ?
+probe dw_syscall.shmdt = @syscall_call("sys_shmdt")
 {
 	@_SYSCALL_SHMDT_NAME
 	shmaddr_uaddr = $shmaddr
 	@_SYSCALL_SHMDT_ARGSTR
 }
-probe dw_syscall.shmdt.return = kernel.function("sys_shmdt").return ?
+probe dw_syscall.shmdt.return = @syscall_return("sys_shmdt")
 {
 	@_SYSCALL_SHMDT_NAME
 	@SYSC_RETVALSTR($return)

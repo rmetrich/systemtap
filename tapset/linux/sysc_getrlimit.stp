@@ -35,27 +35,27 @@ probe syscall.getrlimit.return = dw_syscall.getrlimit.return !,
 # dw_getrlimit _____________________________________________________
 
 probe dw_syscall.getrlimit = __syscall.getrlimit ?,
-	kernel.function("compat_sys_getrlimit").call ?,
-	kernel.function("sys_old_getrlimit").call ?
+	@syscall_call("compat_sys_getrlimit"),
+	@syscall_call("sys_old_getrlimit")
 {
 	@_SYSCALL_GETRLIMIT_NAME
 	resource = __int32($resource)
 	rlim_uaddr = $rlim
 	@_SYSCALL_GETRLIMIT_ARGSTR
 }
-probe __syscall.getrlimit = kernel.function("sys_getrlimit").call
+probe __syscall.getrlimit = @syscall_call("sys_getrlimit")
 {
 	@__syscall_gate_compat_simple
 }
 probe dw_syscall.getrlimit.return =
-	kernel.function("sys_old_getrlimit").return ?,
-	kernel.function("compat_sys_getrlimit").return ?,
+	@syscall_return("sys_old_getrlimit"),
+	@syscall_return("compat_sys_getrlimit"),
 	__syscall.getrlimit.return ?
 {
 	@_SYSCALL_GETRLIMIT_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.getrlimit.return = kernel.function("sys_getrlimit").return
+probe __syscall.getrlimit.return = @syscall_return("sys_getrlimit")
 {
 	@__syscall_gate_compat_simple
 }

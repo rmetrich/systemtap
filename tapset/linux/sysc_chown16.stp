@@ -38,7 +38,7 @@ probe syscall.chown16.return = dw_syscall.chown16.return !, nd_syscall.chown16.r
 
 # dw_chown16 _____________________________________________________
 
-probe dw_syscall.chown16 = kernel.function("sys_chown16").call ?
+probe dw_syscall.chown16 = @syscall_call("sys_chown16")
 {
 	@_SYSCALL_CHOWN16_NAME
 	path = user_string_quoted($filename)
@@ -46,7 +46,7 @@ probe dw_syscall.chown16 = kernel.function("sys_chown16").call ?
 	group = __short($group)
 	@_SYSCALL_CHOWN16_ARGSTR
 }
-probe dw_syscall.chown16.return = kernel.function("sys_chown16").return ?
+probe dw_syscall.chown16.return = @syscall_return("sys_chown16")
 {
 	@_SYSCALL_CHOWN16_NAME
 	@SYSC_RETVALSTR($return)

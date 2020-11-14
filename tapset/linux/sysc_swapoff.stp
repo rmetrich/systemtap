@@ -35,14 +35,14 @@ probe syscall.swapoff.return = dw_syscall.swapoff.return !, nd_syscall.swapoff.r
 
 # dw_swapoff _____________________________________________________
 
-probe dw_syscall.swapoff = kernel.function("sys_swapoff").call ?
+probe dw_syscall.swapoff = @syscall_call("sys_swapoff")
 {
 	@_SYSCALL_SWAPOFF_NAME
 	path_uaddr = $specialfile
 	path = user_string_quoted(path_uaddr)
 	@_SYSCALL_SWAPOFF_ARGSTR
 }
-probe dw_syscall.swapoff.return = kernel.function("sys_swapoff").return ?
+probe dw_syscall.swapoff.return = @syscall_return("sys_swapoff")
 {
 	@_SYSCALL_SWAPOFF_NAME
 	@SYSC_RETVALSTR($return)

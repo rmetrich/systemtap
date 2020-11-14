@@ -36,9 +36,9 @@ probe syscall.gettimeofday.return = dw_syscall.gettimeofday.return !, nd_syscall
 
 # dw_gettimeofday _____________________________________________________
 
-probe dw_syscall.gettimeofday = kernel.function("compat_sys_gettimeofday").call ?,
-                             kernel.function("sys32_gettimeofday").call ?,
-                             kernel.function("sys_gettimeofday").call
+probe dw_syscall.gettimeofday = @syscall_call("compat_sys_gettimeofday"),
+                             @syscall_call("sys32_gettimeofday"),
+                             @syscall_call("sys_gettimeofday")
 {
 	@_SYSCALL_GETTIMEOFDAY_NAME
 	tv_uaddr = $tv
@@ -46,9 +46,9 @@ probe dw_syscall.gettimeofday = kernel.function("compat_sys_gettimeofday").call 
 	@_SYSCALL_GETTIMEOFDAY_ARGSTR
 }
 
-probe dw_syscall.gettimeofday.return = kernel.function("compat_sys_gettimeofday").return ?,
-                                    kernel.function("sys32_gettimeofday").return ?,
-                                    kernel.function("sys_gettimeofday").return
+probe dw_syscall.gettimeofday.return = @syscall_return("compat_sys_gettimeofday"),
+                                    @syscall_return("sys32_gettimeofday"),
+                                    @syscall_return("sys_gettimeofday")
 {
 	@_SYSCALL_GETTIMEOFDAY_NAME
 	@SYSC_RETVALSTR($return)

@@ -40,7 +40,7 @@ probe syscall.pkey_mprotect.return = dw_syscall.pkey_mprotect.return !, nd_sysca
 
 # dw_pkey_mprotect _____________________________________________________
 
-probe dw_syscall.pkey_mprotect = kernel.function("sys_pkey_mprotect").call
+probe dw_syscall.pkey_mprotect = @syscall_call("sys_pkey_mprotect")
 {
 	@_SYSCALL_PKEY_MPROTECT_NAME
 	addr = __ulong($start)
@@ -50,7 +50,7 @@ probe dw_syscall.pkey_mprotect = kernel.function("sys_pkey_mprotect").call
 	pkey = __int32($pkey)
 	@_SYSCALL_PKEY_MPROTECT_ARGSTR
 }
-probe dw_syscall.pkey_mprotect.return = kernel.function("sys_pkey_mprotect").return
+probe dw_syscall.pkey_mprotect.return = @syscall_return("sys_pkey_mprotect")
 {
 	@_SYSCALL_PKEY_MPROTECT_NAME
 	@SYSC_RETVALSTR($return)

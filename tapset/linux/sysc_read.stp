@@ -38,8 +38,8 @@ probe syscall.read.return = dw_syscall.read.return !, nd_syscall.read.return {}
 
 probe dw_syscall.read =
 %( arch == "s390" %?
-	__syscall.read, kernel.function("sys32_read").call ?,
-	kernel.function("compat_sys_s390_read").call ?
+	__syscall.read, @syscall_call("sys32_read"),
+	@syscall_call("compat_sys_s390_read")
 %:
 	__syscall.read
 %)
@@ -50,7 +50,7 @@ probe dw_syscall.read =
 	count = @__compat_ulong($count)
 	@_SYSCALL_READ_ARGSTR
 }
-probe __syscall.read = kernel.function("sys_read").call
+probe __syscall.read = @syscall_call("sys_read")
 {
 %( arch == "s390" %?
 	@__syscall_gate(@const("__NR_read"))
@@ -58,8 +58,8 @@ probe __syscall.read = kernel.function("sys_read").call
 }
 probe dw_syscall.read.return =
 %( arch == "s390" %?
-	__syscall.read.return, kernel.function("sys32_read").return ?,
-	kernel.function("compat_sys_s390_read").return ?
+	__syscall.read.return, @syscall_return("sys32_read"),
+	@syscall_return("compat_sys_s390_read")
 %:
 	__syscall.read.return
 %)
@@ -67,7 +67,7 @@ probe dw_syscall.read.return =
 	@_SYSCALL_READ_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.read.return = kernel.function("sys_read").return
+probe __syscall.read.return = @syscall_return("sys_read")
 {
 %( arch == "s390" %?
 	@__syscall_gate(@const("__NR_read"))

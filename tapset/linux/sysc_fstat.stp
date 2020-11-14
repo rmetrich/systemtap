@@ -38,37 +38,37 @@ probe syscall.fstat.return = dw_syscall.fstat.return !, nd_syscall.fstat.return 
 
 # dw_fstat _____________________________________________________
 
-probe dw_syscall.fstat = kernel.function("sys_fstat").call ?,
-                      kernel.function("sys_fstat64").call ?,
-                      kernel.function("sys32_fstat64").call ?,
-                      kernel.function("sys_newfstat").call ?,
-                      kernel.function("sys_oabi_fstat64").call ?,
-                      kernel.function("sys_oabi_fstat64").call ?,
+probe dw_syscall.fstat = @syscall_call("sys_fstat"),
+                      @syscall_call("sys_fstat64"),
+                      @syscall_call("sys32_fstat64"),
+                      @syscall_call("sys_newfstat"),
+                      @syscall_call("sys_oabi_fstat64"),
+                      @syscall_call("sys_oabi_fstat64"),
 %( arch == "s390" %?
-                      kernel.function("compat_sys_s390_fstat64").call ?,
+                      @syscall_call("compat_sys_s390_fstat64"),
 %)
 %( arch == "x86_64" %?
-                      kernel.function("compat_sys_x86_fstat64").call ?,
+                      @syscall_call("compat_sys_x86_fstat64"),
 %)
-                      kernel.function("compat_sys_newfstat").call ?
+                      @syscall_call("compat_sys_newfstat") ?
 {
 	@_SYSCALL_FSTAT_NAME
 	filedes = __int32($fd)
 	buf_uaddr = $statbuf
 	@_SYSCALL_FSTAT_ARGSTR
 }
-probe dw_syscall.fstat.return = kernel.function("sys_fstat").return ?,
-	kernel.function("sys_fstat64").return ?,
-	kernel.function("sys32_fstat64").return ?,
-	kernel.function("sys_newfstat").return ?,
-	kernel.function("sys_oabi_fstat64").return ?,
+probe dw_syscall.fstat.return = @syscall_return("sys_fstat"),
+	@syscall_return("sys_fstat64"),
+	@syscall_return("sys32_fstat64"),
+	@syscall_return("sys_newfstat"),
+	@syscall_return("sys_oabi_fstat64"),
 %( arch == "s390" %?
-	kernel.function("compat_sys_s390_fstat64").return ?,
+	@syscall_return("compat_sys_s390_fstat64"),
 %)
 %( arch == "x86_64" %?
-	kernel.function("compat_sys_x86_fstat64").return ?,
+	@syscall_return("compat_sys_x86_fstat64"),
 %)
-	kernel.function("compat_sys_newfstat").return ?
+	@syscall_return("compat_sys_newfstat")
 {
 	@_SYSCALL_FSTAT_NAME
 	@SYSC_RETVALSTR($return)

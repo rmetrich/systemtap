@@ -50,22 +50,22 @@ probe dw_syscall.open = __syscall.compat_open ?, __syscall.open
 	flags_str = _sys_open_flag_str(flags)
 	@_SYSCALL_OPEN_ARGSTR
 }
-probe __syscall.compat_open = kernel.function("compat_sys_open").call ?,
-			      kernel.function("sys32_open").call ?
+probe __syscall.compat_open = @syscall_call("compat_sys_open"),
+			      @syscall_call("sys32_open")
 {
 	// On some platforms, $filename and $mode are longs on the
 	// kernel side. Truncate these down to 32 bits.
 	filename = user_string_quoted(__uint32($filename))
 	mode = __uint32($mode)
 }
-probe __syscall.open = kernel.function("sys_open").call
+probe __syscall.open = @syscall_call("sys_open")
 {
 	filename = user_string_quoted($filename)
 	mode = __uint32($mode)
 }
-probe dw_syscall.open.return = kernel.function("compat_sys_open").return ?,
-                            kernel.function("sys32_open").return ?,
-                            kernel.function("sys_open").return ?
+probe dw_syscall.open.return = @syscall_return("compat_sys_open"),
+                            @syscall_return("sys32_open"),
+                            @syscall_return("sys_open")
 {
 	@__syscall_compat_gate(@const("__NR_open"), @const("__NR_compat_open"))
 	@_SYSCALL_OPEN_NAME

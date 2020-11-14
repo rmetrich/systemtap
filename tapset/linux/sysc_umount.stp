@@ -54,7 +54,7 @@ probe dw_syscall.umount = __syscall.umount, __syscall.oldumount ?
 {
 	@_SYSCALL_UMOUNT_NAME
 }
-probe __syscall.umount = kernel.function("sys_umount").call
+probe __syscall.umount = @syscall_call("sys_umount")
 {
 	@__syscall_compat_gate(@const("__NR_umount2"), @const("__NR_compat_umount2"))
 	target = user_string_quoted($name)
@@ -62,7 +62,7 @@ probe __syscall.umount = kernel.function("sys_umount").call
 	flags_str = _umountflags_str($flags)
 	@_SYSCALL_UMOUNT_ARGSTR
 }
-probe __syscall.oldumount = kernel.function("sys_oldumount").call ?
+probe __syscall.oldumount = @syscall_call("sys_oldumount")
 {
 	target = user_string_quoted($name)
 	flags = 0
@@ -70,12 +70,12 @@ probe __syscall.oldumount = kernel.function("sys_oldumount").call ?
 	@_SYSCALL_UMOUNT_ARGSTR
 }
 probe dw_syscall.umount.return = __syscall.umount.return,
-			      kernel.function("sys_oldumount").return ?
+			      @syscall_return("sys_oldumount")
 {
 	@_SYSCALL_UMOUNT_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.umount.return = kernel.function("sys_umount").return
+probe __syscall.umount.return = @syscall_return("sys_umount")
 {
 	@__syscall_compat_gate(@const("__NR_umount2"), @const("__NR_compat_umount2"))
 }

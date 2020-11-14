@@ -32,14 +32,14 @@ probe syscall.ustat.return = dw_syscall.ustat.return !, nd_syscall.ustat.return 
 
 # dw_ustat _____________________________________________________
 
-probe dw_syscall.ustat = kernel.function("sys_ustat").call
+probe dw_syscall.ustat = @syscall_call("sys_ustat")
 {
 	@_SYSCALL_USTAT_NAME
 	dev = __uint32($dev)
 	ubuf_uaddr = $ubuf
 	@_SYSCALL_USTAT_ARGSTR
 }
-probe dw_syscall.ustat.return = kernel.function("sys_ustat").return ?
+probe dw_syscall.ustat.return = @syscall_return("sys_ustat")
 {
 	@_SYSCALL_USTAT_NAME
 	@SYSC_RETVALSTR($return)
@@ -118,8 +118,8 @@ probe syscall.ustat32.return = dw_syscall.ustat32.return !,
 
 # dw_ustat32 _____________________________________________________
 
-probe dw_syscall.ustat32 = kernel.function("compat_sys_ustat").call ?,
-      		        kernel.function("sys32_ustat").call ?
+probe dw_syscall.ustat32 = @syscall_call("compat_sys_ustat"),
+      		        @syscall_call("sys32_ustat")
 {
 	@_SYSCALL_USTAT_NAME
 	dev = __uint32($dev)
@@ -128,8 +128,8 @@ probe dw_syscall.ustat32 = kernel.function("compat_sys_ustat").call ?,
 }
 
 
-probe dw_syscall.ustat32.return = kernel.function("sys32_ustat").return ?,
-                               kernel.function("compat_sys_ustat").return ?
+probe dw_syscall.ustat32.return = @syscall_return("sys32_ustat"),
+                               @syscall_return("compat_sys_ustat")
 {
 	@_SYSCALL_USTAT_NAME
 	@SYSC_RETVALSTR($return)

@@ -45,7 +45,7 @@ probe syscall.inotify_add_watch.return = dw_syscall.inotify_add_watch.return !,
 
 # dw_inotify_add_watch _____________________________________________________
 
-probe dw_syscall.inotify_add_watch = kernel.function("sys_inotify_add_watch").call ?
+probe dw_syscall.inotify_add_watch = @syscall_call("sys_inotify_add_watch")
 {
 	@_SYSCALL_INOTIFY_ADD_WATCH_NAME
 	fd = __int32($fd)
@@ -56,7 +56,7 @@ probe dw_syscall.inotify_add_watch = kernel.function("sys_inotify_add_watch").ca
 	@_SYSCALL_INOTIFY_ADD_WATCH_ARGSTR
 }
 
-probe dw_syscall.inotify_add_watch.return = kernel.function("sys_inotify_add_watch").return ?
+probe dw_syscall.inotify_add_watch.return = @syscall_return("sys_inotify_add_watch")
 {
 	@_SYSCALL_INOTIFY_ADD_WATCH_NAME
 	@SYSC_RETVALSTR($return)

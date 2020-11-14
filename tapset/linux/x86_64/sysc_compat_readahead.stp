@@ -44,7 +44,7 @@ probe syscall.compat_readahead.return = dw_syscall.compat_readahead.return !,
 
 # dw_compat_readahead _____________________________________________________
 
-probe dw_syscall.compat_readahead = kernel.function("sys32_readahead") ?
+probe dw_syscall.compat_readahead = @syscall_call("sys32_readahead")
 {
 	@_SYSCALL_COMPAT_READAHEAD_NAME
 	fd = __int32($fd)
@@ -53,7 +53,7 @@ probe dw_syscall.compat_readahead = kernel.function("sys32_readahead") ?
 	@_SYSCALL_COMPAT_READAHEAD_ARGSTR
 }
 probe dw_syscall.compat_readahead.return =
-	kernel.function("sys32_readahead").return ?
+	@syscall_return("sys32_readahead")
 {
 	@_SYSCALL_COMPAT_READAHEAD_NAME
 	@SYSC_RETVALSTR($return)

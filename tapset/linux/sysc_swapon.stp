@@ -42,7 +42,7 @@ probe syscall.swapon.return = dw_syscall.swapon.return !,
 
 # dw_swapon _____________________________________________________
 
-probe dw_syscall.swapon = kernel.function("sys_swapon").call ?
+probe dw_syscall.swapon = @syscall_call("sys_swapon")
 {
 	@_SYSCALL_SWAPON_NAME
 	path_uaddr = $specialfile
@@ -51,7 +51,7 @@ probe dw_syscall.swapon = kernel.function("sys_swapon").call ?
 	swapflags_str = _swapon_flags_str(__int32($swap_flags))
 	@_SYSCALL_SWAPON_ARGSTR
 }
-probe dw_syscall.swapon.return = kernel.function("sys_swapon").return ?
+probe dw_syscall.swapon.return = @syscall_return("sys_swapon")
 {
 	@_SYSCALL_SWAPON_NAME
 	@SYSC_RETVALSTR($return)

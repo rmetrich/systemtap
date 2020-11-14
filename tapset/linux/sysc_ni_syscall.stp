@@ -30,13 +30,13 @@ probe syscall.ni_syscall.return = dw_syscall.ni_syscall.return !,
 
 # dw_ni_syscall _____________________________________________________
 
-probe dw_syscall.ni_syscall = kernel.function("sys_ni_syscall").call
+probe dw_syscall.ni_syscall = @syscall_call("sys_ni_syscall")
 {
 	@_SYSCALL_GATE
 	@_SYSCALL_NI_SYSCALL_NAME
 	@_SYSCALL_NI_SYSCALL_ARGSTR
 }
-probe dw_syscall.ni_syscall.return = kernel.function("sys_ni_syscall").return
+probe dw_syscall.ni_syscall.return = @syscall_return("sys_ni_syscall")
 {
 	@_SYSCALL_GATE
 	@_SYSCALL_NI_SYSCALL_NAME

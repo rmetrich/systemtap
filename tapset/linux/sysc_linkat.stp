@@ -52,7 +52,7 @@ probe syscall.linkat.return = dw_syscall.linkat.return !,
 
 # dw_linkat _____________________________________________________
 
-probe dw_syscall.linkat = kernel.function("sys_linkat").call ?
+probe dw_syscall.linkat = @syscall_call("sys_linkat")
 {
 	@__syscall_compat_gate(@const("__NR_linkat"), @const("__NR_compat_linkat"))
 	@_SYSCALL_LINKAT_NAME
@@ -66,7 +66,7 @@ probe dw_syscall.linkat = kernel.function("sys_linkat").call ?
 	flags_str = _at_flag_str(__int32($flags))
 	@_SYSCALL_LINKAT_ARGSTR
 }
-probe dw_syscall.linkat.return = kernel.function("sys_linkat").return ?
+probe dw_syscall.linkat.return = @syscall_return("sys_linkat")
 {
 	@__syscall_compat_gate(@const("__NR_linkat"), @const("__NR_compat_linkat"))
 	@_SYSCALL_LINKAT_NAME

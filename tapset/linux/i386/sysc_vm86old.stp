@@ -18,7 +18,7 @@ probe syscall.vm86old.return = dw_syscall.vm86old.return !, nd_syscall.vm86old.r
 
 # dw_vm86old _____________________________________________________
 
-probe dw_syscall.vm86old = kernel.function("sys_vm86old") ?
+probe dw_syscall.vm86old = @syscall_call("sys_vm86old")
 {
 	@_SYSCALL_VM86OLD_NAME
       /*
@@ -27,7 +27,7 @@ probe dw_syscall.vm86old = kernel.function("sys_vm86old") ?
        */
 	@_SYSCALL_VM86OLD_ARGSTR
 }
-probe dw_syscall.vm86old.return = kernel.function("sys_vm86old").return ?
+probe dw_syscall.vm86old.return = @syscall_return("sys_vm86old")
 {
 	@_SYSCALL_VM86OLD_NAME
 	@SYSC_RETVALSTR($return)

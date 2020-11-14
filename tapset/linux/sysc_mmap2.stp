@@ -43,7 +43,7 @@ probe syscall.mmap2.return = dw_syscall.mmap2.return !, nd_syscall.mmap2.return 
 
 # dw_mmap2 _____________________________________________________
 
-probe dw_syscall.mmap2 = kernel.function("sys_mmap_pgoff") ?
+probe dw_syscall.mmap2 = @syscall_call("sys_mmap_pgoff")
 {
 	@_SYSCALL_MMAP2_NAME
 	start = $addr
@@ -60,7 +60,7 @@ probe dw_syscall.mmap2 = kernel.function("sys_mmap_pgoff") ?
 	pgoffset = $pgoff * @const("PAGE_SIZE")
 	@_SYSCALL_MMAP2_ARGSTR
 }
-probe dw_syscall.mmap2.return = kernel.function("sys_mmap_pgoff").return ?
+probe dw_syscall.mmap2.return = @syscall_return("sys_mmap_pgoff")
 {
         @_SYSCALL_MMAP2_NAME
         @SYSC_RETVALSTR2($return)

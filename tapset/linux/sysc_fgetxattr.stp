@@ -51,7 +51,7 @@ probe syscall.fgetxattr.return = dw_syscall.fgetxattr.return !, nd_syscall.fgetx
 
 # dw_fgetxattr _____________________________________________________
 
-probe dw_syscall.fgetxattr = kernel.function("sys_fgetxattr").call
+probe dw_syscall.fgetxattr = @syscall_call("sys_fgetxattr")
 {
 	@_SYSCALL_FGETXATTR_NAME
 	filedes = __int32($fd)
@@ -64,7 +64,7 @@ probe dw_syscall.fgetxattr = kernel.function("sys_fgetxattr").call
 	size = __ulong($size)
 	@_SYSCALL_FGETXATTR_ARGSTR
 }
-probe dw_syscall.fgetxattr.return = kernel.function("sys_fgetxattr").return
+probe dw_syscall.fgetxattr.return = @syscall_return("sys_fgetxattr")
 {
 	@_SYSCALL_FGETXATTR_NAME
 	@SYSC_RETVALSTR($return)

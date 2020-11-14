@@ -41,7 +41,7 @@ probe syscall.tee.return = dw_syscall.tee.return !, nd_syscall.tee.return ? {}
 
 # dw_tee _____________________________________________________
 
-probe dw_syscall.tee = kernel.function("sys_tee").call ?
+probe dw_syscall.tee = @syscall_call("sys_tee")
 {
 	@_SYSCALL_TEE_NAME
 	fdin = __int32($fdin)
@@ -50,7 +50,7 @@ probe dw_syscall.tee = kernel.function("sys_tee").call ?
 	flags = __uint32($flags)
 	@_SYSCALL_TEE_ARGSTR
 }
-probe dw_syscall.tee.return = kernel.function("sys_tee").return ?
+probe dw_syscall.tee.return = @syscall_return("sys_tee")
 {
 	@_SYSCALL_TEE_NAME
 	@SYSC_RETVALSTR($return)

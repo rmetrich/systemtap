@@ -42,14 +42,14 @@ probe syscall.capset.return = dw_syscall.capset.return !, nd_syscall.capset.retu
 
 # dw_capset _____________________________________________________
 
-probe dw_syscall.capset = kernel.function("sys_capset").call
+probe dw_syscall.capset = @syscall_call("sys_capset")
 {
 	@_SYSCALL_CAPSET_NAME
 	header_uaddr = $header
 	data_uaddr = $data
 	@_SYSCALL_CAPSET_ARGSTR
 }
-probe dw_syscall.capset.return = kernel.function("sys_capset").return
+probe dw_syscall.capset.return = @syscall_return("sys_capset")
 {
 	@_SYSCALL_CAPSET_NAME
 	@SYSC_RETVALSTR($return)

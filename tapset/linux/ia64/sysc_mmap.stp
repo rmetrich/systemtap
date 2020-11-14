@@ -22,7 +22,7 @@ probe syscall.mmap.return = dw_syscall.mmap.return !, nd_syscall.mmap.return ? {
 
 # dw_mmap _____________________________________________________
 
-probe dw_syscall.mmap = kernel.function("sys_mmap") ?
+probe dw_syscall.mmap = @syscall_call("sys_mmap")
 {
         @_SYSCALL_MMAP_NAME
         start = $addr
@@ -38,7 +38,7 @@ probe dw_syscall.mmap = kernel.function("sys_mmap") ?
         @_SYSCALL_MMAP_ARGSTR
 }
 
-probe dw_syscall.mmap.return = kernel.function("sys_mmap").return ?
+probe dw_syscall.mmap.return = @syscall_return("sys_mmap")
 {
         @_SYSCALL_MMAP_NAME
         @SYSC_RETVALSTR2($return)

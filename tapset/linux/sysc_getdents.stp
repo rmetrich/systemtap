@@ -50,8 +50,8 @@ probe syscall.getdents.return = dw_syscall.getdents.return !,
 # dw_getdents _____________________________________________________
 
 probe dw_syscall.getdents = __syscall.getdents ?,
-                         kernel.function("compat_sys_getdents").call ?,
-                         kernel.function("compat_sys_getdents64").call ?
+                         @syscall_call("compat_sys_getdents"),
+                         @syscall_call("compat_sys_getdents64")
 {
 	@_SYSCALL_GETDENTS_NAME
 	fd = __int32($fd)
@@ -59,20 +59,20 @@ probe dw_syscall.getdents = __syscall.getdents ?,
 	count = __uint32($count)
 	@_SYSCALL_GETDENTS_ARGSTR
 }
-probe __syscall.getdents = kernel.function("sys_getdents").call ?,
-                           kernel.function("sys_getdents64").call ?
+probe __syscall.getdents = @syscall_call("sys_getdents"),
+                           @syscall_call("sys_getdents64")
 {
 	@_SYSCALL_GATE
 }
 probe dw_syscall.getdents.return = __syscall.getdents.return ?,
-	kernel.function("compat_sys_getdents").return ?,
-	kernel.function("compat_sys_getdents64").return ?
+	@syscall_return("compat_sys_getdents"),
+	@syscall_return("compat_sys_getdents64")
 {
 	@_SYSCALL_GETDENTS_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.getdents.return = kernel.function("sys_getdents").return ?,
-                                  kernel.function("sys_getdents64").return ?
+probe __syscall.getdents.return = @syscall_return("sys_getdents"),
+                                  @syscall_return("sys_getdents64")
 {
 	@_SYSCALL_GATE
 }

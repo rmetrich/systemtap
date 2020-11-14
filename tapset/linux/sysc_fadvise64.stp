@@ -17,7 +17,7 @@ probe syscall.fadvise64.return = dw_syscall.fadvise64.return !, nd_syscall.fadvi
 
 # dw_fadvise64 _____________________________________________________
 
-probe dw_syscall.fadvise64 = kernel.function("sys_fadvise64").call ?
+probe dw_syscall.fadvise64 = @syscall_call("sys_fadvise64")
 {
 	@_SYSCALL_FADVISE64_NAME
 	@__syscall_gate_compat_simple
@@ -28,7 +28,7 @@ probe dw_syscall.fadvise64 = kernel.function("sys_fadvise64").call ?
 	advice_str = _fadvice_advice_str(advice)
 	@_SYSCALL_FADVISE64_ARGSTR
 }
-probe dw_syscall.fadvise64.return = kernel.function("sys_fadvise64").return ?
+probe dw_syscall.fadvise64.return = @syscall_return("sys_fadvise64")
 {
 	@__syscall_gate_compat_simple
 	@_SYSCALL_FADVISE64_NAME
@@ -171,7 +171,7 @@ probe syscall.fadvise64_64.return = dw_syscall.fadvise64_64.return !, nd_syscall
 
 # dw_fadvise64_64 _____________________________________________________
 
-probe dw_syscall.fadvise64_64 = kernel.function("sys_fadvise64_64").call ?
+probe dw_syscall.fadvise64_64 = @syscall_call("sys_fadvise64_64")
 {
 	@__syscall_gate_compat_simple
 %( arch != "s390" && arch != "ia64" && arch != "arm" && arch != "arm64" %?
@@ -188,7 +188,7 @@ probe dw_syscall.fadvise64_64 = kernel.function("sys_fadvise64_64").call ?
 	@_SYSCALL_FADVISE64_ARGSTR
 }
 probe dw_syscall.fadvise64_64.return =
-	kernel.function("sys_fadvise64_64").return ?
+	@syscall_return("sys_fadvise64_64")
 {
 	@__syscall_gate_compat_simple
 %( arch != "s390" && arch != "ia64" && arch != "arm" && arch != "arm64" %?

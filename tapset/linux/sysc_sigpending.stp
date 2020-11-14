@@ -31,23 +31,23 @@ probe syscall.sigpending.return = dw_syscall.sigpending.return !,
 # dw_sigpending _____________________________________________________
 
 probe dw_syscall.sigpending = __syscall.sigpending ?,
-	kernel.function("compat_sys_sigpending").call ?
+	@syscall_call("compat_sys_sigpending")
 {
 	@_SYSCALL_SIGPENDING_NAME
 	set = @choose_defined($set, $set32)
 	@_SYSCALL_SIGPENDING_ARGSTR
 }
-probe __syscall.sigpending = kernel.function("sys_sigpending").call ?
+probe __syscall.sigpending = @syscall_call("sys_sigpending")
 {
 	@__syscall_gate_compat_simple
 }
 probe dw_syscall.sigpending.return = __syscall.sigpending.return ?,
-	kernel.function("compat_sys_sigpending").return ?
+	@syscall_return("compat_sys_sigpending")
 {
 	@_SYSCALL_SIGPENDING_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.sigpending.return = kernel.function("sys_sigpending").return ?
+probe __syscall.sigpending.return = @syscall_return("sys_sigpending")
 {
 	@__syscall_gate_compat_simple
 }

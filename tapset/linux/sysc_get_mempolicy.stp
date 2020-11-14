@@ -55,7 +55,7 @@ probe syscall.get_mempolicy.return = dw_syscall.get_mempolicy.return !, nd_sysca
 # dw_get_mempolicy _____________________________________________________
 
 probe dw_syscall.get_mempolicy = __syscall.get_mempolicy ?,
-	kernel.function("compat_sys_get_mempolicy").call ?
+	@syscall_call("compat_sys_get_mempolicy")
 {
 	@_SYSCALL_GET_MEMPOLICY_NAME
 	policy_uaddr = $policy
@@ -66,18 +66,18 @@ probe dw_syscall.get_mempolicy = __syscall.get_mempolicy ?,
 	flags_str = _mempolicy_flags_str($flags)
 	@_SYSCALL_GET_MEMPOLICY_ARGSTR
 }
-probe __syscall.get_mempolicy = kernel.function("sys_get_mempolicy").call ?
+probe __syscall.get_mempolicy = @syscall_call("sys_get_mempolicy")
 {
 	@__syscall_gate_compat_simple
 }
 probe dw_syscall.get_mempolicy.return = __syscall.get_mempolicy.return ?,
-	kernel.function("compat_sys_get_mempolicy").return ?
+	@syscall_return("compat_sys_get_mempolicy")
 {
 	@_SYSCALL_GET_MEMPOLICY_NAME
 	@SYSC_RETVALSTR($return)
 }
 probe __syscall.get_mempolicy.return =
-	kernel.function("sys_get_mempolicy").return ?
+	@syscall_return("sys_get_mempolicy")
 {
 	@__syscall_gate_compat_simple
 }

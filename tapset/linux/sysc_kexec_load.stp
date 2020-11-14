@@ -50,7 +50,7 @@ probe syscall.kexec_load.return = dw_syscall.kexec_load.return !,
 # dw_kexec_load _____________________________________________________
 
 probe dw_syscall.kexec_load = __syscall.kexec_load.call ?,
-                           kernel.function("compat_sys_kexec_load").call ?
+                           @syscall_call("compat_sys_kexec_load")
 {
 	@_SYSCALL_KEXEC_LOAD_NAME
 	entry = @__compat_ulong($entry)
@@ -60,17 +60,17 @@ probe dw_syscall.kexec_load = __syscall.kexec_load.call ?,
 	flags_str = _kexec_flags_str(flags)
 	@_SYSCALL_KEXEC_LOAD_ARGSTR
 }
-probe __syscall.kexec_load.call = kernel.function("sys_kexec_load").call
+probe __syscall.kexec_load.call = @syscall_call("sys_kexec_load")
 {
 	@__syscall_gate_compat_simple
 }
 probe dw_syscall.kexec_load.return = __syscall.syscall.kexec_load.return ?,
-                                  kernel.function("compat_sys_kexec_load").return ?
+                                  @syscall_return("compat_sys_kexec_load")
 {
 	@_SYSCALL_KEXEC_LOAD_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.syscall.kexec_load.return = kernel.function("sys_kexec_load").return
+probe __syscall.syscall.kexec_load.return = @syscall_return("sys_kexec_load")
 {
 	@__syscall_gate_compat_simple
 }

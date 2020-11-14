@@ -51,7 +51,7 @@ probe syscall.sigaction.return = dw_syscall.sigaction.return !,
 
 # dw_sigaction _____________________________________________________
 
-probe dw_syscall.sigaction = kernel.function("sys_sigaction").call ?
+probe dw_syscall.sigaction = @syscall_call("sys_sigaction")
 {
 	@_SYSCALL_SIGACTION_NAME
 	sig = __int32($sig)
@@ -61,7 +61,7 @@ probe dw_syscall.sigaction = kernel.function("sys_sigaction").call ?
 	oact_uaddr = $oact
 	@_SYSCALL_SIGACTION_ARGSTR
 }
-probe dw_syscall.sigaction.return = kernel.function("sys_sigaction").return ?
+probe dw_syscall.sigaction.return = @syscall_return("sys_sigaction")
 {
 	@_SYSCALL_SIGACTION_NAME
 	@SYSC_RETVALSTR($return)
@@ -118,8 +118,8 @@ probe syscall.sigaction32.return = dw_syscall.sigaction32.return !,
 
 # dw_sigaction32 _____________________________________________________
 
-probe dw_syscall.sigaction32 = kernel.function("sys32_sigaction").call ?,
-			    kernel.function("compat_sys_sigaction").call ?
+probe dw_syscall.sigaction32 = @syscall_call("sys32_sigaction"),
+			    @syscall_call("compat_sys_sigaction")
 {
 	@_SYSCALL_SIGACTION_NAME
 	sig = __int32($sig)
@@ -129,8 +129,8 @@ probe dw_syscall.sigaction32 = kernel.function("sys32_sigaction").call ?,
 	oact_uaddr = $oact
 	@_SYSCALL_SIGACTION_ARGSTR
 }
-probe dw_syscall.sigaction32.return = kernel.function("sys32_sigaction").return ?,
-				   kernel.function("compat_sys_sigaction").return ?
+probe dw_syscall.sigaction32.return = @syscall_return("sys32_sigaction"),
+				   @syscall_return("compat_sys_sigaction")
 {
 	@_SYSCALL_SIGACTION_NAME
 	@SYSC_RETVALSTR($return)

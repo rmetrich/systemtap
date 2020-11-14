@@ -27,14 +27,14 @@ probe syscall.close.return = dw_syscall.close.return !, nd_syscall.close.return 
 
 # dw_close _____________________________________________________
 
-probe dw_syscall.close = kernel.function("sys_close").call
+probe dw_syscall.close = @syscall_call("sys_close")
 {
 	@__syscall_compat_gate(@const("__NR_close"), @const("__NR_compat_close"))
 	@_SYSCALL_CLOSE_NAME
 	fd = __int32($fd)
 	@_SYSCALL_CLOSE_ARGSTR
 }
-probe dw_syscall.close.return = kernel.function("sys_close").return
+probe dw_syscall.close.return = @syscall_return("sys_close")
 {
 	@__syscall_compat_gate(@const("__NR_close"), @const("__NR_compat_close"))
 	@_SYSCALL_CLOSE_NAME

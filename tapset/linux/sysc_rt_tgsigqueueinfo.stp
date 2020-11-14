@@ -53,8 +53,8 @@ probe syscall.rt_tgsigqueueinfo.return = dw_syscall.rt_tgsigqueueinfo.return !,
 # dw_rt_tgsigqueueinfo _____________________________________________________
 
 probe dw_syscall.rt_tgsigqueueinfo =
-	kernel.function("sys_rt_tgsigqueueinfo").call ?,
-	kernel.function("compat_sys_rt_tgsigqueueinfo").call ?
+	@syscall_call("sys_rt_tgsigqueueinfo"),
+	@syscall_call("compat_sys_rt_tgsigqueueinfo")
 {
 	@_SYSCALL_RT_TGSIGQUEUEINFO_NAME
 	tgid = __int32($tgid)
@@ -67,8 +67,8 @@ probe dw_syscall.rt_tgsigqueueinfo =
 	@_SYSCALL_RT_TGSIGQUEUEINFO_ARGSTR
 }
 probe dw_syscall.rt_tgsigqueueinfo.return =
-	kernel.function("sys_rt_tgsigqueueinfo").return ?,
-	kernel.function("compat_sys_rt_tgsigqueueinfo").return ?
+	@syscall_return("sys_rt_tgsigqueueinfo"),
+	@syscall_return("compat_sys_rt_tgsigqueueinfo")
 {
 	@_SYSCALL_RT_TGSIGQUEUEINFO_NAME
 	@SYSC_RETVALSTR($return)

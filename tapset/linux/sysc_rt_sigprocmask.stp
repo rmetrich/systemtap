@@ -68,7 +68,7 @@ probe syscall.rt_sigprocmask.return = dw_syscall.rt_sigprocmask.return !,
 
 # dw_rt_sigprocmask _____________________________________________________
 
-probe dw_syscall.rt_sigprocmask = kernel.function("sys_rt_sigprocmask").call ?
+probe dw_syscall.rt_sigprocmask = @syscall_call("sys_rt_sigprocmask")
 {
 %( arch != "x86_64" || kernel_v < "3.4" || CONFIG_COMPAT != "y" %?
 	// In kernels < 3.4, a 32-bit rt_sigprocmask call goes through
@@ -108,7 +108,7 @@ probe dw_syscall.rt_sigprocmask = kernel.function("sys_rt_sigprocmask").call ?
 	}
 }
 probe dw_syscall.rt_sigprocmask.return =
-	kernel.function("sys_rt_sigprocmask").return ?
+	@syscall_return("sys_rt_sigprocmask")
 {
 %( arch != "x86_64" || kernel_v < "3.4" || CONFIG_COMPAT != "y" %?
 	@__syscall_gate(@const("__NR_rt_sigprocmask"))
@@ -250,8 +250,8 @@ probe syscall.compat_rt_sigprocmask.return = dw_syscall.compat_rt_sigprocmask.re
 # dw_compat_rt_sigprocmask _____________________________________________________
 
 probe dw_syscall.compat_rt_sigprocmask =
-	kernel.function("compat_sys_rt_sigprocmask").call ?,
-	kernel.function("sys32_rt_sigprocmask").call ?
+	@syscall_call("compat_sys_rt_sigprocmask"),
+	@syscall_call("sys32_rt_sigprocmask")
 {
 	@_SYSCALL_RT_SIGPROCMASK_NAME
 	how = __int32($how)
@@ -263,8 +263,8 @@ probe dw_syscall.compat_rt_sigprocmask =
 	@_SYSCALL_RT_SIGPROCMASK_ARGSTR
 }
 probe dw_syscall.compat_rt_sigprocmask.return =
-	kernel.function("compat_sys_rt_sigprocmask").return ?,
-	kernel.function("sys32_rt_sigprocmask").return ?
+	@syscall_return("compat_sys_rt_sigprocmask"),
+	@syscall_return("sys32_rt_sigprocmask")
 {
 	@_SYSCALL_RT_SIGPROCMASK_NAME
 	@SYSC_RETVALSTR($return)

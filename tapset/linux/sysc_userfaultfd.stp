@@ -29,14 +29,14 @@ probe syscall.userfaultfd.return = dw_syscall.userfaultfd.return !,
 
 # dw_userfaultfd _____________________________________________________
 
-probe dw_syscall.userfaultfd = kernel.function("sys_userfaultfd").call ?
+probe dw_syscall.userfaultfd = @syscall_call("sys_userfaultfd")
 {
 	@_SYSCALL_USERFAULTFD_NAME
 	flags = __int32($flags)
 	flags_str = _userfaultfd_flags_str(flags)
 	@_SYSCALL_USERFAULTFD_ARGSTR
 }
-probe dw_syscall.userfaultfd.return = kernel.function("sys_userfaultfd").return ?
+probe dw_syscall.userfaultfd.return = @syscall_return("sys_userfaultfd")
 {
 	@_SYSCALL_USERFAULTFD_NAME
 	@SYSC_RETVALSTR($return)

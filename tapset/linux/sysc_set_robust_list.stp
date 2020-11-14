@@ -38,25 +38,25 @@ probe syscall.set_robust_list.return = dw_syscall.set_robust_list.return !,
 # dw_set_robust_list _____________________________________________________
 
 probe dw_syscall.set_robust_list = __syscall.set_robust_list ?,
-                                kernel.function("compat_sys_set_robust_list") ?
+                                @syscall_call("compat_sys_set_robust_list")
 {
 	@_SYSCALL_SET_ROBUST_LIST_NAME
 	list_head_uaddr = @__pointer($head)
 	len = @__compat_ulong($len)
 	@_SYSCALL_SET_ROBUST_LIST_ARGSTR
 }
-probe __syscall.set_robust_list = kernel.function("sys_set_robust_list")
+probe __syscall.set_robust_list = @syscall_call("sys_set_robust_list")
 {
 	@__syscall_gate_compat_simple
 }
 probe dw_syscall.set_robust_list.return = __syscall.set_robust_list.return ?,
-		kernel.function("compat_sys_set_robust_list").return ?
+		@syscall_return("compat_sys_set_robust_list")
 {
 	@_SYSCALL_SET_ROBUST_LIST_NAME
 	@SYSC_RETVALSTR($return)
 }
 probe __syscall.set_robust_list.return =
-		kernel.function("sys_set_robust_list").return
+		@syscall_return("sys_set_robust_list")
 {
 	@__syscall_gate_compat_simple
 }

@@ -50,8 +50,8 @@ probe syscall.mremap.return = dw_syscall.mremap.return !, nd_syscall.mremap.retu
 
 # dw_mremap _____________________________________________________
 
-probe dw_syscall.mremap = kernel.function("ia64_mremap").call ?,
-                       kernel.function("sys_mremap").call ?
+probe dw_syscall.mremap = @syscall_call("ia64_mremap"),
+                       @syscall_call("sys_mremap")
 {
 	@_SYSCALL_MREMAP_NAME
 	old_address = $addr
@@ -62,8 +62,8 @@ probe dw_syscall.mremap = kernel.function("ia64_mremap").call ?,
 	new_address = $new_addr
 	@_SYSCALL_MREMAP_ARGSTR
 }
-probe dw_syscall.mremap.return = kernel.function("ia64_mremap").return ?,
-                              kernel.function("sys_mremap").return ?
+probe dw_syscall.mremap.return = @syscall_return("ia64_mremap"),
+                              @syscall_return("sys_mremap")
 {
 	@_SYSCALL_MREMAP_NAME
 	@SYSC_RETVALSTR2($return)

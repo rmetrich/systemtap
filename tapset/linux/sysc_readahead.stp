@@ -42,7 +42,7 @@ probe syscall.readahead.return = dw_syscall.readahead.return !,
 
 # dw_readahead _____________________________________________________
 
-probe dw_syscall.readahead = kernel.function("sys_readahead").call
+probe dw_syscall.readahead = @syscall_call("sys_readahead")
 {
 	@__syscall_gate_compat_simple
 	@_SYSCALL_READAHEAD_NAME
@@ -55,7 +55,7 @@ probe dw_syscall.readahead = kernel.function("sys_readahead").call
 %)
 	@_SYSCALL_READAHEAD_ARGSTR
 }
-probe dw_syscall.readahead.return = kernel.function("sys_readahead").return
+probe dw_syscall.readahead.return = @syscall_return("sys_readahead")
 {
 	@__syscall_gate_compat_simple
 	@_SYSCALL_READAHEAD_NAME

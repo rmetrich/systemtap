@@ -24,7 +24,7 @@ probe syscall.sys32_rt_sigtimedwait.return = dw_syscall.sys32_rt_sigtimedwait.re
 
 # dw_sys32_rt_sigtimedwait _____________________________________________________
 
-probe dw_syscall.sys32_rt_sigtimedwait = kernel.function("sys32_rt_sigtimedwait") ?
+probe dw_syscall.sys32_rt_sigtimedwait = @syscall_call("sys32_rt_sigtimedwait")
 {
 	@_SYSCALL_SYS32_RT_SIGTIMEDWAIT_NAME
 	uthese_uaddr = $uthese
@@ -33,7 +33,7 @@ probe dw_syscall.sys32_rt_sigtimedwait = kernel.function("sys32_rt_sigtimedwait"
 	sigsetsize = $sigsetsize
 	@_SYSCALL_SYS32_RT_SIGTIMEDWAIT_ARGSTR
 }
-probe dw_syscall.sys32_rt_sigtimedwait.return = kernel.function("sys32_rt_sigtimedwait").return ?
+probe dw_syscall.sys32_rt_sigtimedwait.return = @syscall_return("sys32_rt_sigtimedwait")
 {
 	@_SYSCALL_SYS32_RT_SIGTIMEDWAIT_NAME
 	@SYSC_RETVALSTR($return)

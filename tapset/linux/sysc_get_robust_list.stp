@@ -43,7 +43,7 @@ probe syscall.get_robust_list.return = dw_syscall.get_robust_list.return !,
 # dw_get_robust_list _____________________________________________________
 
 probe dw_syscall.get_robust_list = __syscall.get_robust_list ?,
-                                kernel.function("compat_sys_get_robust_list") ?
+                                @syscall_call("compat_sys_get_robust_list") ?
 {
 	@_SYSCALL_GET_ROBUST_LIST_NAME
 	pid = __int32($pid)
@@ -51,18 +51,18 @@ probe dw_syscall.get_robust_list = __syscall.get_robust_list ?,
 	len_uaddr = @__pointer($len_ptr)
 	@_SYSCALL_GET_ROBUST_LIST_ARGSTR
 }
-probe __syscall.get_robust_list = kernel.function("sys_get_robust_list")
+probe __syscall.get_robust_list = @syscall_call("sys_get_robust_list")
 {
 	@__syscall_gate_compat_simple
 }
 probe dw_syscall.get_robust_list.return = __syscall.get_robust_list.return ?,
-		kernel.function("compat_sys_get_robust_list").return ?
+		@syscall_return("compat_sys_get_robust_list") 
 {
 	@_SYSCALL_GET_ROBUST_LIST_NAME
 	@SYSC_RETVALSTR($return)
 }
 probe __syscall.get_robust_list.return =
-		kernel.function("sys_get_robust_list").return
+		@syscall_return("sys_get_robust_list")
 {
 	@__syscall_gate_compat_simple
 }

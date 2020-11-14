@@ -21,12 +21,12 @@ probe syscall.restart_syscall.return = dw_syscall.restart_syscall.return !,
 
 # dw_restart_syscall _____________________________________________________
 
-probe dw_syscall.restart_syscall = kernel.function("sys_restart_syscall").call
+probe dw_syscall.restart_syscall = @syscall_call("sys_restart_syscall")
 {
 	@_SYSCALL_RESTART_SYSCALL_NAME
 	@_SYSCALL_RESTART_SYSCALL_ARGSTR
 }
-probe dw_syscall.restart_syscall.return = kernel.function("sys_restart_syscall").return
+probe dw_syscall.restart_syscall.return = @syscall_return("sys_restart_syscall")
 {
 	@_SYSCALL_RESTART_SYSCALL_NAME
 	@SYSC_RETVALSTR($return)

@@ -53,7 +53,7 @@ probe syscall.epoll_ctl.return = dw_syscall.epoll_ctl.return !, nd_syscall.epoll
 
 # dw_epoll_ctl _____________________________________________________
 
-probe dw_syscall.epoll_ctl = kernel.function("compat_sys_epoll_ctl").call ?,
+probe dw_syscall.epoll_ctl = @syscall_call("compat_sys_epoll_ctl"),
 			     __syscall.epoll_ctl ?
 {
 	@_SYSCALL_EPOLL_CTL_NAME
@@ -64,18 +64,18 @@ probe dw_syscall.epoll_ctl = kernel.function("compat_sys_epoll_ctl").call ?,
 	event_uaddr = @__pointer($event)
 	@_SYSCALL_EPOLL_CTL_ARGSTR
 }
-probe __syscall.epoll_ctl = kernel.function("sys_epoll_ctl").call ?
+probe __syscall.epoll_ctl = @syscall_call("sys_epoll_ctl")
 {
 	@_SYSCALL_GATE
 }
 probe dw_syscall.epoll_ctl.return =
-	kernel.function("compat_sys_epoll_ctl").return ?,
+	@syscall_return("compat_sys_epoll_ctl"),
 	__syscall.epoll_ctl.return ?
 {
 	@_SYSCALL_EPOLL_CTL_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.epoll_ctl.return = kernel.function("sys_epoll_ctl").return ?
+probe __syscall.epoll_ctl.return = @syscall_return("sys_epoll_ctl")
 {
 	@_SYSCALL_GATE
 }

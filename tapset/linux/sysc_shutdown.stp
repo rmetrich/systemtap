@@ -55,20 +55,20 @@ probe dw_syscall.shutdown = __syscall.shutdown ?, __syscall.socketcall.shutdown 
 	how_str = _shutdown_how_str(how)
 	@_SYSCALL_SHUTDOWN_ARGSTR
 }
-probe __syscall.shutdown = kernel.function("sys_shutdown").call ?
+probe __syscall.shutdown = @syscall_call("sys_shutdown")
 {
 	@__syscall_gate(@const("__NR_shutdown"))
 	s = __int32($fd)
 	how = __int32($how)
 }
-probe __syscall.socketcall.shutdown = kernel.function("sys_socketcall").call ?
+probe __syscall.socketcall.shutdown = @syscall_call("sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_SHUTDOWN")) next;
 	s = __int32(user_ulong(&@ulong_cast($args)[0]))
 	how = __int32(user_ulong(&@ulong_cast($args)[1]))
 }
 probe __syscall.compat_socketcall.shutdown =
-	kernel.function("compat_sys_socketcall").call ?
+	@syscall_call("compat_sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_SHUTDOWN")) next;
 	s = user_int(&@uint_cast($args)[0])
@@ -80,13 +80,13 @@ probe dw_syscall.shutdown.return = __syscall.shutdown.return ?,
 	@_SYSCALL_SHUTDOWN_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.shutdown.return = kernel.function("sys_shutdown").return ?
+probe __syscall.shutdown.return = @syscall_return("sys_shutdown")
 {
 	@__syscall_gate(@const("__NR_shutdown"))
 }
 probe __syscall.socketcall.shutdown.return =
-	kernel.function("sys_socketcall").return ?,
-	kernel.function("compat_sys_socketcall").return ?
+	@syscall_return("sys_socketcall"),
+	@syscall_return("compat_sys_socketcall")
 {
 	if (__int32(@entry($call)) != @const("SYS_SHUTDOWN")) next;
 }

@@ -21,14 +21,14 @@ probe syscall.sys32_sched_rr_get_interval.return = dw_syscall.sys32_sched_rr_get
 
 # dw_sys32_sched_rr_get_interval _____________________________________________________
 
-probe dw_syscall.sys32_sched_rr_get_interval = kernel.function("sys32_sched_rr_get_interval") ?
+probe dw_syscall.sys32_sched_rr_get_interval = @syscall_call("sys32_sched_rr_get_interval")
 {
 	@_SYSCALL_SYS32_SCHED_RR_GET_INTERVAL_NAME
 	pid = $pid
 	interval_uaddr = $interval
 	@_SYSCALL_SYS32_SCHED_RR_GET_INTERVAL_ARGSTR
 }
-probe dw_syscall.sys32_sched_rr_get_interval.return = kernel.function("sys32_sched_rr_get_interval").return ?
+probe dw_syscall.sys32_sched_rr_get_interval.return = @syscall_return("sys32_sched_rr_get_interval")
 {
 	@_SYSCALL_SYS32_SCHED_RR_GET_INTERVAL_NAME
 	@SYSC_RETVALSTR($return)

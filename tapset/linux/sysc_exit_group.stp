@@ -46,7 +46,7 @@ probe dw_syscall.exit_group.return = never
 
 # dw_exit_group _____________________________________________________
 
-probe dw_syscall.exit_group = kernel.function("sys_exit_group").call
+probe dw_syscall.exit_group = @syscall_call("sys_exit_group")
 {
 	@_SYSCALL_EXIT_GROUP_NAME
 	status = __int32($error_code)

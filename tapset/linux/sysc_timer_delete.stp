@@ -30,13 +30,13 @@ probe syscall.timer_delete.return = dw_syscall.timer_delete.return !,
 
 # dw_timer_delete _____________________________________________________
 
-probe dw_syscall.timer_delete = kernel.function("sys_timer_delete").call
+probe dw_syscall.timer_delete = @syscall_call("sys_timer_delete")
 {
 	@_SYSCALL_TIMER_DELETE_NAME
 	timerid = __int32($timer_id)
 	@_SYSCALL_TIMER_DELETE_ARGSTR
 }
-probe dw_syscall.timer_delete.return = kernel.function("sys_timer_delete").return
+probe dw_syscall.timer_delete.return = @syscall_return("sys_timer_delete")
 {
 	@_SYSCALL_TIMER_DELETE_NAME
 	@SYSC_RETVALSTR($return)

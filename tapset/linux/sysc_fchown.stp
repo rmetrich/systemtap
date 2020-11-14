@@ -35,7 +35,7 @@ probe syscall.fchown.return = dw_syscall.fchown.return !, nd_syscall.fchown.retu
 
 # dw_fchown _____________________________________________________
 
-probe dw_syscall.fchown = kernel.function("sys_fchown").call
+probe dw_syscall.fchown = @syscall_call("sys_fchown")
 {
 	// Avoid fchown16() calling fchown().
 %( arch == "x86_64" %?
@@ -50,7 +50,7 @@ probe dw_syscall.fchown = kernel.function("sys_fchown").call
 	group = __int32($group)
 	@_SYSCALL_FCHOWN_ARGSTR
 }
-probe dw_syscall.fchown.return = kernel.function("sys_fchown").return
+probe dw_syscall.fchown.return = @syscall_return("sys_fchown")
 {
 %( arch == "x86_64" %?
 	@__syscall_compat_gate(@const("__NR_fchown"), @const("__NR_ia32_fchown32"))

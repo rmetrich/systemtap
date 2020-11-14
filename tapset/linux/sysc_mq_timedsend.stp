@@ -53,7 +53,7 @@ probe syscall.mq_timedsend.return = dw_syscall.mq_timedsend.return !,
 
 probe dw_syscall.mq_timedsend =
 	__syscall.mq_timedsend,
-	kernel.function("compat_sys_mq_timedsend").call ?
+	@syscall_call("compat_sys_mq_timedsend")
 {
 	@_SYSCALL_MQ_TIMEDSEND_NAME
 	mqdes = __int32($mqdes)
@@ -67,18 +67,18 @@ probe dw_syscall.mq_timedsend =
 %)
 	@_SYSCALL_MQ_TIMEDSEND_ARGSTR
 }
-probe __syscall.mq_timedsend = kernel.function("sys_mq_timedsend").call
+probe __syscall.mq_timedsend = @syscall_call("sys_mq_timedsend")
 {
         @__syscall_gate(@const("__NR_mq_timedsend"))
 }
 probe dw_syscall.mq_timedsend.return =
         __syscall.mq_timedsend.return,
-        kernel.function("compat_sys_mq_timedsend").return ?
+        @syscall_return("compat_sys_mq_timedsend")
 {
 	@_SYSCALL_MQ_TIMEDSEND_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.mq_timedsend.return = kernel.function("sys_mq_timedsend").return
+probe __syscall.mq_timedsend.return = @syscall_return("sys_mq_timedsend")
 {
 	@__syscall_gate_compat_simple
 }

@@ -41,7 +41,7 @@ probe syscall.lookup_dcookie.return = dw_syscall.lookup_dcookie.return !,
 
 # dw_lookup_dcookie _____________________________________________________
 
-probe dw_syscall.lookup_dcookie = kernel.function("sys_lookup_dcookie").call ?
+probe dw_syscall.lookup_dcookie = @syscall_call("sys_lookup_dcookie")
 {
 	@__syscall_gate_compat_simple
 	@_SYSCALL_LOOKUP_DCOOKIE_NAME
@@ -50,7 +50,7 @@ probe dw_syscall.lookup_dcookie = kernel.function("sys_lookup_dcookie").call ?
 	len = __ulong($len)
 	@_SYSCALL_LOOKUP_DCOOKIE_ARGSTR
 }
-probe dw_syscall.lookup_dcookie.return = kernel.function("sys_lookup_dcookie").return ?
+probe dw_syscall.lookup_dcookie.return = @syscall_return("sys_lookup_dcookie")
 {
 	@__syscall_gate_compat_simple
 	@_SYSCALL_LOOKUP_DCOOKIE_NAME

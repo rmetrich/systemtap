@@ -39,7 +39,7 @@ probe syscall.finit_module.return = dw_syscall.finit_module.return !, nd_syscall
 
 # dw_finit_module _____________________________________________________
 
-probe dw_syscall.finit_module = kernel.function("sys_finit_module").call ?
+probe dw_syscall.finit_module = @syscall_call("sys_finit_module")
 {
 	@_SYSCALL_FINIT_MODULE_NAME
 	fd = __int32($fd)
@@ -48,7 +48,7 @@ probe dw_syscall.finit_module = kernel.function("sys_finit_module").call ?
 	flags_str = _finit_module_flags_str(__int32($flags))
 	@_SYSCALL_FINIT_MODULE_ARGSTR
 }
-probe dw_syscall.finit_module.return = kernel.function("sys_finit_module").return ?
+probe dw_syscall.finit_module.return = @syscall_return("sys_finit_module")
 {
 	@_SYSCALL_FINIT_MODULE_NAME
 	@SYSC_RETVALSTR($return)

@@ -19,12 +19,12 @@ probe syscall.vfork.return = dw_syscall.vfork.return !,
 
 # dw_vfork _____________________________________________________
 
-probe dw_syscall.vfork = kernel.function("sys_vfork").call ?
+probe dw_syscall.vfork = @syscall_call("sys_vfork")
 {
 	@_SYSCALL_VFORK_NAME
 	@_SYSCALL_VFORK_ARGSTR
 }
-probe dw_syscall.vfork.return = kernel.function("sys_vfork").return ?
+probe dw_syscall.vfork.return = @syscall_return("sys_vfork")
 {
 	@_SYSCALL_VFORK_NAME
 	@SYSC_RETVALSTR($return)

@@ -40,9 +40,9 @@ probe syscall.waitpid.return = dw_syscall.waitpid.return !,
 
 # dw_waitpid _____________________________________________________
 
-probe dw_syscall.waitpid = kernel.function("sys_waitpid").call ?,
-	kernel.function("sys32_waitpid").call ?,
-	kernel.function("compat_sys_x86_waitpid").call ?
+probe dw_syscall.waitpid = @syscall_call("sys_waitpid"),
+	@syscall_call("sys32_waitpid"),
+	@syscall_call("compat_sys_x86_waitpid")
 {
 	@_SYSCALL_WAITPID_NAME
 	pid = __int32($pid)
@@ -51,9 +51,9 @@ probe dw_syscall.waitpid = kernel.function("sys_waitpid").call ?,
 	options_str = _wait4_opt_str(options)
 	@_SYSCALL_WAITPID_ARGSTR
 }
-probe dw_syscall.waitpid.return = kernel.function("sys_waitpid").return ?,
-	kernel.function("sys32_waitpid").return ?,
-	kernel.function("compat_sys_x86_waitpid").return ?
+probe dw_syscall.waitpid.return = @syscall_return("sys_waitpid"),
+	@syscall_return("sys32_waitpid"),
+	@syscall_return("compat_sys_x86_waitpid")
 {
 	@_SYSCALL_WAITPID_NAME
 	@SYSC_RETVALSTR($return)

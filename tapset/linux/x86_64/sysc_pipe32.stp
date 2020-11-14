@@ -13,7 +13,7 @@ probe syscall.pipe32.return = dw_syscall.pipe32.return !, nd_syscall.pipe32.retu
 
 # dw_pipe32 _____________________________________________________
 
-probe dw_syscall.pipe32 = kernel.function("sys32_pipe")?
+probe dw_syscall.pipe32 = @syscall_call("sys32_pipe")
 {
 	@_SYSCALL_PIPE32_NAME
 	flags = 0;
@@ -36,7 +36,7 @@ probe dw_syscall.pipe32 = kernel.function("sys32_pipe")?
 		argstr = "[0, 0]";
 	}
 }
-probe dw_syscall.pipe32.return = kernel.function("sys32_pipe").return?
+probe dw_syscall.pipe32.return = @syscall_return("sys32_pipe")?
 {
 	@_SYSCALL_PIPE32_NAME
 	flags = 0;

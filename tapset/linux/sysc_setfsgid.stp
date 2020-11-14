@@ -56,24 +56,24 @@ probe syscall.setfsgid.return = dw_syscall.setfsgid.return !,
 
 # dw_setfsgid _____________________________________________________
 
-probe dw_syscall.setfsgid = kernel.function("sys_setfsgid16").call ?,
+probe dw_syscall.setfsgid = @syscall_call("sys_setfsgid16"),
 			    __syscall.setfsgid ?
 {
 	@_SYSCALL_SETFSGID_NAME
 	fsgid = __int32($gid)
 	@_SYSCALL_SETFSGID_ARGSTR
 }
-probe __syscall.setfsgid = kernel.function("sys_setfsgid").call ?
+probe __syscall.setfsgid = @syscall_call("sys_setfsgid")
 {
 	@_SYSCALL_GATE
 }
-probe dw_syscall.setfsgid.return = kernel.function("sys_setfsgid16").return ?,
+probe dw_syscall.setfsgid.return = @syscall_return("sys_setfsgid16"),
 				   __syscall.setfsgid.return ?
 {
 	@_SYSCALL_SETFSGID_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.setfsgid.return = kernel.function("sys_setfsgid").return ?
+probe __syscall.setfsgid.return = @syscall_return("sys_setfsgid")
 {
 	@_SYSCALL_GATE
 }

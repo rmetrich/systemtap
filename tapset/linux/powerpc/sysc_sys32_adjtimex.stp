@@ -20,13 +20,13 @@ probe syscall.sys32_adjtimex.return = dw_syscall.sys32_adjtimex.return !,
 
 # dw_sys32_adjtimex _____________________________________________________
 
-probe dw_syscall.sys32_adjtimex = kernel.function("sys32_adjtimex") ?
+probe dw_syscall.sys32_adjtimex = @syscall_call("sys32_adjtimex")
 {
 	@_SYSCALL_SYS32_ADJTIMEX_NAME
 	utp = $utp
 	@_SYSCALL_SYS32_ADJTIMEX_ARGSTR
 }
-probe dw_syscall.sys32_adjtimex.return = kernel.function("sys32_adjtimex").return ?
+probe dw_syscall.sys32_adjtimex.return = @syscall_return("sys32_adjtimex")
 {
 	@_SYSCALL_SYS32_ADJTIMEX_NAME
 	@SYSC_RETVALSTR($return)

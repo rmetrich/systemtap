@@ -22,7 +22,7 @@ probe syscall.sys32_getdents.return = dw_syscall.sys32_getdents.return !,
 
 # dw_sys32_getdents _____________________________________________________
 
-probe dw_syscall.sys32_getdents = kernel.function("sys32_getdents") ?
+probe dw_syscall.sys32_getdents = @syscall_call("sys32_getdents")
 {
 	@_SYSCALL_SYS32_GETDENTS_NAME
 	fd = $fd
@@ -30,7 +30,7 @@ probe dw_syscall.sys32_getdents = kernel.function("sys32_getdents") ?
 	count = $count
 	@_SYSCALL_SYS32_GETDENTS_ARGSTR
 }
-probe dw_syscall.sys32_getdents.return = kernel.function("sys32_getdents").return ?
+probe dw_syscall.sys32_getdents.return = @syscall_return("sys32_getdents")
 {
 	@_SYSCALL_SYS32_GETDENTS_NAME
 	@SYSC_RETVALSTR($return)

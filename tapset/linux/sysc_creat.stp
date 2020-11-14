@@ -32,14 +32,14 @@ probe syscall.creat.return = dw_syscall.creat.return !, nd_syscall.creat.return 
 
 # dw_creat _____________________________________________________
 
-probe dw_syscall.creat = kernel.function("sys_creat").call ?
+probe dw_syscall.creat = @syscall_call("sys_creat")
 {
 	@_SYSCALL_CREAT_NAME
 	mode = __uint32($mode)
 	pathname = user_string_quoted($pathname)
 	@_SYSCALL_CREAT_ARGSTR
 }
-probe dw_syscall.creat.return = kernel.function("sys_creat").return ?
+probe dw_syscall.creat.return = @syscall_return("sys_creat")
 {
 	@_SYSCALL_CREAT_NAME
 	@SYSC_RETVALSTR($return)

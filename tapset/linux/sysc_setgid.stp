@@ -57,24 +57,24 @@ probe syscall.setgid.return = dw_syscall.setgid.return !,
 
 # dw_setgid _____________________________________________________
 
-probe dw_syscall.setgid = kernel.function("sys_setgid16").call ?,
+probe dw_syscall.setgid = @syscall_call("sys_setgid16"),
 			  __syscall.setgid ?
 {
 	@_SYSCALL_SETGID_NAME
 	gid = __int32($gid)
 	@_SYSCALL_SETGID_ARGSTR
 }
-probe __syscall.setgid = kernel.function("sys_setgid").call ?
+probe __syscall.setgid = @syscall_call("sys_setgid")
 {
 	@_SYSCALL_GATE
 }
-probe dw_syscall.setgid.return = kernel.function("sys_setgid16").return ?,
+probe dw_syscall.setgid.return = @syscall_return("sys_setgid16"),
 				 __syscall.setgid.return ?
 {
 	@_SYSCALL_SETGID_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.setgid.return = kernel.function("sys_setgid").return ?
+probe __syscall.setgid.return = @syscall_return("sys_setgid")
 {
 	@_SYSCALL_GATE
 }

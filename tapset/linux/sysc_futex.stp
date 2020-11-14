@@ -57,7 +57,7 @@ probe syscall.compat_futex.return = dw_syscall.compat_futex.return !,
 
 # dw_futex _____________________________________________________
 
-probe dw_syscall.futex = kernel.function("sys_futex").call ?
+probe dw_syscall.futex = @syscall_call("sys_futex")
 {
 	@_SYSCALL_FUTEX_NAME
 	futex_uaddr = $uaddr
@@ -68,12 +68,12 @@ probe dw_syscall.futex = kernel.function("sys_futex").call ?
 	val3 = __int32($val3)
 	@__futex_argstr(futex_uaddr, op, val, utime_uaddr, uaddr2_uaddr, val3)
 }
-probe dw_syscall.futex.return = kernel.function("sys_futex").return ?
+probe dw_syscall.futex.return = @syscall_return("sys_futex")
 {
 	@_SYSCALL_FUTEX_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe dw_syscall.compat_futex = kernel.function("compat_sys_futex").call ?
+probe dw_syscall.compat_futex = @syscall_call("compat_sys_futex")
 {
 	@_SYSCALL_FUTEX_NAME
 	futex_uaddr = @__pointer($uaddr)
@@ -85,7 +85,7 @@ probe dw_syscall.compat_futex = kernel.function("compat_sys_futex").call ?
 	@__futex_argstr(futex_uaddr, op, val, utime_uaddr, uaddr2_uaddr, val3)
 }
 probe dw_syscall.compat_futex.return =
-	kernel.function("compat_sys_futex").return ?
+	@syscall_return("compat_sys_futex")
 {
 	@_SYSCALL_FUTEX_NAME
 	@SYSC_RETVALSTR($return)

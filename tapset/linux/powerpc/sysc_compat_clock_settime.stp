@@ -21,14 +21,14 @@ probe syscall.compat_clock_settime.return = dw_syscall.compat_clock_settime.retu
 
 # dw_compat_clock_settime _____________________________________________________
 
-probe dw_syscall.compat_clock_settime = kernel.function("compat_clock_settime") ?
+probe dw_syscall.compat_clock_settime = @syscall_call("compat_clock_settime")
 {
 	@_SYSCALL_COMPAT_CLOCK_SETTIME_NAME
 	which_clock = $which_clock
 	tp_uaddr = $tp
 	@_SYSCALL_COMPAT_CLOCK_SETTIME_ARGSTR
 }
-probe dw_syscall.compat_clock_settime.return = kernel.function("compat_clock_settime").return ?
+probe dw_syscall.compat_clock_settime.return = @syscall_return("compat_clock_settime")
 {
 	@_SYSCALL_COMPAT_CLOCK_SETTIME_NAME
 	@SYSC_RETVALSTR($return)

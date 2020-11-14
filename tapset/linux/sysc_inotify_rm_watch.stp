@@ -35,14 +35,14 @@ probe syscall.inotify_rm_watch.return = dw_syscall.inotify_rm_watch.return !,
 
 # dw_inotify_rm_watch _____________________________________________________
 
-probe dw_syscall.inotify_rm_watch = kernel.function("sys_inotify_rm_watch").call ?
+probe dw_syscall.inotify_rm_watch = @syscall_call("sys_inotify_rm_watch")
 {
 	@_SYSCALL_INOTIFY_RM_WATCH_NAME
 	fd = __int32($fd)
 	wd = __int32($wd)
 	@_SYSCALL_INOTIFY_RM_WATCH_ARGSTR
 }
-probe dw_syscall.inotify_rm_watch.return = kernel.function("sys_inotify_rm_watch").return ?
+probe dw_syscall.inotify_rm_watch.return = @syscall_return("sys_inotify_rm_watch")
 {
 	@_SYSCALL_INOTIFY_RM_WATCH_NAME
 	@SYSC_RETVALSTR($return)

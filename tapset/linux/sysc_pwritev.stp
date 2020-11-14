@@ -76,7 +76,7 @@ probe dw_syscall.pwritev = __syscall.pwritev ?, __syscall.compat_pwritev ?
 {
 	@_SYSCALL_PWRITEV_NAME
 }
-probe __syscall.pwritev = kernel.function("sys_pwritev").call
+probe __syscall.pwritev = @syscall_call("sys_pwritev")
 {
 	fd = __int32($fd)
 	vector_uaddr = $vec
@@ -84,7 +84,7 @@ probe __syscall.pwritev = kernel.function("sys_pwritev").call
 	offset = @__pos_from_hilo($pos_h, $pos_l)
 	@_SYSCALL_PWRITEV_ARGSTR
 }
-probe __syscall.compat_pwritev = kernel.function("compat_sys_pwritev").call
+probe __syscall.compat_pwritev = @syscall_call("compat_sys_pwritev")
 {
 	fd = __int32($fd)
 	vector_uaddr = $vec
@@ -92,8 +92,8 @@ probe __syscall.compat_pwritev = kernel.function("compat_sys_pwritev").call
 	offset = ($pos_high << 32) + __uint32($pos_low)
 	@_SYSCALL_PWRITEV_ARGSTR
 }
-probe dw_syscall.pwritev.return = kernel.function("sys_pwritev").return ?,
-			       kernel.function("compat_sys_pwritev").return ?
+probe dw_syscall.pwritev.return = @syscall_return("sys_pwritev"),
+			       @syscall_return("compat_sys_pwritev")
 {
 	@_SYSCALL_PWRITEV_NAME
 	@SYSC_RETVALSTR($return)

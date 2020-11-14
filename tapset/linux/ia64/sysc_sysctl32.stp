@@ -18,12 +18,12 @@ probe syscall.sysctl32.return = dw_syscall.sysctl32.return !, nd_syscall.sysctl3
 
 # dw_sysctl32 _____________________________________________________
 
-probe dw_syscall.sysctl32 = kernel.function("sys32_sysctl") ?
+probe dw_syscall.sysctl32 = @syscall_call("sys32_sysctl")
 {
 	@_SYSCALL_SYSCTL32_NAME
 	@_SYSCALL_SYSCTL32_ARGSTR
 }
-probe dw_syscall.sysctl32.return = kernel.function("sys32_sysctl").return ?
+probe dw_syscall.sysctl32.return = @syscall_return("sys32_sysctl")
 {
 	@_SYSCALL_SYSCTL32_NAME
 	@SYSC_RETVALSTR($return)

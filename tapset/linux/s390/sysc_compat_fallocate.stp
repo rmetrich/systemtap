@@ -41,7 +41,7 @@ probe syscall.compat_fallocate.return = dw_syscall.compat_fallocate.return !,
 
 # dw_compat_fallocate _____________________________________________________
 
-probe dw_syscall.compat_fallocate = kernel.function("sys_fallocate").call ?
+probe dw_syscall.compat_fallocate = @syscall_call("sys_fallocate")
 {
 	@__syscall_gate_noncompat_simple
 	@_SYSCALL_COMPAT_FALLOCATE_NAME
@@ -53,7 +53,7 @@ probe dw_syscall.compat_fallocate = kernel.function("sys_fallocate").call ?
 	@_SYSCALL_COMPAT_FALLOCATE_ARGSTR
 }
 probe dw_syscall.compat_fallocate.return =
-	kernel.function("sys_fallocate").return ?
+	@syscall_return("sys_fallocate")
 {
 	@__syscall_gate_noncompat_simple
 	@_SYSCALL_COMPAT_FALLOCATE_NAME

@@ -38,14 +38,14 @@ probe syscall.rename.return = dw_syscall.rename.return !,
 
 # dw_rename _____________________________________________________
 
-probe dw_syscall.rename = kernel.function("sys_rename").call
+probe dw_syscall.rename = @syscall_call("sys_rename")
 {
 	@_SYSCALL_RENAME_NAME
 	oldpath = user_string_quoted($oldname)
 	newpath = user_string_quoted($newname)
 	@_SYSCALL_RENAME_ARGSTR
 }
-probe dw_syscall.rename.return = kernel.function("sys_rename").return
+probe dw_syscall.rename.return = @syscall_return("sys_rename")
 {
 	@_SYSCALL_RENAME_NAME
 	@SYSC_RETVALSTR($return)

@@ -74,7 +74,7 @@ probe syscall.setregid.return = dw_syscall.setregid.return !,
 
 # dw_setregid _____________________________________________________
 
-probe dw_syscall.setregid = kernel.function("sys_setregid").call
+probe dw_syscall.setregid = @syscall_call("sys_setregid")
 {
 	@_SYSCALL_GATE
 	@_SYSCALL_SETREGID_NAME
@@ -82,7 +82,7 @@ probe dw_syscall.setregid = kernel.function("sys_setregid").call
 	egid = __int32($egid)
 	@_SYSCALL_SETREGID_ARGSTR
 }
-probe dw_syscall.setregid.return = kernel.function("sys_setregid").return
+probe dw_syscall.setregid.return = @syscall_return("sys_setregid")
 {
 	@_SYSCALL_GATE
 	@_SYSCALL_SETREGID_NAME
@@ -164,14 +164,14 @@ probe syscall.setregid16.return = dw_syscall.setregid16.return !,
 
 # dw_setregid16 _____________________________________________________
 
-probe dw_syscall.setregid16 = kernel.function("sys_setregid16").call ?
+probe dw_syscall.setregid16 = @syscall_call("sys_setregid16")
 {
 	@_SYSCALL_SETREGID_NAME
 	rgid = __short($rgid)
 	egid = __short($egid)
 	@_SYSCALL_SETREGID_ARGSTR
 }
-probe dw_syscall.setregid16.return = kernel.function("sys_setregid16").return ?
+probe dw_syscall.setregid16.return = @syscall_return("sys_setregid16")
 {
 	@_SYSCALL_SETREGID_NAME
 	@SYSC_RETVALSTR($return)

@@ -68,14 +68,14 @@ probe dw_syscall.accept = __syscall.accept ?, __syscall.socketcall.accept ?,
 	@_SYSCALL_ACCEPT_ARGSTR
 %)
 }
-probe __syscall.accept = kernel.function("sys_accept").call
+probe __syscall.accept = @syscall_call("sys_accept")
 {
 	@__syscall_gate(@const("__NR_accept"))
 	sockfd = __int32($fd)
 	addr_uaddr = $upeer_sockaddr
 	addrlen_uaddr = $upeer_addrlen
 }
-probe __syscall.socketcall.accept = kernel.function("sys_socketcall").call ?
+probe __syscall.socketcall.accept = @syscall_call("sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_ACCEPT")) next;
 	sockfd = __int32(user_ulong(&@ulong_cast($args)[0]))
@@ -83,7 +83,7 @@ probe __syscall.socketcall.accept = kernel.function("sys_socketcall").call ?
 	addrlen_uaddr = user_ulong(&@ulong_cast($args)[2])
 }
 probe __syscall.compat_socketcall.accept =
-	kernel.function("compat_sys_socketcall").call ?
+	@syscall_call("compat_sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_ACCEPT")) next;
 	sockfd = user_int(&@uint_cast($args)[0])
@@ -96,13 +96,13 @@ probe dw_syscall.accept.return = __syscall.accept.return ?,
 	@_SYSCALL_ACCEPT_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.accept.return = kernel.function("sys_accept").return ?
+probe __syscall.accept.return = @syscall_return("sys_accept")
 {
 	@__syscall_gate(@const("__NR_accept"))
 }
 probe __syscall.socketcall.accept.return =
-	kernel.function("sys_socketcall").return ?,
-	kernel.function("compat_sys_socketcall").return ?
+	@syscall_return("sys_socketcall"),
+	@syscall_return("compat_sys_socketcall")
 {
 	if (__int32(@entry($call)) != @const("SYS_ACCEPT")) next;
 }

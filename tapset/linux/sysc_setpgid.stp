@@ -36,14 +36,14 @@ probe syscall.setpgid.return = dw_syscall.setpgid.return !,
 
 # dw_setpgid _____________________________________________________
 
-probe dw_syscall.setpgid = kernel.function("sys_setpgid").call
+probe dw_syscall.setpgid = @syscall_call("sys_setpgid")
 {
 	@_SYSCALL_SETPGID_NAME
 	pid = __int32($pid)
 	pgid = __int32($pgid)
 	@_SYSCALL_SETPGID_ARGSTR
 }
-probe dw_syscall.setpgid.return = kernel.function("sys_setpgid").return
+probe dw_syscall.setpgid.return = @syscall_return("sys_setpgid")
 {
 	@_SYSCALL_SETPGID_NAME
 	@SYSC_RETVALSTR($return)

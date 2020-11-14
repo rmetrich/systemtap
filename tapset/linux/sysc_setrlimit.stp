@@ -42,7 +42,7 @@ probe syscall.setrlimit.return = dw_syscall.setrlimit.return !,
 # dw_setrlimit _____________________________________________________
 
 probe dw_syscall.setrlimit = __syscall.setrlimit ?,
-	kernel.function("compat_sys_setrlimit").call ?
+	@syscall_call("compat_sys_setrlimit")
 {
 	@_SYSCALL_SETRLIMIT_NAME
 	resource = $resource
@@ -51,17 +51,17 @@ probe dw_syscall.setrlimit = __syscall.setrlimit ?,
 	rlim_str = _struct_rlimit_u(rlim_uaddr)
 	@_SYSCALL_SETRLIMIT_ARGSTR
 }
-probe __syscall.setrlimit = kernel.function("sys_setrlimit").call
+probe __syscall.setrlimit = @syscall_call("sys_setrlimit")
 {
 	@__syscall_gate(@const("__NR_setrlimit"))
 }
 probe dw_syscall.setrlimit.return = __syscall.setrlimit.return ?,
-	kernel.function("compat_sys_setrlimit").return ?
+	@syscall_return("compat_sys_setrlimit")
 {
 	@_SYSCALL_SETRLIMIT_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.setrlimit.return = kernel.function("sys_setrlimit").return
+probe __syscall.setrlimit.return = @syscall_return("sys_setrlimit")
 {
 	@__syscall_gate(@const("__NR_setrlimit"))
 }

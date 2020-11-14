@@ -82,7 +82,7 @@ probe syscall.setresuid.return = dw_syscall.setresuid.return !,
 
 # dw_setresuid _____________________________________________________
 
-probe dw_syscall.setresuid = kernel.function("sys_setresuid").call
+probe dw_syscall.setresuid = @syscall_call("sys_setresuid")
 {
 	@_SYSCALL_GATE
 	@_SYSCALL_SETRESUID_NAME
@@ -91,7 +91,7 @@ probe dw_syscall.setresuid = kernel.function("sys_setresuid").call
 	suid = __int32($suid)
 	@_SYSCALL_SETRESUID_ARGSTR
 }
-probe dw_syscall.setresuid.return = kernel.function("sys_setresuid").return
+probe dw_syscall.setresuid.return = @syscall_return("sys_setresuid")
 {
 	@_SYSCALL_GATE
 	@_SYSCALL_SETRESUID_NAME
@@ -175,7 +175,7 @@ probe syscall.setresuid16.return = dw_syscall.setresuid16.return !,
 
 # dw_setresuid16 _____________________________________________________
 
-probe dw_syscall.setresuid16 = kernel.function("sys_setresuid16").call ?
+probe dw_syscall.setresuid16 = @syscall_call("sys_setresuid16")
 {
 	@_SYSCALL_SETRESUID_NAME
 	ruid = __short($ruid)
@@ -183,7 +183,7 @@ probe dw_syscall.setresuid16 = kernel.function("sys_setresuid16").call ?
 	suid = __short($suid)
 	@_SYSCALL_SETRESUID_ARGSTR
 }
-probe dw_syscall.setresuid16.return = kernel.function("sys_setresuid16").return ?
+probe dw_syscall.setresuid16.return = @syscall_return("sys_setresuid16")
 {
 	@_SYSCALL_SETRESUID_NAME
 	@SYSC_RETVALSTR($return)

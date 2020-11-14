@@ -52,7 +52,7 @@ probe syscall.add_key.return = dw_syscall.add_key.return !, nd_syscall.add_key.r
 
 # dw_add_key _____________________________________________________
 
-probe dw_syscall.add_key = kernel.function("sys_add_key").call ?
+probe dw_syscall.add_key = @syscall_call("sys_add_key")
 {
 	@_SYSCALL_ADD_KEY_NAME
 	type_uaddr = $_type
@@ -62,7 +62,7 @@ probe dw_syscall.add_key = kernel.function("sys_add_key").call ?
 	ringid = __int32($ringid)
 	@_SYSCALL_ADD_KEY_ARGSTR
 }
-probe dw_syscall.add_key.return = kernel.function("sys_add_key").return ?
+probe dw_syscall.add_key.return = @syscall_return("sys_add_key")
 {
 	@_SYSCALL_ADD_KEY_NAME
 	@SYSC_RETVALSTR($return)

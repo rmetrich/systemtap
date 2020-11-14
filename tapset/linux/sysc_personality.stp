@@ -33,13 +33,13 @@ probe syscall.personality.return = dw_syscall.personality.return !,
 
 # dw_personality _____________________________________________________
 
-probe dw_syscall.personality = kernel.function("sys_personality").call
+probe dw_syscall.personality = @syscall_call("sys_personality")
 {
 	@_SYSCALL_PERSONALITY_NAME
 	persona = __uint32($personality)
 	@_SYSCALL_PERSONALITY_ARGSTR
 }
-probe dw_syscall.personality.return = kernel.function("sys_personality").return
+probe dw_syscall.personality.return = @syscall_return("sys_personality")
 {
 	@_SYSCALL_PERSONALITY_NAME
 	@SYSC_RETVALSTR($return)

@@ -23,7 +23,7 @@ probe syscall.compat_timer_settime.return = dw_syscall.compat_timer_settime.retu
 
 # dw_compat_timer_settime _____________________________________________________
 
-probe dw_syscall.compat_timer_settime = kernel.function("compat_timer_settime") ?
+probe dw_syscall.compat_timer_settime = @syscall_call("compat_timer_settime")
 {
 	@_SYSCALL_COMPAT_TIMER_SETTIME_NAME
 	timer_id = $timer_id
@@ -32,7 +32,7 @@ probe dw_syscall.compat_timer_settime = kernel.function("compat_timer_settime") 
 	old_setting_uaddr = $old
 	@_SYSCALL_COMPAT_TIMER_SETTIME_ARGSTR
 }
-probe dw_syscall.compat_timer_settime.return = kernel.function("compat_timer_settime").return ?
+probe dw_syscall.compat_timer_settime.return = @syscall_return("compat_timer_settime")
 {
 	@_SYSCALL_COMPAT_TIMER_SETTIME_NAME
 	@SYSC_RETVALSTR($return)

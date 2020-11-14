@@ -67,7 +67,7 @@ probe syscall.io_getevents.return = dw_syscall.io_getevents.return !,
 # dw_io_getevents _____________________________________________________
 
 probe dw_syscall.io_getevents = __syscall.io_getevents ?,
-	kernel.function("compat_sys_io_getevents").call ?
+	@syscall_call("compat_sys_io_getevents")
 {
 	@_SYSCALL_IO_GETEVENTS_NAME
         ctx_id = @__compat_ulong($ctx_id)
@@ -80,17 +80,17 @@ probe dw_syscall.io_getevents = __syscall.io_getevents ?,
 	           _struct_timespec_u($timeout, 1))
 	@_SYSCALL_IO_GETEVENTS_ARGSTR
 }
-probe __syscall.io_getevents = kernel.function("sys_io_getevents").call
+probe __syscall.io_getevents = @syscall_call("sys_io_getevents")
 {
 	@__syscall_gate(@const("__NR_io_getevents"))
 }
 probe dw_syscall.io_getevents.return = __syscall.io_getevents.return,
-	kernel.function("compat_sys_io_getevents").return ?
+	@syscall_return("compat_sys_io_getevents")
 {
 	@_SYSCALL_IO_GETEVENTS_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.io_getevents.return = kernel.function("sys_io_getevents").return ?
+probe __syscall.io_getevents.return = @syscall_return("sys_io_getevents")
 {
 	@__syscall_gate(@const("__NR_io_getevents"))
 }

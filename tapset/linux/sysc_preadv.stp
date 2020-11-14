@@ -79,7 +79,7 @@ probe dw_syscall.preadv = __syscall.preadv ?, __syscall.compat_preadv ?
 {
 	@_SYSCALL_PREADV_NAME
 }
-probe __syscall.preadv = kernel.function("sys_preadv")
+probe __syscall.preadv = @syscall_call("sys_preadv")
 {
 	fd = __int32($fd)
 	vector_uaddr = $vec
@@ -87,7 +87,7 @@ probe __syscall.preadv = kernel.function("sys_preadv")
 	offset = @__pos_from_hilo($pos_h, $pos_l)
 	@_SYSCALL_PREADV_ARGSTR
 }
-probe __syscall.compat_preadv = kernel.function("compat_sys_preadv")
+probe __syscall.compat_preadv = @syscall_call("compat_sys_preadv")
 {
 	fd = __int32($fd)
 	vector_uaddr = $vec
@@ -95,8 +95,8 @@ probe __syscall.compat_preadv = kernel.function("compat_sys_preadv")
 	offset = ($pos_high << 32) + __uint32($pos_low)
 	@_SYSCALL_PREADV_ARGSTR
 }
-probe dw_syscall.preadv.return = kernel.function("sys_preadv").return ?,
-			      kernel.function("compat_sys_preadv").return ?
+probe dw_syscall.preadv.return = @syscall_return("sys_preadv"),
+			      @syscall_return("compat_sys_preadv")
 {
 	@_SYSCALL_PREADV_NAME
 	@SYSC_RETVALSTR($return)

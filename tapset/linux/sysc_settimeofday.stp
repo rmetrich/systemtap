@@ -37,7 +37,7 @@ probe syscall.settimeofday.return = dw_syscall.settimeofday.return !,
 
 # dw_settimeofday _____________________________________________________
 
-probe dw_syscall.settimeofday = kernel.function("sys_settimeofday").call
+probe dw_syscall.settimeofday = @syscall_call("sys_settimeofday")
 {
 	@_SYSCALL_SETTIMEOFDAY_NAME
 	tv_uaddr = $tv
@@ -46,7 +46,7 @@ probe dw_syscall.settimeofday = kernel.function("sys_settimeofday").call
 	tz_str = _struct_timezone_u(tz_uaddr)
 	@_SYSCALL_SETTIMEOFDAY_ARGSTR
 }
-probe dw_syscall.settimeofday.return = kernel.function("sys_settimeofday").return
+probe dw_syscall.settimeofday.return = @syscall_return("sys_settimeofday")
 {
 	@_SYSCALL_SETTIMEOFDAY_NAME
 	@SYSC_RETVALSTR($return)
@@ -130,8 +130,8 @@ probe syscall.settimeofday32.return = dw_syscall.settimeofday32.return !,
 
 # dw_settimeofday32 _____________________________________________________
 
-probe dw_syscall.settimeofday32 = kernel.function("sys32_settimeofday").call ?,
-                               kernel.function("compat_sys_settimeofday").call ?
+probe dw_syscall.settimeofday32 = @syscall_call("sys32_settimeofday"),
+                               @syscall_call("compat_sys_settimeofday")
 {
 	@_SYSCALL_SETTIMEOFDAY_NAME
 	tv_uaddr = @__pointer($tv)
@@ -140,8 +140,8 @@ probe dw_syscall.settimeofday32 = kernel.function("sys32_settimeofday").call ?,
 	tz_str = _struct_timezone_u(tz_uaddr)
 	@_SYSCALL_SETTIMEOFDAY_ARGSTR
 }
-probe dw_syscall.settimeofday32.return = kernel.function("sys32_settimeofday").return ?,
-                                      kernel.function("compat_sys_settimeofday").return ?
+probe dw_syscall.settimeofday32.return = @syscall_return("sys32_settimeofday"),
+                                      @syscall_return("compat_sys_settimeofday")
 {
 	@_SYSCALL_SETTIMEOFDAY_NAME
 	@SYSC_RETVALSTR($return)

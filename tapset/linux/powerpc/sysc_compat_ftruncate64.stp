@@ -22,7 +22,7 @@ probe syscall.compat_ftruncate64.return = dw_syscall.compat_ftruncate64.return !
 # dw_compat_ftruncate64 _____________________________________________________
 
 probe dw_syscall.compat_ftruncate64 =
-	kernel.function("compat_sys_ftruncate64").call ?
+	@syscall_call("compat_sys_ftruncate64")
 {
 	@_SYSCALL_COMPAT_FTRUNCATE64_NAME
 	fd = __int32($fd)
@@ -30,7 +30,7 @@ probe dw_syscall.compat_ftruncate64 =
 	@_SYSCALL_COMPAT_FTRUNCATE64_ARGSTR
 }
 probe dw_syscall.compat_ftruncate64.return =
-	kernel.function("compat_sys_ftruncate64").return ?
+	@syscall_return("compat_sys_ftruncate64")
 {
 	@_SYSCALL_COMPAT_FTRUNCATE64_NAME
 	@SYSC_RETVALSTR($return)

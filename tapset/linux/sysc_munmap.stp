@@ -32,14 +32,14 @@ probe syscall.munmap.return = dw_syscall.munmap.return !,
 
 # dw_munmap _____________________________________________________
 
-probe dw_syscall.munmap = kernel.function("sys_munmap").call
+probe dw_syscall.munmap = @syscall_call("sys_munmap")
 {
 	@_SYSCALL_MUNMAP_NAME
 	start = $addr
 	length = __ulong($len)
 	@_SYSCALL_MUNMAP_ARGSTR
 }
-probe dw_syscall.munmap.return = kernel.function("sys_munmap").return
+probe dw_syscall.munmap.return = @syscall_return("sys_munmap")
 {
 	@_SYSCALL_MUNMAP_NAME
 	@SYSC_RETVALSTR($return)

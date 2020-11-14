@@ -44,8 +44,8 @@ probe syscall.keyctl.return = dw_syscall.keyctl.return !, nd_syscall.keyctl.retu
 
 # dw_keyctl _____________________________________________________
 
-probe dw_syscall.keyctl = kernel.function("compat_sys_keyctl").call ?,
-                       kernel.function("sys_keyctl").call ?
+probe dw_syscall.keyctl = @syscall_call("compat_sys_keyctl"),
+                       @syscall_call("sys_keyctl")
 {
 	@_SYSCALL_KEYCTL_NAME
 	option = __int32($option)
@@ -55,8 +55,8 @@ probe dw_syscall.keyctl = kernel.function("compat_sys_keyctl").call ?,
 	arg5 = @__compat_ulong($arg5)
 	@__keyctl_argstr(option, arg2, arg3, arg4, arg5)
 }
-probe dw_syscall.keyctl.return = kernel.function("compat_sys_keyctl").return ?,
-                              kernel.function("sys_keyctl").return ?
+probe dw_syscall.keyctl.return = @syscall_return("compat_sys_keyctl"),
+                              @syscall_return("sys_keyctl")
 {
 	@_SYSCALL_KEYCTL_NAME
 	@SYSC_RETVALSTR($return)

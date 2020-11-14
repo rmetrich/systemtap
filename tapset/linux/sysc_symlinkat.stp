@@ -49,7 +49,7 @@ probe syscall.symlinkat.return = dw_syscall.symlinkat.return !,
 
 # dw_symlinkat _____________________________________________________
 
-probe dw_syscall.symlinkat = kernel.function("sys_symlinkat").call ?
+probe dw_syscall.symlinkat = @syscall_call("sys_symlinkat")
 {
 	@__syscall_compat_gate(@const("__NR_symlinkat"),
 			       @const("__NR_compat_symlinkat"))
@@ -62,7 +62,7 @@ probe dw_syscall.symlinkat = kernel.function("sys_symlinkat").call ?
 	newname_str = user_string_quoted($newname)
 	@_SYSCALL_SYMLINKAT_ARGSTR
 }
-probe dw_syscall.symlinkat.return = kernel.function("sys_symlinkat").return ?
+probe dw_syscall.symlinkat.return = @syscall_return("sys_symlinkat")
 {
 	@__syscall_compat_gate(@const("__NR_symlinkat"),
 			       @const("__NR_compat_symlinkat"))

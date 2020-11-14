@@ -34,14 +34,14 @@ probe syscall.mq_unlink.return = dw_syscall.mq_unlink.return !,
 
 # dw_mq_unlink _____________________________________________________
 
-probe dw_syscall.mq_unlink = kernel.function("sys_mq_unlink").call ?
+probe dw_syscall.mq_unlink = @syscall_call("sys_mq_unlink")
 {
 	@_SYSCALL_MQ_UNLINK_NAME
 	u_name_uaddr = $u_name
 	u_name = user_string_quoted($u_name)
 	@_SYSCALL_MQ_UNLINK_ARGSTR
 }
-probe dw_syscall.mq_unlink.return = kernel.function("sys_mq_unlink").return ?
+probe dw_syscall.mq_unlink.return = @syscall_return("sys_mq_unlink")
 {
 	@_SYSCALL_MQ_UNLINK_NAME
 	@SYSC_RETVALSTR($return)

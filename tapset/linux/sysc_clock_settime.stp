@@ -41,7 +41,7 @@ probe dw_syscall.clock_settime = __syscall.clock_settime,
 {
 	@_SYSCALL_CLOCK_SETTIME_NAME
 }
-probe __syscall.clock_settime = kernel.function("sys_clock_settime").call
+probe __syscall.clock_settime = @syscall_call("sys_clock_settime")
 {
 	@__syscall_gate(@const("__NR_clock_settime"))
 	clk_id = __int32($which_clock)
@@ -51,7 +51,7 @@ probe __syscall.clock_settime = kernel.function("sys_clock_settime").call
 	@_SYSCALL_CLOCK_SETTIME_ARGSTR
 }
 probe __syscall.compat_clock_settime =
-	kernel.function("compat_sys_clock_settime").call ?
+	@syscall_call("compat_sys_clock_settime")
 {
 	clk_id = __int32($which_clock)
 	clk_id_str = _get_wc_str(__int32($which_clock))
@@ -65,13 +65,13 @@ probe dw_syscall.clock_settime.return = __syscall.clock_settime.return,
 	@_SYSCALL_CLOCK_SETTIME_NAME
 }
 probe __syscall.clock_settime.return =
-	kernel.function("sys_clock_settime").return
+	@syscall_return("sys_clock_settime")
 {
 	@__syscall_gate(@const("__NR_clock_settime"))
 	@SYSC_RETVALSTR($return)
 }
 probe __syscall.compat_clock_settime.return =
-	kernel.function("compat_sys_clock_settime").return ?
+	@syscall_return("compat_sys_clock_settime")
 {
 	@SYSC_RETVALSTR($return)
 }

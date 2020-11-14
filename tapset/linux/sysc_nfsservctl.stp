@@ -24,7 +24,7 @@ probe syscall.nfsservctl.return = dw_syscall.nfsservctl.return !,
 # dw_nfsservctl _____________________________________________________
 
 probe dw_syscall.nfsservctl = __syscall.nfsservctl ?,
-	kernel.function("compat_sys_nfsservctl").call ?
+	@syscall_call("compat_sys_nfsservctl")
 {
 	@_SYSCALL_NFSSERVCTL_NAME
 	cmd = __int32($cmd)
@@ -33,17 +33,17 @@ probe dw_syscall.nfsservctl = __syscall.nfsservctl ?,
 	resp_uaddr = @choose_defined($res, $notused2)
 	@_SYSCALL_NFSSERVCTL_ARGSTR
 }
-probe __syscall.nfsservctl = kernel.function("sys_nfsservctl").call ?
+probe __syscall.nfsservctl = @syscall_call("sys_nfsservctl")
 {
 	@__syscall_gate_compat_simple
 }
 probe dw_syscall.nfsservctl.return = __syscall.nfsservctl.return ?,
-	kernel.function("compat_sys_nfsservctl").return ?
+	@syscall_return("compat_sys_nfsservctl")
 {
 	@_SYSCALL_NFSSERVCTL_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.nfsservctl.return = kernel.function("sys_nfsservctl").return ?
+probe __syscall.nfsservctl.return = @syscall_return("sys_nfsservctl")
 {
 	@__syscall_gate_compat_simple
 }

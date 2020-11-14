@@ -30,14 +30,14 @@ probe syscall.mlockall.return = dw_syscall.mlockall.return !,
 
 # dw_mlockall _____________________________________________________
 
-probe dw_syscall.mlockall = kernel.function("sys_mlockall").call ?
+probe dw_syscall.mlockall = @syscall_call("sys_mlockall")
 {
 	@_SYSCALL_MLOCKALL_NAME
 	flags = __int32($flags)
 	flags_str = _mlockall_flags_str(flags)
 	@_SYSCALL_MLOCKALL_ARGSTR
 }
-probe dw_syscall.mlockall.return = kernel.function("sys_mlockall").return ?
+probe dw_syscall.mlockall.return = @syscall_return("sys_mlockall")
 {
 	@_SYSCALL_MLOCKALL_NAME
 	@SYSC_RETVALSTR($return)

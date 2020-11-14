@@ -32,7 +32,7 @@ probe syscall.setns.return = dw_syscall.setns.return !, nd_syscall.setns.return 
 
 # dw_setns _____________________________________________________
 
-probe dw_syscall.setns = kernel.function("sys_setns") ?
+probe dw_syscall.setns = @syscall_call("sys_setns")
 {
 	@_SYSCALL_SETNS_NAME
 	fd = __int32($fd)
@@ -40,7 +40,7 @@ probe dw_syscall.setns = kernel.function("sys_setns") ?
 	nstype_str = __fork_flags(nstype)
 	@_SYSCALL_SETNS_ARGSTR
 }
-probe dw_syscall.setns.return = kernel.function("sys_setns").return ?
+probe dw_syscall.setns.return = @syscall_return("sys_setns")
 {
 	@_SYSCALL_SETNS_NAME
 	@SYSC_RETVALSTR($return)

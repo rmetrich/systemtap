@@ -51,7 +51,7 @@ probe syscall.msgget.return = dw_syscall.msgget.return !, nd_syscall.msgget.retu
 
 # dw_msgget _____________________________________________________
 
-probe dw_syscall.msgget = kernel.function("sys_msgget").call ?
+probe dw_syscall.msgget = @syscall_call("sys_msgget")
 {
 	@_SYSCALL_MSGGET_NAME
 	key = __int32($key)
@@ -60,7 +60,7 @@ probe dw_syscall.msgget = kernel.function("sys_msgget").call ?
 	msgflg_str = __sem_flags(__int32($msgflg))
 	@_SYSCALL_MSGGET_ARGSTR
 }
-probe dw_syscall.msgget.return = kernel.function("sys_msgget").return ?
+probe dw_syscall.msgget.return = @syscall_return("sys_msgget")
 {
 	@_SYSCALL_MSGGET_NAME
 	@SYSC_RETVALSTR($return)

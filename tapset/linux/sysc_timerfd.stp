@@ -26,8 +26,8 @@ probe syscall.timerfd.return = dw_syscall.timerfd.return !,
 
 # dw_timerfd _____________________________________________________
 
-probe dw_syscall.timerfd = kernel.function("sys_timerfd").call ?,
-                        kernel.function("compat_sys_timerfd").call ?
+probe dw_syscall.timerfd = @syscall_call("sys_timerfd"),
+                        @syscall_call("compat_sys_timerfd")
 {
 	@_SYSCALL_TIMERFD_NAME
 	ufd = $ufd
@@ -35,8 +35,8 @@ probe dw_syscall.timerfd = kernel.function("sys_timerfd").call ?,
 	flags = $flags
 	@_SYSCALL_TIMERFD_ARGSTR
 }
-probe dw_syscall.timerfd.return = kernel.function("sys_timerfd").return ?,
-                               kernel.function("compat_sys_timerfd").return ?
+probe dw_syscall.timerfd.return = @syscall_return("sys_timerfd"),
+                               @syscall_return("compat_sys_timerfd")
 {
 	@_SYSCALL_TIMERFD_NAME
 	@SYSC_RETVALSTR($return)

@@ -52,8 +52,8 @@ probe syscall.compat_fallocate.return = dw_syscall.compat_fallocate.return !,
 
 # dw_compat_fallocate _____________________________________________________
 
-probe dw_syscall.compat_fallocate = kernel.function("sys32_fallocate").call ?,
-	kernel.function("comapt_sys_x86_fallocate").call ?
+probe dw_syscall.compat_fallocate = @syscall_call("sys32_fallocate"),
+	@syscall_call("comapt_sys_x86_fallocate")
 {
 	@_SYSCALL_COMPAT_FALLOCATE_NAME
 	fd = __int32($fd)
@@ -64,8 +64,8 @@ probe dw_syscall.compat_fallocate = kernel.function("sys32_fallocate").call ?,
 	@_SYSCALL_COMPAT_FALLOCATE_ARGSTR
 }
 probe dw_syscall.compat_fallocate.return =
-	kernel.function("sys32_fallocate").return ?,
-	kernel.function("compat_sys_x86_fallocate").return ?
+	@syscall_return("sys32_fallocate"),
+	@syscall_return("compat_sys_x86_fallocate")
 {
 	@_SYSCALL_COMPAT_FALLOCATE_NAME
 	@SYSC_RETVALSTR($return)

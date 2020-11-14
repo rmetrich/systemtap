@@ -48,7 +48,7 @@ probe syscall.reboot.return = dw_syscall.reboot.return !,
 
 # dw_reboot _____________________________________________________
 
-probe dw_syscall.reboot = kernel.function("sys_reboot").call
+probe dw_syscall.reboot = @syscall_call("sys_reboot")
 {
 	@_SYSCALL_REBOOT_NAME
 	magic = __int32($magic1)
@@ -60,7 +60,7 @@ probe dw_syscall.reboot = kernel.function("sys_reboot").call
 	arg_uaddr = $arg
 	@_SYSCALL_REBOOT_ARGSTR
 }
-probe dw_syscall.reboot.return = kernel.function("sys_reboot").return
+probe dw_syscall.reboot.return = @syscall_return("sys_reboot")
 {
 	@_SYSCALL_REBOOT_NAME
 	@SYSC_RETVALSTR($return)

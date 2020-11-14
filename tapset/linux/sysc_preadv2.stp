@@ -89,7 +89,7 @@ probe dw_syscall.preadv2 = __syscall.preadv2 ?, __syscall.compat_preadv2 ?
 {
 	@_SYSCALL_PREADV2_NAME
 }
-probe __syscall.preadv2 = kernel.function("sys_preadv2").call ?
+probe __syscall.preadv2 = @syscall_call("sys_preadv2")
 {
 	fd = __int32($fd)
 	vector_uaddr = $vec
@@ -99,7 +99,7 @@ probe __syscall.preadv2 = kernel.function("sys_preadv2").call ?
 	flags_str = _preadv2_flags_str(flags)
 	@_SYSCALL_PREADV2_ARGSTR
 }
-probe __syscall.compat_preadv2 = kernel.function("compat_sys_preadv2").call ?
+probe __syscall.compat_preadv2 = @syscall_call("compat_sys_preadv2")
 {
 	fd = __int32($fd)
 	vector_uaddr = $vec
@@ -109,8 +109,8 @@ probe __syscall.compat_preadv2 = kernel.function("compat_sys_preadv2").call ?
 	flags_str = _preadv2_flags_str(flags)
 	@_SYSCALL_PREADV2_ARGSTR
 }
-probe dw_syscall.preadv2.return = kernel.function("sys_preadv2").return ?,
-	kernel.function("compat_sys_preadv2").return ?
+probe dw_syscall.preadv2.return = @syscall_return("sys_preadv2"),
+	@syscall_return("compat_sys_preadv2")
 {
 	@_SYSCALL_PREADV2_NAME
 	@SYSC_RETVALSTR($return)

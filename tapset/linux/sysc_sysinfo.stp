@@ -30,16 +30,16 @@ probe syscall.sysinfo.return = dw_syscall.sysinfo.return !, nd_syscall.sysinfo.r
 
 # dw_sysinfo _____________________________________________________
 
-probe dw_syscall.sysinfo = kernel.function("compat_sys_sysinfo").call ?,
-                        kernel.function("sys_sysinfo").call
+probe dw_syscall.sysinfo = @syscall_call("compat_sys_sysinfo"),
+                        @syscall_call("sys_sysinfo")
 {
 	@_SYSCALL_SYSINFO_NAME
 	info_uaddr = $info
 	info_str = _struct_sysinfo_u(info_uaddr)
 	@_SYSCALL_SYSINFO_ARGSTR
 }
-probe dw_syscall.sysinfo.return = kernel.function("compat_sys_sysinfo").return ?,
-                               kernel.function("sys_sysinfo").return
+probe dw_syscall.sysinfo.return = @syscall_return("compat_sys_sysinfo"),
+                               @syscall_return("sys_sysinfo")
 {
 	@_SYSCALL_SYSINFO_NAME
 	@SYSC_RETVALSTR($return)

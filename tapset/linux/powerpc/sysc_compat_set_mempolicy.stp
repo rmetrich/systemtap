@@ -21,7 +21,7 @@ probe syscall.compat_set_mempolicy.return = dw_syscall.compat_set_mempolicy.retu
 
 # dw_compat_set_mempolicy _____________________________________________________
 
-probe dw_syscall.compat_set_mempolicy = kernel.function("compat_set_mempolicy") ?
+probe dw_syscall.compat_set_mempolicy = @syscall_call("compat_set_mempolicy")
 {
 	@_SYSCALL_COMPAT_SET_MEMPOLICY_NAME
 	policy = $mode
@@ -29,7 +29,7 @@ probe dw_syscall.compat_set_mempolicy = kernel.function("compat_set_mempolicy") 
 	maxnode = $maxnode
 	@_SYSCALL_COMPAT_SET_MEMPOLICY_ARGSTR
 }
-probe dw_syscall.compat_set_mempolicy.return = kernel.function("compat_set_mempolicy").return ?
+probe dw_syscall.compat_set_mempolicy.return = @syscall_return("compat_set_mempolicy")
 {
 	@_SYSCALL_COMPAT_SET_MEMPOLICY_NAME
 	@SYSC_RETVALSTR($return)

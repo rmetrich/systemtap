@@ -46,7 +46,7 @@ probe syscall.readlinkat.return = dw_syscall.readlinkat.return !,
 
 # dw_readlinkat _____________________________________________________
 
-probe dw_syscall.readlinkat = kernel.function("sys_readlinkat").call ?
+probe dw_syscall.readlinkat = @syscall_call("sys_readlinkat")
 {
 	@__syscall_compat_gate(@const("__NR_readlinkat"),
 			       @const("__NR_compat_readlinkat"))
@@ -59,7 +59,7 @@ probe dw_syscall.readlinkat = kernel.function("sys_readlinkat").call ?
 	@_SYSCALL_READLINKAT_ARGSTR
 }
 
-probe dw_syscall.readlinkat.return = kernel.function("sys_readlinkat").return ?
+probe dw_syscall.readlinkat.return = @syscall_return("sys_readlinkat")
 {
 	@__syscall_compat_gate(@const("__NR_readlinkat"),
 			       @const("__NR_compat_readlinkat"))

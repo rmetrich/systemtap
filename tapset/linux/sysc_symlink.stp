@@ -35,14 +35,14 @@ probe syscall.symlink.return = dw_syscall.symlink.return !,
 
 # dw_symlink _____________________________________________________
 
-probe dw_syscall.symlink = kernel.function("sys_symlink").call
+probe dw_syscall.symlink = @syscall_call("sys_symlink")
 {
 	@_SYSCALL_SYMLINK_NAME
 	oldpath = user_string_quoted($oldname)
 	newpath = user_string_quoted($newname)
 	@_SYSCALL_SYMLINK_ARGSTR
 }
-probe dw_syscall.symlink.return = kernel.function("sys_symlink").return
+probe dw_syscall.symlink.return = @syscall_return("sys_symlink")
 {
 	@_SYSCALL_SYMLINK_NAME
 	@SYSC_RETVALSTR($return)

@@ -38,16 +38,16 @@ probe dw_syscall.mmap2 = __syscall.mmap2 ?, __syscall.mmap_pgoff ?
         fd = __int32($fd)
         @_SYSCALL_MMAP2_ARGSTR
 }
-probe __syscall.mmap2 = kernel.function("sys_mmap2")
+probe __syscall.mmap2 = @syscall_call("sys_mmap2")
 {
         pgoffset = $pgoff
 }
-probe __syscall.mmap_pgoff = kernel.function("sys_mmap_pgoff")
+probe __syscall.mmap_pgoff = @syscall_call("sys_mmap_pgoff")
 {
         pgoffset = $pgoff * @const("PAGE_SIZE")
 }
-probe dw_syscall.mmap2.return = kernel.function("sys_mmap2").return ?,
-	kernel.function("sys_mmap_pgoff").return ?
+probe dw_syscall.mmap2.return = @syscall_return("sys_mmap2"),
+	@syscall_return("sys_mmap_pgoff")
 {
         @_SYSCALL_MMAP2_NAME
         @SYSC_RETVALSTR2($return)

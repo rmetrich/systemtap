@@ -31,16 +31,16 @@ probe syscall.stime.return = dw_syscall.stime.return !,
 
 # dw_stime _____________________________________________________
 
-probe dw_syscall.stime = kernel.function("compat_sys_stime").call ?,
-                      kernel.function("sys_stime").call ?
+probe dw_syscall.stime = @syscall_call("compat_sys_stime"),
+                      @syscall_call("sys_stime")
 {
 	@_SYSCALL_STIME_NAME
 	t_uaddr = $tptr
 	/* FIXME. Decode time */
 	@_SYSCALL_STIME_ARGSTR
 }
-probe dw_syscall.stime.return = kernel.function("compat_sys_stime").return ?,
-                             kernel.function("sys_stime").return ?
+probe dw_syscall.stime.return = @syscall_return("compat_sys_stime"),
+                             @syscall_return("sys_stime")
 {
 	@_SYSCALL_STIME_NAME
 	@SYSC_RETVALSTR($return)

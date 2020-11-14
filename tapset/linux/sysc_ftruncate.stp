@@ -66,24 +66,24 @@ probe syscall.ftruncate.return = dw_syscall.ftruncate.return !, nd_syscall.ftrun
 # dw_ftruncate _____________________________________________________
 
 probe dw_syscall.ftruncate = __syscall.ftruncate,
-	kernel.function("compat_sys_ftruncate").call ?
+	@syscall_call("compat_sys_ftruncate")
 {
 	@_SYSCALL_FTRUNCATE_NAME
 	fd = __int32($fd)
 	length = @__compat_long($length)
 	@_SYSCALL_FTRUNCATE_ARGSTR
 }
-probe __syscall.ftruncate = kernel.function("sys_ftruncate").call
+probe __syscall.ftruncate = @syscall_call("sys_ftruncate")
 {
 	@_SYSCALL_GATE
 }
 probe dw_syscall.ftruncate.return = __syscall.ftruncate.return,
-	kernel.function("compat_sys_ftruncate").return ?
+	@syscall_return("compat_sys_ftruncate")
 {
 	@_SYSCALL_FTRUNCATE_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.ftruncate.return = kernel.function("sys_ftruncate").return
+probe __syscall.ftruncate.return = @syscall_return("sys_ftruncate")
 {
 	@_SYSCALL_GATE
 }
@@ -175,14 +175,14 @@ probe syscall.ftruncate64.return = dw_syscall.ftruncate64.return !, nd_syscall.f
 
 # dw_ftruncate64 _____________________________________________________
 
-probe dw_syscall.ftruncate64 = kernel.function("sys_ftruncate64").call ?
+probe dw_syscall.ftruncate64 = @syscall_call("sys_ftruncate64")
 {
 	@_SYSCALL_FTRUNCATE_NAME
 	fd = __int32($fd)
 	length = $length
 	@_SYSCALL_FTRUNCATE_ARGSTR
 }
-probe dw_syscall.ftruncate64.return = kernel.function("sys_ftruncate64").return ?
+probe dw_syscall.ftruncate64.return = @syscall_return("sys_ftruncate64")
 {
 	@_SYSCALL_FTRUNCATE_NAME
 	@SYSC_RETVALSTR($return)

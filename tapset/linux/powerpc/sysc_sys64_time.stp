@@ -18,13 +18,13 @@ probe syscall.sys64_time.return = dw_syscall.sys64_time.return !, nd_syscall.sys
 
 # dw_sys64_time _____________________________________________________
 
-probe dw_syscall.sys64_time = kernel.function("sys64_time") ?
+probe dw_syscall.sys64_time = @syscall_call("sys64_time")
 {
 	@_SYSCALL_SYS64_TIME_NAME
 	tloc = $tloc
 	@_SYSCALL_SYS64_TIME_ARGSTR
 }
-probe dw_syscall.sys64_time.return = kernel.function("sys64_time").return ?
+probe dw_syscall.sys64_time.return = @syscall_return("sys64_time")
 {
 	@_SYSCALL_SYS64_TIME_NAME
 	@SYSC_RETVALSTR($return)

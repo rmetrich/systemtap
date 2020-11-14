@@ -13,7 +13,7 @@ probe syscall.pipe.return = dw_syscall.pipe.return !, nd_syscall.pipe.return ? {
 probe dw_syscall.pipe = __syscall.pipe2 ?, __syscall.ia64_pipe ?, __syscall.pipe
 {
 }
-probe __syscall.pipe2 = kernel.function("sys_pipe2").call ?
+probe __syscall.pipe2 = @syscall_call("sys_pipe2")
 {
 	@__syscall_compat_gate(@const("__NR_pipe2"), @const("__NR_compat_pipe2"))
 	name = "pipe2"
@@ -43,7 +43,7 @@ probe __syscall.pipe2 = kernel.function("sys_pipe2").call ?
 		argstr = sprintf("[%d, %d], %s", pipe0, pipe1, flag_str);
 	}
 }
-probe __syscall.ia64_pipe = kernel.function("sys_ia64_pipe").call ?
+probe __syscall.ia64_pipe = @syscall_call("sys_ia64_pipe")
 {
 	name = "pipe"
 	flags = 0
@@ -53,7 +53,7 @@ probe __syscall.ia64_pipe = kernel.function("sys_ia64_pipe").call ?
 	pipe1 = 0;
 	argstr = "[0, 0]";
 }
-probe __syscall.pipe = kernel.function("sys_pipe").call
+probe __syscall.pipe = @syscall_call("sys_pipe")
 {
 	name = "pipe"
 	flags = 0
@@ -87,7 +87,7 @@ probe dw_syscall.pipe.return = __syscall.pipe2.return ?,
 			    __syscall.pipe.return
 {
 }
-probe __syscall.pipe2.return = kernel.function("sys_pipe2").return ?
+probe __syscall.pipe2.return = @syscall_return("sys_pipe2")
 {
 	@__syscall_compat_gate(@const("__NR_pipe2"), @const("__NR_compat_pipe2"))
 	name = "pipe2"
@@ -105,7 +105,7 @@ probe __syscall.pipe2.return = kernel.function("sys_pipe2").return ?
 	}
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.ia64_pipe.return = kernel.function("sys_ia64_pipe").return ?
+probe __syscall.ia64_pipe.return = @syscall_return("sys_ia64_pipe")
 {
 	name = "pipe"
 	fildes_uaddr = 0;
@@ -115,7 +115,7 @@ probe __syscall.ia64_pipe.return = kernel.function("sys_ia64_pipe").return ?
         @SYSC_RETVALSTR($return)
         if (pipe0 >= 0) { retstr = "0" }
 }
-probe __syscall.pipe.return = kernel.function("sys_pipe").return
+probe __syscall.pipe.return = @syscall_return("sys_pipe")
 {
 	name = "pipe"
 	fildes_uaddr = @entry($fildes)

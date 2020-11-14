@@ -45,17 +45,17 @@ probe syscall.fstatat.return = dw_syscall.fstatat.return !, nd_syscall.fstatat.r
 
 # dw_fstatat _____________________________________________________
 
-probe dw_syscall.fstatat = kernel.function("sys_fstatat64").call ?,
-                        kernel.function("sys_newfstatat").call ?,
-                        kernel.function("compat_sys_newfstatat").call ?,
-                        kernel.function("sys32_fstatat64").call ?,
+probe dw_syscall.fstatat = @syscall_call("sys_fstatat64"),
+                        @syscall_call("sys_newfstatat"),
+                        @syscall_call("compat_sys_newfstatat"),
+                        @syscall_call("sys32_fstatat64"),
 %( arch == "s390" %?
-                        kernel.function("compat_sys_s390_fstatat64").call ?,
+                        @syscall_call("compat_sys_s390_fstatat64"),
 %)
 %( arch == "x86_64" %?
-                        kernel.function("compat_sys_x86_fstatat").call ?,
+                        @syscall_call("compat_sys_x86_fstatat"),
 %)
-                        kernel.function("sys32_fstatat").call ?
+                        @syscall_call("sys32_fstatat")
 {
 	@_SYSCALL_FSTATAT_NAME
 	dirfd = __int32($dfd)
@@ -66,17 +66,17 @@ probe dw_syscall.fstatat = kernel.function("sys_fstatat64").call ?,
 	flags_str = _at_flag_str(__int32($flag))
 	@_SYSCALL_FSTATAT_ARGSTR
 }
-probe dw_syscall.fstatat.return = kernel.function("sys_fstatat64").return ?,
-	kernel.function("sys_newfstatat").return ?,
-	kernel.function("compat_sys_newfstatat").return ?,
-	kernel.function("sys32_fstatat64").return ?,
+probe dw_syscall.fstatat.return = @syscall_return("sys_fstatat64"),
+	@syscall_return("sys_newfstatat"),
+	@syscall_return("compat_sys_newfstatat"),
+	@syscall_return("sys32_fstatat64"),
 %( arch == "s390" %?
-	kernel.function("compat_sys_s390_fstatat64").return ?,
+	@syscall_return("compat_sys_s390_fstatat64"),
 %)
 %( arch == "x86_64" %?
-	kernel.function("compat_sys_x86_fstatat").return ?,
+	@syscall_return("compat_sys_x86_fstatat"),
 %)
-	kernel.function("sys32_fstatat").return ?
+	@syscall_return("sys32_fstatat")
 {
 	@_SYSCALL_FSTATAT_NAME
 	@SYSC_RETVALSTR($return)

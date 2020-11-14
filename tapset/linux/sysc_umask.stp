@@ -29,13 +29,13 @@ probe syscall.umask.return = dw_syscall.umask.return !,
 
 # dw_umask _____________________________________________________
 
-probe dw_syscall.umask = kernel.function("sys_umask").call
+probe dw_syscall.umask = @syscall_call("sys_umask")
 {
 	@_SYSCALL_UMASK_NAME
 	mask = __uint32($mask)
 	@_SYSCALL_UMASK_ARGSTR
 }
-probe dw_syscall.umask.return = kernel.function("sys_umask").return
+probe dw_syscall.umask.return = @syscall_return("sys_umask")
 {
 	@_SYSCALL_UMASK_NAME
 	@SYSC_RETVALSTR3($return)

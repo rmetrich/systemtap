@@ -50,7 +50,7 @@ probe syscall.copy_file_range.return = dw_syscall.copy_file_range.return !, nd_s
 
 # dw_copy_file_range _____________________________________________________
 
-probe dw_syscall.copy_file_range = kernel.function("sys_copy_file_range").call ?
+probe dw_syscall.copy_file_range = @syscall_call("sys_copy_file_range")
 {
 	@_SYSCALL_COPY_FILE_RANGE_NAME
 	fd_in = __int32($fd_in)
@@ -62,7 +62,7 @@ probe dw_syscall.copy_file_range = kernel.function("sys_copy_file_range").call ?
 	@_SYSCALL_COPY_FILE_RANGE_ARGSTR
 }
 probe dw_syscall.copy_file_range.return =
-	kernel.function("sys_copy_file_range").return ?
+	@syscall_return("sys_copy_file_range")
 {
 	@_SYSCALL_COPY_FILE_RANGE_NAME
 	@SYSC_RETVALSTR($return)

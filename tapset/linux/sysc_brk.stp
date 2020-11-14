@@ -27,15 +27,13 @@ probe syscall.brk.return = dw_syscall.brk.return !, nd_syscall.brk.return ? {}
 
 # dw_brk _____________________________________________________
 
-probe dw_syscall.brk = kernel.function("ia64_brk").call ?,
-                    kernel.function("sys_brk").call
+probe dw_syscall.brk = @syscall_call("ia64_brk"), @syscall_call("sys_brk")
 {
 	@_SYSCALL_BRK_NAME
 	brk = __ulong($brk)
 	@_SYSCALL_BRK_ARGSTR
 }
-probe dw_syscall.brk.return = kernel.function("ia64_brk").return ?,
-                           kernel.function("sys_brk").return
+probe dw_syscall.brk.return = @syscall_return("ia64_brk"), @syscall_return("sys_brk")
 {
 	@_SYSCALL_BRK_NAME
 	@SYSC_RETVALSTR($return)

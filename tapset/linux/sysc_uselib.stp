@@ -36,14 +36,14 @@ probe syscall.uselib.return = dw_syscall.uselib.return !,
 
 # dw_uselib _____________________________________________________
 
-probe dw_syscall.uselib = kernel.function("sys_uselib").call ?
+probe dw_syscall.uselib = @syscall_call("sys_uselib")
 {
 	@_SYSCALL_USELIB_NAME
 	library_uaddr = $library
 	library = user_string_quoted($library)
 	@_SYSCALL_USELIB_ARGSTR
 }
-probe dw_syscall.uselib.return = kernel.function("sys_uselib").return ?
+probe dw_syscall.uselib.return = @syscall_return("sys_uselib")
 {
 	@_SYSCALL_USELIB_NAME
 	@SYSC_RETVALSTR($return)

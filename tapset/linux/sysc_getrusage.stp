@@ -38,7 +38,7 @@ probe syscall.getrusage.return = dw_syscall.getrusage.return !,
 # dw_getrusage _____________________________________________________
 
 probe dw_syscall.getrusage = __syscall.getrusage,
-	kernel.function("compat_sys_getrusage").call ?
+	@syscall_call("compat_sys_getrusage")
 {
 	@_SYSCALL_GETRUSAGE_NAME
 	who = __int32($who)
@@ -46,17 +46,17 @@ probe dw_syscall.getrusage = __syscall.getrusage,
 	usage_uaddr = @__pointer($ru)
 	@_SYSCALL_GETRUSAGE_ARGSTR
 }
-probe __syscall.getrusage = kernel.function("sys_getrusage").call
+probe __syscall.getrusage = @syscall_call("sys_getrusage")
 {
 	@__syscall_gate(@const("__NR_getrusage"))
 }
 probe dw_syscall.getrusage.return = __syscall.getrusage.return,
-	kernel.function("compat_sys_getrusage").return ?
+	@syscall_return("compat_sys_getrusage")
 {
 	@_SYSCALL_GETRUSAGE_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.getrusage.return = kernel.function("sys_getrusage").return
+probe __syscall.getrusage.return = @syscall_return("sys_getrusage")
 {
 	@__syscall_gate(@const("__NR_getrusage"))
 }

@@ -53,7 +53,7 @@ probe syscall.shmctl.return = dw_syscall.shmctl.return !,
 
 # dw_shmctl _____________________________________________________
 
-probe dw_syscall.shmctl = kernel.function("sys_shmctl").call ?
+probe dw_syscall.shmctl = @syscall_call("sys_shmctl")
 {
 #%( arch == "powerpc" || arch == "s390" %?
 	@__syscall_gate_compat_simple
@@ -65,7 +65,7 @@ probe dw_syscall.shmctl = kernel.function("sys_shmctl").call ?
 	buf_uaddr = $buf
 	@_SYSCALL_SHMCTL_ARGSTR
 }
-probe dw_syscall.shmctl.return = kernel.function("sys_shmctl").return ?
+probe dw_syscall.shmctl.return = @syscall_return("sys_shmctl")
 {
 #%( arch == "powerpc" || arch == "s390" %?
 	@__syscall_gate_compat_simple
@@ -170,26 +170,26 @@ probe dw_syscall.compat_sys_shmctl = __syscall.compat_shmctl ?,
 	buf_uaddr = @choose_defined($uptr, $ptr)
 	@_SYSCALL_SHMCTL_ARGSTR
 }
-probe __syscall.compat_shmctl = kernel.function("compat_sys_shmctl").call ?
+probe __syscall.compat_shmctl = @syscall_call("compat_sys_shmctl")
 {
 	@__compat_syscall_gate(@const("__NR_compat_shmctl"))
 }
-probe __syscall.compat_ipc.shmctl = kernel.function("compat_sys_ipc").call ?,
-	kernel.function("sys32_ipc").call ?
+probe __syscall.compat_ipc.shmctl = @syscall_call("compat_sys_ipc"),
+	@syscall_call("sys32_ipc")
 {
 	if ($call != @const("SHMCTL")) next;
 }
 
 probe dw_syscall.compat_sys_shmctl.return =
-	kernel.function("compat_sys_shmctl").return ?,
+	@syscall_return("compat_sys_shmctl"),
 	__syscall.compat_ipc.shmctl.return ?
 {
 	@_SYSCALL_SHMCTL_NAME
 	@SYSC_RETVALSTR($return)
 }
 probe __syscall.compat_ipc.shmctl.return =
-	kernel.function("compat_sys_ipc").return ?,
-	kernel.function("sys32_ipc").return ?
+	@syscall_return("compat_sys_ipc"),
+	@syscall_return("sys32_ipc")
 {
 	if (@entry($call) != @const("SHMCTL")) next;
 }

@@ -17,12 +17,12 @@ probe syscall.munlockall.return = dw_syscall.munlockall.return !,
 
 # dw_munlockall _____________________________________________________
 
-probe dw_syscall.munlockall = kernel.function("sys_munlockall").call ?
+probe dw_syscall.munlockall = @syscall_call("sys_munlockall")
 {
 	@_SYSCALL_MUNLOCKALL_NAME
 	@_SYSCALL_MUNLOCKALL_ARGSTR
 }
-probe dw_syscall.munlockall.return = kernel.function("sys_munlockall").return ?
+probe dw_syscall.munlockall.return = @syscall_return("sys_munlockall")
 {
 	@_SYSCALL_MUNLOCKALL_NAME
 	@SYSC_RETVALSTR($return)

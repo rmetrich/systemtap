@@ -19,22 +19,22 @@ probe syscall.getuid.return = dw_syscall.getuid.return !, nd_syscall.getuid.retu
 
 # dw_getuid _____________________________________________________
 
-probe dw_syscall.getuid = kernel.function("sys_getuid16").call ?,
-                       kernel.function("sys32_getuid16").call ?,
+probe dw_syscall.getuid = @syscall_call("sys_getuid16"),
+                       @syscall_call("sys32_getuid16"),
 %( arch == "s390" %?
-                       kernel.function("compat_sys_s390_getuid16").call ?,
+                       @syscall_call("compat_sys_s390_getuid16"),
 %)
-                       kernel.function("sys_getuid").call
+                       @syscall_call("sys_getuid")
 {
 	@_SYSCALL_GETUID_NAME
 	@_SYSCALL_GETUID_ARGSTR
 }
-probe dw_syscall.getuid.return = kernel.function("sys_getuid16").return ?,
-	kernel.function("sys32_getuid16").return ?,
+probe dw_syscall.getuid.return = @syscall_return("sys_getuid16"),
+	@syscall_return("sys32_getuid16"),
 %( arch == "s390" %?
-	kernel.function("compat_sys_s390_getuid16").return ?,
+	@syscall_return("compat_sys_s390_getuid16"),
 %)
-	kernel.function("sys_getuid").return
+	@syscall_return("sys_getuid")
 {
 	@_SYSCALL_GETUID_NAME
 	@SYSC_RETVALSTR($return)

@@ -42,14 +42,14 @@ probe syscall.capget.return = dw_syscall.capget.return !, nd_syscall.capget.retu
 
 # dw_capget _____________________________________________________
 
-probe dw_syscall.capget = kernel.function("sys_capget").call
+probe dw_syscall.capget = @syscall_call("sys_capget")
 {
 	@_SYSCALL_CAPGET_NAME
 	header_uaddr = $header
 	data_uaddr = $dataptr
 	@_SYSCALL_CAPGET_ARGSTR
 }
-probe dw_syscall.capget.return = kernel.function("sys_capget").return
+probe dw_syscall.capget.return = @syscall_return("sys_capget")
 {
 	@_SYSCALL_CAPGET_NAME
 	@SYSC_RETVALSTR($return)

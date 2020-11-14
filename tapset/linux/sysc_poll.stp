@@ -37,7 +37,7 @@ probe syscall.poll.return = dw_syscall.poll.return !, nd_syscall.poll.return ? {
 
 # dw_poll _____________________________________________________
 
-probe dw_syscall.poll = kernel.function("sys_poll").call
+probe dw_syscall.poll = @syscall_call("sys_poll")
 {
 	@_SYSCALL_POLL_NAME
 	ufds_uaddr = $ufds
@@ -45,7 +45,7 @@ probe dw_syscall.poll = kernel.function("sys_poll").call
 	timeout = __int32(@choose_defined($timeout_msecs, $timeout))
 	@_SYSCALL_POLL_ARGSTR
 }
-probe dw_syscall.poll.return = kernel.function("sys_poll").return
+probe dw_syscall.poll.return = @syscall_return("sys_poll")
 {
 	@_SYSCALL_POLL_NAME
 	@SYSC_RETVALSTR($return)

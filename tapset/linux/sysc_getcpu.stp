@@ -39,7 +39,7 @@ probe syscall.getcpu.return = dw_syscall.getcpu.return !, nd_syscall.getcpu.retu
 
 # dw_getcpu _____________________________________________________
 
-probe dw_syscall.getcpu = kernel.function("sys_getcpu").call ?
+probe dw_syscall.getcpu = @syscall_call("sys_getcpu")
 {
 	@_SYSCALL_GETCPU_NAME
 	cpu_uaddr = $cpup
@@ -47,7 +47,7 @@ probe dw_syscall.getcpu = kernel.function("sys_getcpu").call ?
 	tcache_uaddr = @choose_defined($unused, $cache)
 	@_SYSCALL_GETCPU_ARGSTR
 }
-probe dw_syscall.getcpu.return = kernel.function("sys_getcpu").return ?
+probe dw_syscall.getcpu.return = @syscall_return("sys_getcpu")
 {
 	@_SYSCALL_GETCPU_NAME
 	@SYSC_RETVALSTR($return)

@@ -34,12 +34,12 @@ probe syscall.getgroups.return = dw_syscall.getgroups.return !, nd_syscall.getgr
 
 # dw_getgroups _____________________________________________________
 
-probe dw_syscall.getgroups = kernel.function("sys_getgroups16").call ?,
-	kernel.function("sys32_getgroups16").call ?,
+probe dw_syscall.getgroups = @syscall_call("sys_getgroups16"),
+	@syscall_call("sys32_getgroups16"),
 %( arch == "s390" %?
-	kernel.function("compat_sys_s390_getgroups16").call ?,
+	@syscall_call("compat_sys_s390_getgroups16"),
 %)
-	kernel.function("sys_getgroups").call ?
+	@syscall_call("sys_getgroups")
 {
 	@_SYSCALL_GETGROUPS_NAME
 	size = __int32($gidsetsize)
@@ -47,12 +47,12 @@ probe dw_syscall.getgroups = kernel.function("sys_getgroups16").call ?,
 	@_SYSCALL_GETGROUPS_ARGSTR
 }
 probe dw_syscall.getgroups.return =
-	kernel.function("sys_getgroups16").return ?,
-	kernel.function("sys32_getgroups16").return ?,
+	@syscall_return("sys_getgroups16"),
+	@syscall_return("sys32_getgroups16"),
 %( arch == "s390" %?
-	kernel.function("compat_sys_s390_getgroups16").return ?,
+	@syscall_return("compat_sys_s390_getgroups16"),
 %)
-	kernel.function("sys_getgroups").return ?
+	@syscall_return("sys_getgroups")
 {
 	@_SYSCALL_GETGROUPS_NAME
 	@SYSC_RETVALSTR($return)

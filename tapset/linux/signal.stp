@@ -608,8 +608,8 @@ probe signal.send_sig_queue.return =
  * do_sigpending kernel function is executed.
  */
 probe signal.pending = kernel.function("do_sigpending").call !,
-		       kernel.function("sys_rt_sigpending").call ?,
-		       kernel.function("compat_sys_rt_sigpending").call ?
+		       @syscall_call("sys_rt_sigpending"),
+		       @syscall_call("compat_sys_rt_sigpending")
 {
     name = "pending"
     sigset_add=@choose_defined($set, $uset)
@@ -626,8 +626,8 @@ probe signal.pending = kernel.function("do_sigpending").call !,
  * @retstr: Return value as a string
  */
 probe signal.pending.return = kernel.function("do_sigpending").return !,
-			      kernel.function("sys_rt_sigpending").return ?,
-			      kernel.function("compat_sys_rt_sigpending").return ?
+			      @syscall_return("sys_rt_sigpending"),
+			      @syscall_return("compat_sys_rt_sigpending")
 {
     name = "pending"
     retstr = return_str(1, $return)

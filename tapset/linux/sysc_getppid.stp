@@ -17,12 +17,12 @@ probe syscall.getppid.return = dw_syscall.getppid.return !,
 
 # dw_getppid _____________________________________________________
 
-probe dw_syscall.getppid = kernel.function("sys_getppid").call
+probe dw_syscall.getppid = @syscall_call("sys_getppid")
 {
 	@_SYSCALL_GETPPID_NAME
 	@_SYSCALL_GETPPID_ARGSTR
 }
-probe dw_syscall.getppid.return = kernel.function("sys_getppid").return
+probe dw_syscall.getppid.return = @syscall_return("sys_getppid")
 {
 	@_SYSCALL_GETPPID_NAME
 	@SYSC_RETVALSTR($return)

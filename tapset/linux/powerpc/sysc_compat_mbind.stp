@@ -22,7 +22,7 @@ probe syscall.compat_mbind.return = dw_syscall.compat_mbind.return !,
 
 # dw_compat_mbind _____________________________________________________
 
-probe dw_syscall.compat_mbind = kernel.function("compat_mbind") ?
+probe dw_syscall.compat_mbind = @syscall_call("compat_mbind")
 {
 	@_SYSCALL_COMPAT_MBIND_NAME
 	start_uaddr = $start
@@ -33,7 +33,7 @@ probe dw_syscall.compat_mbind = kernel.function("compat_mbind") ?
 	flags = $flags
 	@_SYSCALL_COMPAT_MBIND_ARGSTR
 }
-probe dw_syscall.compat_mbind.return = kernel.function("compat_mbind").return ?
+probe dw_syscall.compat_mbind.return = @syscall_return("compat_mbind")
 {
 	@_SYSCALL_COMPAT_MBIND_NAME
 	@SYSC_RETVALSTR($return)

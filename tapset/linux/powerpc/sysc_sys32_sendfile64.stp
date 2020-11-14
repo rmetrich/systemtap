@@ -21,7 +21,7 @@ probe syscall.sys32_sendfile64.return = dw_syscall.sys32_sendfile64.return !,
 
 # dw_sys32_sendfile64 _____________________________________________________
 
-probe dw_syscall.sys32_sendfile64 = kernel.function("sys32_sendfile64") ?
+probe dw_syscall.sys32_sendfile64 = @syscall_call("sys32_sendfile64")
 {
 	@_SYSCALL_SYS32_SENDFILE64_NAME
 	out_fd = $out_fd
@@ -30,7 +30,7 @@ probe dw_syscall.sys32_sendfile64 = kernel.function("sys32_sendfile64") ?
 	count = $count
 	@_SYSCALL_SYS32_SENDFILE64_ARGSTR
 }
-probe dw_syscall.sys32_sendfile64.return = kernel.function("sys32_sendfile64").return ?
+probe dw_syscall.sys32_sendfile64.return = @syscall_return("sys32_sendfile64")
 {
 	@_SYSCALL_SYS32_SENDFILE64_NAME
 	@SYSC_RETVALSTR($return)

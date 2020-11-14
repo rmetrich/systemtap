@@ -80,7 +80,7 @@ probe dw_syscall.semop = __syscall.semop ?, __syscall.compat_semop ?
 	@_SYSCALL_SEMOP_NAME
 	@_SYSCALL_SEMOP_ARGSTR
 }
-probe __syscall.semop = kernel.function("sys_semop").call ?
+probe __syscall.semop = @syscall_call("sys_semop")
 {
 	semid = __int32($semid)
 %( systemtap_v < "2.3" %?
@@ -89,8 +89,8 @@ probe __syscall.semop = kernel.function("sys_semop").call ?
 	sops_uaddr = $tsops
 	nsops = __uint32($nsops)
 }
-probe __syscall.compat_semop = kernel.function("compat_sys_ipc").call ?,
-        kernel.function("sys32_ipc").call ?
+probe __syscall.compat_semop = @syscall_call("compat_sys_ipc"),
+        @syscall_call("sys32_ipc")
 {
         if ($call != @const("SEMOP")) next;
         semid = __int32($first)
@@ -100,15 +100,15 @@ probe __syscall.compat_semop = kernel.function("compat_sys_ipc").call ?,
         sops_uaddr = $ptr
         nsops = __uint32($second)
 }
-probe dw_syscall.semop.return = kernel.function("sys_semop").return ?,
+probe dw_syscall.semop.return = @syscall_return("sys_semop"),
 	__syscall.compat_semop.return ?
 {
 	@_SYSCALL_SEMOP_NAME
 	@SYSC_RETVALSTR($return)
 }
 probe __syscall.compat_semop.return =
-	kernel.function("compat_sys_ipc").return ?,
-	kernel.function("sys32_ipc").return ?
+	@syscall_return("compat_sys_ipc"),
+	@syscall_return("sys32_ipc")
 {
 	if (@entry($call) != @const("SEMOP")) next;
 }

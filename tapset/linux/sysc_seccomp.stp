@@ -47,7 +47,7 @@ probe syscall.seccomp.return = dw_syscall.seccomp.return !,
 
 # dw_seccomp _____________________________________________________
 
-probe dw_syscall.seccomp = kernel.function("sys_seccomp").call ?
+probe dw_syscall.seccomp = @syscall_call("sys_seccomp")
 {
 	@_SYSCALL_SECCOMP_NAME
 	op = $op
@@ -60,7 +60,7 @@ probe dw_syscall.seccomp = kernel.function("sys_seccomp").call ?
 	uargs_uaddr = $uargs
 	@_SYSCALL_SECCOMP_ARGSTR
 }
-probe dw_syscall.seccomp.return = kernel.function("sys_seccomp").return ?
+probe dw_syscall.seccomp.return = @syscall_return("sys_seccomp")
 {
 	@_SYSCALL_SECCOMP_NAME
 	@SYSC_RETVALSTR($return)

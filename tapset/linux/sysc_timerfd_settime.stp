@@ -56,7 +56,7 @@ probe syscall.timerfd_settime.return = dw_syscall.timerfd_settime.return !,
 # dw_timerfd_settime _____________________________________________________
 
 probe dw_syscall.timerfd_settime = __syscall.timerfd_settime ?,
-	kernel.function("compat_sys_timerfd_settime").call ?
+	@syscall_call("compat_sys_timerfd_settime")
 {
 	@_SYSCALL_TIMERFD_SETTIME_NAME
 	fd = __int32($ufd)
@@ -72,18 +72,18 @@ probe dw_syscall.timerfd_settime = __syscall.timerfd_settime ?,
 %)
 	@_SYSCALL_TIMERFD_SETTIME_ARGSTR
 }
-probe __syscall.timerfd_settime = kernel.function("sys_timerfd_settime").call ?
+probe __syscall.timerfd_settime = @syscall_call("sys_timerfd_settime")
 {
 	@__syscall_gate_compat_simple
 }
 probe dw_syscall.timerfd_settime.return = __syscall.timerfd_settime.return ?,
-	kernel.function("compat_sys_timerfd_settime").return ?
+	@syscall_return("compat_sys_timerfd_settime")
 {
 	@_SYSCALL_TIMERFD_SETTIME_NAME
 	@SYSC_RETVALSTR($return)
 }
 probe __syscall.timerfd_settime.return =
-	kernel.function("sys_timerfd_settime").return ?
+	@syscall_return("sys_timerfd_settime")
 {
 	@__syscall_gate_compat_simple
 }

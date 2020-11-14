@@ -20,12 +20,12 @@ probe syscall.vhangup.return = dw_syscall.vhangup.return !,
 
 # dw_vhangup _____________________________________________________
 
-probe dw_syscall.vhangup = kernel.function("sys_vhangup").call
+probe dw_syscall.vhangup = @syscall_call("sys_vhangup")
 {
 	@_SYSCALL_VHANGUP_NAME
 	@_SYSCALL_VHANGUP_ARGSTR
 }
-probe dw_syscall.vhangup.return = kernel.function("sys_vhangup").return
+probe dw_syscall.vhangup.return = @syscall_return("sys_vhangup")
 {
 	@_SYSCALL_VHANGUP_NAME
 	@SYSC_RETVALSTR($return)

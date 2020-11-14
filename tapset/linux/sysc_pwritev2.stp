@@ -87,7 +87,7 @@ probe dw_syscall.pwritev2 = __syscall.pwritev2 ?, __syscall.compat_pwritev2 ?
 {
 	@_SYSCALL_PWRITEV2_NAME
 }
-probe __syscall.pwritev2 = kernel.function("sys_pwritev2").call ?
+probe __syscall.pwritev2 = @syscall_call("sys_pwritev2")
 {
 	fd = __int32($fd)
 	vector_uaddr = $vec
@@ -97,7 +97,7 @@ probe __syscall.pwritev2 = kernel.function("sys_pwritev2").call ?
 	flags_str = _preadv2_flags_str(flags)
 	@_SYSCALL_PWRITEV2_ARGSTR
 }
-probe __syscall.compat_pwritev2 = kernel.function("compat_sys_pwritev2").call ?
+probe __syscall.compat_pwritev2 = @syscall_call("compat_sys_pwritev2")
 {
 	fd = __int32($fd)
 	vector_uaddr = $vec
@@ -107,8 +107,8 @@ probe __syscall.compat_pwritev2 = kernel.function("compat_sys_pwritev2").call ?
 	flags_str = _preadv2_flags_str(flags)
 	@_SYSCALL_PWRITEV2_ARGSTR
 }
-probe dw_syscall.pwritev2.return = kernel.function("sys_pwritev2").return ?,
-	kernel.function("compat_sys_pwritev2").return ?
+probe dw_syscall.pwritev2.return = @syscall_return("sys_pwritev2"),
+	@syscall_return("compat_sys_pwritev2")
 {
 	@_SYSCALL_PWRITEV2_NAME
 	@SYSC_RETVALSTR($return)

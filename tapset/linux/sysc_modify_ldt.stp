@@ -37,7 +37,7 @@ probe syscall.modify_ldt.return = dw_syscall.modify_ldt.return !,
 
 # dw_modify_ldt _____________________________________________________
 
-probe dw_syscall.modify_ldt = kernel.function("sys_modify_ldt").call ?
+probe dw_syscall.modify_ldt = @syscall_call("sys_modify_ldt")
 {
 	@_SYSCALL_MODIFY_LDT_NAME
 	func = __int32($func)
@@ -45,7 +45,7 @@ probe dw_syscall.modify_ldt = kernel.function("sys_modify_ldt").call ?
 	bytecount = __ulong($bytecount)
 	@_SYSCALL_MODIFY_LDT_ARGSTR
 }
-probe dw_syscall.modify_ldt.return = kernel.function("sys_modify_ldt").return ?
+probe dw_syscall.modify_ldt.return = @syscall_return("sys_modify_ldt")
 {
 	@_SYSCALL_MODIFY_LDT_NAME
 	@SYSC_RETVALSTR($return)

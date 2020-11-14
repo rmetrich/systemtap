@@ -55,8 +55,8 @@ probe syscall.rt_sigtimedwait.return = dw_syscall.rt_sigtimedwait.return !,
 # dw_rt_sigtimedwait _____________________________________________________
 
 probe dw_syscall.rt_sigtimedwait =
-	kernel.function("compat_sys_rt_sigtimedwait").call ?,
-	kernel.function("sys_rt_sigtimedwait").call
+	@syscall_call("compat_sys_rt_sigtimedwait"),
+	@syscall_call("sys_rt_sigtimedwait")
 {
 	@_SYSCALL_RT_SIGTIMEDWAIT_NAME
 	uthese_uaddr = @__pointer($uthese)
@@ -75,8 +75,8 @@ probe dw_syscall.rt_sigtimedwait =
 	@_SYSCALL_RT_SIGTIMEDWAIT_ARGSTR
 }
 probe dw_syscall.rt_sigtimedwait.return =
-	kernel.function("compat_sys_rt_sigtimedwait").return ?,
-	kernel.function("sys_rt_sigtimedwait").return
+	@syscall_return("compat_sys_rt_sigtimedwait"),
+	@syscall_return("sys_rt_sigtimedwait")
 {
 	@_SYSCALL_RT_SIGTIMEDWAIT_NAME
 	@SYSC_RETVALSTR($return)

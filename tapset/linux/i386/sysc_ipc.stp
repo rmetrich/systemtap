@@ -24,7 +24,7 @@ probe syscall.ipc.return = dw_syscall.ipc.return !, nd_syscall.ipc.return ? {}
 
 # dw_ipc _____________________________________________________
 
-probe dw_syscall.ipc = kernel.function("sys_ipc") ?
+probe dw_syscall.ipc = @syscall_call("sys_ipc")
 {
 	@_SYSCALL_IPC_NAME
 	call = $call
@@ -35,7 +35,7 @@ probe dw_syscall.ipc = kernel.function("sys_ipc") ?
 	fifth = $fifth
 	@_SYSCALL_IPC_ARGSTR
 }
-probe dw_syscall.ipc.return = kernel.function("sys_ipc").return ?
+probe dw_syscall.ipc.return = @syscall_return("sys_ipc")
 {
 	@_SYSCALL_IPC_NAME
 	@SYSC_RETVALSTR($return)

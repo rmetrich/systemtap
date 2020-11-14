@@ -58,7 +58,7 @@ probe syscall.shmat.return = dw_syscall.shmat.return !, nd_syscall.shmat.return 
 
 # dw_shmat _____________________________________________________
 
-probe dw_syscall.shmat = kernel.function("sys_shmat").call ?
+probe dw_syscall.shmat = @syscall_call("sys_shmat")
 {
 	@_SYSCALL_SHMAT_NAME
 	shmid = $shmid
@@ -67,7 +67,7 @@ probe dw_syscall.shmat = kernel.function("sys_shmat").call ?
 	shmflg_str = _shmat_flags_str(shmflg)
 	@_SYSCALL_SHMAT_ARGSTR
 }
-probe dw_syscall.shmat.return = kernel.function("sys_shmat").return ?
+probe dw_syscall.shmat.return = @syscall_return("sys_shmat")
 {
 	@_SYSCALL_SHMAT_NAME
 	@SYSC_RETVALSTR($return)
@@ -151,7 +151,7 @@ probe syscall.compat_sys_shmat.return = dw_syscall.compat_sys_shmat.return !,
 
 # dw_compat_sys_shmat _____________________________________________________
 
-probe dw_syscall.compat_sys_shmat = kernel.function("compat_sys_shmat").call ?
+probe dw_syscall.compat_sys_shmat = @syscall_call("compat_sys_shmat")
 {
 	@_SYSCALL_SHMAT_NAME
 %( systemtap_v < "2.3" %?
@@ -166,7 +166,7 @@ probe dw_syscall.compat_sys_shmat = kernel.function("compat_sys_shmat").call ?
 	shmflg_str = _shmat_flags_str(shmflg)
 	@_SYSCALL_SHMAT_ARGSTR
 }
-probe dw_syscall.compat_sys_shmat.return = kernel.function("compat_sys_shmat").return ?
+probe dw_syscall.compat_sys_shmat.return = @syscall_return("compat_sys_shmat")
 {
 	@_SYSCALL_SHMAT_NAME
 	@SYSC_RETVALSTR($return)

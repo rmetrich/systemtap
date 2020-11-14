@@ -57,7 +57,7 @@ probe syscall.request_key.return = dw_syscall.request_key.return !,
 
 # dw_request_key _____________________________________________________
 
-probe dw_syscall.request_key = kernel.function("sys_request_key").call ?
+probe dw_syscall.request_key = @syscall_call("sys_request_key")
 {
 	@_SYSCALL_REQUEST_KEY_NAME
 	type_uaddr = $_type
@@ -68,7 +68,7 @@ probe dw_syscall.request_key = kernel.function("sys_request_key").call ?
 	destringid = __int32($destringid)
 	@_SYSCALL_REQUEST_KEY_ARGSTR
 }
-probe dw_syscall.request_key.return = kernel.function("sys_request_key").return ?
+probe dw_syscall.request_key.return = @syscall_return("sys_request_key")
 {
 	@_SYSCALL_REQUEST_KEY_NAME
 	@SYSC_RETVALSTR($return)

@@ -41,8 +41,8 @@ probe syscall.getresgid.return = dw_syscall.getresgid.return !,
 
 # dw_getresgid _____________________________________________________
 
-probe dw_syscall.getresgid = kernel.function("sys_getresgid16").call ?,
-                          kernel.function("sys_getresgid").call
+probe dw_syscall.getresgid = @syscall_call("sys_getresgid16"),
+                          @syscall_call("sys_getresgid")
 {
 	@_SYSCALL_GETRESGID_NAME
 	rgid_uaddr = @choose_defined($rgidp, $rgid)
@@ -50,8 +50,8 @@ probe dw_syscall.getresgid = kernel.function("sys_getresgid16").call ?,
 	sgid_uaddr = @choose_defined($sgidp, $sgid)
 	@_SYSCALL_GETRESGID_ARGSTR
 }
-probe dw_syscall.getresgid.return = kernel.function("sys_getresgid16").return ?,
-                                 kernel.function("sys_getresgid").return
+probe dw_syscall.getresgid.return = @syscall_return("sys_getresgid16"),
+                                 @syscall_return("sys_getresgid")
 {
 	@_SYSCALL_GETRESGID_NAME
 	@SYSC_RETVALSTR($return)

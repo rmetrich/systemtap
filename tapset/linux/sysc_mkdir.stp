@@ -36,7 +36,7 @@ probe syscall.mkdir.return = dw_syscall.mkdir.return !, nd_syscall.mkdir.return 
 
 # dw_mkdir _____________________________________________________
 
-probe dw_syscall.mkdir = kernel.function("sys_mkdir").call
+probe dw_syscall.mkdir = @syscall_call("sys_mkdir")
 {
 	@_SYSCALL_MKDIR_NAME
 	pathname_uaddr = $pathname
@@ -44,7 +44,7 @@ probe dw_syscall.mkdir = kernel.function("sys_mkdir").call
 	mode = __uint32($mode)
 	@_SYSCALL_MKDIR_ARGSTR
 }
-probe dw_syscall.mkdir.return = kernel.function("sys_mkdir").return
+probe dw_syscall.mkdir.return = @syscall_return("sys_mkdir")
 {
 	@_SYSCALL_MKDIR_NAME
 	@SYSC_RETVALSTR($return)

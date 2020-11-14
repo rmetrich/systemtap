@@ -40,27 +40,27 @@ probe syscall.rt_sigpending.return = dw_syscall.rt_sigpending.return !,
 # dw_rt_sigpending _____________________________________________________
 
 probe dw_syscall.rt_sigpending = __syscall.rt_sigpending ?,
-                              kernel.function("compat_sys_rt_sigpending").call !,
-                              kernel.function("sys32_rt_sigpending").call ?
+                              @syscall_call_stop("compat_sys_rt_sigpending"),
+                              @syscall_call("sys32_rt_sigpending")
 {
 	@_SYSCALL_RT_SIGPENDING_NAME
 	set_uaddr = @choose_defined($uset, $set)
 	sigsetsize = @__compat_ulong($sigsetsize)
 	@_SYSCALL_RT_SIGPENDING_ARGSTR
 }
-probe __syscall.rt_sigpending = kernel.function("sys_rt_sigpending").call ?
+probe __syscall.rt_sigpending = @syscall_call("sys_rt_sigpending")
 {
 	@__syscall_gate(@const("__NR_rt_sigpending"))
 }
 probe dw_syscall.rt_sigpending.return = __syscall.rt_sigpending.return ?,
-                                     kernel.function("compat_sys_rt_sigpending").return !,
-                                     kernel.function("sys32_rt_sigpending").return ?
+                                     @syscall_return_stop("compat_sys_rt_sigpending"),
+                                     @syscall_return("sys32_rt_sigpending")
 {
 	@_SYSCALL_RT_SIGPENDING_NAME
 	@SYSC_RETVALSTR($return)
 }
 probe __syscall.rt_sigpending.return =
-	kernel.function("sys_rt_sigpending").return ?
+	@syscall_return("sys_rt_sigpending")
 {
 	@__syscall_gate(@const("__NR_rt_sigpending"))
 }

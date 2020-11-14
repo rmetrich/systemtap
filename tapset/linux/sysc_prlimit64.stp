@@ -45,7 +45,7 @@ probe syscall.prlimit64.return = dw_syscall.prlimit64.return !,
 
 # dw_prlimit64 _____________________________________________________
 
-probe dw_syscall.prlimit64 = kernel.function("sys_prlimit64").call ?
+probe dw_syscall.prlimit64 = @syscall_call("sys_prlimit64")
 {
 	@_SYSCALL_PRLIMIT64_NAME
 	pid = __int32($pid)
@@ -56,7 +56,7 @@ probe dw_syscall.prlimit64 = kernel.function("sys_prlimit64").call ?
 	old_rlim_uaddr = $old_rlim
 	@_SYSCALL_PRLIMIT64_ARGSTR
 }
-probe dw_syscall.prlimit64.return = kernel.function("sys_prlimit64").return ?
+probe dw_syscall.prlimit64.return = @syscall_return("sys_prlimit64")
 {
 	@_SYSCALL_PRLIMIT64_NAME
 	@SYSC_RETVALSTR($return)

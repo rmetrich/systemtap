@@ -36,7 +36,7 @@ probe syscall.fremovexattr.return = dw_syscall.fremovexattr.return !, nd_syscall
 
 # dw_fremovexattr _____________________________________________________
 
-probe dw_syscall.fremovexattr = kernel.function("sys_fremovexattr").call
+probe dw_syscall.fremovexattr = @syscall_call("sys_fremovexattr")
 {
 	@_SYSCALL_FREMOVEXATTR_NAME
 	filedes = __int32($fd)
@@ -44,7 +44,7 @@ probe dw_syscall.fremovexattr = kernel.function("sys_fremovexattr").call
 	name_str = user_string_quoted($name)
 	@_SYSCALL_FREMOVEXATTR_ARGSTR
 }
-probe dw_syscall.fremovexattr.return = kernel.function("sys_fremovexattr").return
+probe dw_syscall.fremovexattr.return = @syscall_return("sys_fremovexattr")
 {
 	@_SYSCALL_FREMOVEXATTR_NAME
 	@SYSC_RETVALSTR($return)

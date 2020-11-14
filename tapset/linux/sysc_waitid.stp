@@ -58,7 +58,7 @@ probe syscall.waitid.return = dw_syscall.waitid.return !,
 # dw_waitid _____________________________________________________
 
 probe dw_syscall.waitid = __syscall.waitid,
-	kernel.function("compat_sys_waitid").call ?
+	@syscall_call("compat_sys_waitid")
 {
 	@_SYSCALL_WAITID_NAME
 	which = __int32($which)
@@ -70,17 +70,17 @@ probe dw_syscall.waitid = __syscall.waitid,
 	rusage_uaddr = @choose_defined($ru, $uru)
 	@_SYSCALL_WAITID_ARGSTR
 }
-probe __syscall.waitid = kernel.function("sys_waitid").call
+probe __syscall.waitid = @syscall_call("sys_waitid")
 {
 	@__syscall_gate_compat_simple
 }
 probe dw_syscall.waitid.return = __syscall.waitid.return,
-	kernel.function("compat_sys_waitid").return ?
+	@syscall_return("compat_sys_waitid")
 {
 	@_SYSCALL_WAITID_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.waitid.return = kernel.function("sys_waitid").return
+probe __syscall.waitid.return = @syscall_return("sys_waitid")
 {
 	@__syscall_gate_compat_simple
 }

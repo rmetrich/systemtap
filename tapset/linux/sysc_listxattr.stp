@@ -42,7 +42,7 @@ probe syscall.listxattr.return = dw_syscall.listxattr.return !,
 
 # dw_listxattr _____________________________________________________
 
-probe dw_syscall.listxattr = kernel.function("sys_listxattr").call
+probe dw_syscall.listxattr = @syscall_call("sys_listxattr")
 {
 	@_SYSCALL_LISTXATTR_NAME
 	list_uaddr = $list
@@ -51,7 +51,7 @@ probe dw_syscall.listxattr = kernel.function("sys_listxattr").call
 	path = user_string_quoted(@choose_defined($pathname, $path))
 	@_SYSCALL_LISTXATTR_ARGSTR
 }
-probe dw_syscall.listxattr.return = kernel.function("sys_listxattr").return
+probe dw_syscall.listxattr.return = @syscall_return("sys_listxattr")
 {
 	@_SYSCALL_LISTXATTR_NAME
 	@SYSC_RETVALSTR($return)

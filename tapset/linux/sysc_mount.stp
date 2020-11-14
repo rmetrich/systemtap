@@ -59,8 +59,8 @@ probe syscall.mount.return = dw_syscall.mount.return !, nd_syscall.mount.return 
 
 # dw_mount _____________________________________________________
 
-probe dw_syscall.mount = kernel.function("compat_sys_mount").call ?,
-                      kernel.function("sys_mount").call
+probe dw_syscall.mount = @syscall_call("compat_sys_mount"),
+                      @syscall_call("sys_mount")
 {
 	@_SYSCALL_MOUNT_NAME
 	source = user_string_quoted(@__pointer($dev_name))
@@ -71,8 +71,8 @@ probe dw_syscall.mount = kernel.function("compat_sys_mount").call ?,
 	data = user_string_n_quoted(@__pointer($data), syscall_string_trunc)
 	@_SYSCALL_MOUNT_ARGSTR
 }
-probe dw_syscall.mount.return = kernel.function("compat_sys_mount").return ?,
-                             kernel.function("sys_mount").return
+probe dw_syscall.mount.return = @syscall_return("compat_sys_mount"),
+                             @syscall_return("sys_mount")
 {
 	@_SYSCALL_MOUNT_NAME
 	@SYSC_RETVALSTR($return)

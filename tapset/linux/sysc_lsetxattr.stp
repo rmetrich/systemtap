@@ -62,7 +62,7 @@ probe syscall.lsetxattr.return = dw_syscall.lsetxattr.return !,
 
 # dw_lsetxattr _____________________________________________________
 
-probe dw_syscall.lsetxattr = kernel.function("sys_lsetxattr").call
+probe dw_syscall.lsetxattr = @syscall_call("sys_lsetxattr")
 {
 	@_SYSCALL_LSETXATTR_NAME
 	path_uaddr = @choose_defined($pathname, $path)
@@ -76,7 +76,7 @@ probe dw_syscall.lsetxattr = kernel.function("sys_lsetxattr").call
 	flags_str = _stp_xattr_flags_str(__int32($flags))
 	@_SYSCALL_LSETXATTR_ARGSTR
 }
-probe dw_syscall.lsetxattr.return = kernel.function("sys_lsetxattr").return
+probe dw_syscall.lsetxattr.return = @syscall_return("sys_lsetxattr")
 {
 	@_SYSCALL_LSETXATTR_NAME
 	@SYSC_RETVALSTR($return)

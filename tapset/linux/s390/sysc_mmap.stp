@@ -30,8 +30,8 @@ probe dw_syscall.mmap = __syscall.mmap ?, __syscall.mmap32 ?
 	flags_str = _mmap_flags(flags)
 	@_SYSCALL_MMAP_ARGSTR
 }
-probe __syscall.mmap = kernel.function("old_mmap") ?,
-		       kernel.function("SyS_s390_old_mmap") ?
+probe __syscall.mmap = @syscall_call("old_mmap"),
+		       @syscall_call("SyS_s390_old_mmap")
 {
 	start = user_long(&@cast($arg, "mmap_arg_struct")->addr)
 	len = user_ulong(&@cast($arg, "mmap_arg_struct")->len)
@@ -40,7 +40,7 @@ probe __syscall.mmap = kernel.function("old_mmap") ?,
 	fd = user_long(&@cast($arg, "mmap_arg_struct")->fd)
 	offset = user_long(&@cast($arg, "mmap_arg_struct")->offset)
 }
-probe __syscall.mmap32 = kernel.function("old32_mmap")
+probe __syscall.mmap32 = @syscall_call("old32_mmap")
 {
 	start = user_int(&@cast($arg, "mmap_arg_struct_emu31")->addr)
 	len = user_uint32(&@cast($arg, "mmap_arg_struct_emu31")->len)
@@ -50,9 +50,9 @@ probe __syscall.mmap32 = kernel.function("old32_mmap")
 	offset = user_int(&@cast($arg, "mmap_arg_struct_emu31")->offset)
 }
 
-probe dw_syscall.mmap.return = kernel.function("old_mmap").return ?,
-                            kernel.function("old32_mmap").return ?,
-                            kernel.function("SyS_s390_old_mmap").return ?
+probe dw_syscall.mmap.return = @syscall_return("old_mmap"),
+                            @syscall_return("old32_mmap"),
+                            @syscall_return("SyS_s390_old_mmap")
 {
         @_SYSCALL_MMAP_NAME
         @SYSC_RETVALSTR2($return)

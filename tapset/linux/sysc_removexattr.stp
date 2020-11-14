@@ -38,14 +38,14 @@ probe syscall.removexattr.return = dw_syscall.removexattr.return !,
 
 # dw_removexattr _____________________________________________________
 
-probe dw_syscall.removexattr = kernel.function("sys_removexattr").call
+probe dw_syscall.removexattr = @syscall_call("sys_removexattr")
 {
 	@_SYSCALL_REMOVEXATTR_NAME
 	path = user_string_quoted(@choose_defined($pathname, $path))
 	name_str = user_string_quoted($name)
 	@_SYSCALL_REMOVEXATTR_ARGSTR
 }
-probe dw_syscall.removexattr.return = kernel.function("sys_removexattr").return
+probe dw_syscall.removexattr.return = @syscall_return("sys_removexattr")
 {
 	@_SYSCALL_REMOVEXATTR_NAME
 	@SYSC_RETVALSTR($return)

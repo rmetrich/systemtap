@@ -42,7 +42,7 @@ probe syscall.setpriority.return = dw_syscall.setpriority.return !,
 
 # dw_setpriority _____________________________________________________
 
-probe dw_syscall.setpriority = kernel.function("sys_setpriority").call
+probe dw_syscall.setpriority = @syscall_call("sys_setpriority")
 {
 	@_SYSCALL_SETPRIORITY_NAME
 	which = __int32($which)
@@ -51,7 +51,7 @@ probe dw_syscall.setpriority = kernel.function("sys_setpriority").call
 	prio = __int32($niceval)
 	@_SYSCALL_SETPRIORITY_ARGSTR
 }
-probe dw_syscall.setpriority.return = kernel.function("sys_setpriority").return
+probe dw_syscall.setpriority.return = @syscall_return("sys_setpriority")
 {
 	@_SYSCALL_SETPRIORITY_NAME
 	@SYSC_RETVALSTR($return)

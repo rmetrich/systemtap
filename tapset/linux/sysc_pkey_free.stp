@@ -27,13 +27,13 @@ probe syscall.pkey_free.return = dw_syscall.pkey_free.return !, nd_syscall.pkey_
 
 # dw_pkey_free _____________________________________________________
 
-probe dw_syscall.pkey_free = kernel.function("sys_pkey_free").call
+probe dw_syscall.pkey_free = @syscall_call("sys_pkey_free")
 {
 	@_SYSCALL_PKEY_FREE_NAME
 	pkey = __int32($pkey)
 	@_SYSCALL_PKEY_FREE_ARGSTR
 }
-probe dw_syscall.pkey_free.return = kernel.function("sys_pkey_free").return
+probe dw_syscall.pkey_free.return = @syscall_return("sys_pkey_free")
 {
 	@_SYSCALL_PKEY_FREE_NAME
 	@SYSC_RETVALSTR($return)

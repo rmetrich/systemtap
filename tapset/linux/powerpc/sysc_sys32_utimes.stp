@@ -20,7 +20,7 @@ probe syscall.sys32_utimes.return = dw_syscall.sys32_utimes.return !,
 
 # dw_sys32_utimes _____________________________________________________
 
-probe dw_syscall.sys32_utimes = kernel.function("sys32_utimes") ?
+probe dw_syscall.sys32_utimes = @syscall_call("sys32_utimes")
 {
 	@_SYSCALL_SYS32_UTIMES_NAME
 	filename_uaddr = $filename
@@ -28,7 +28,7 @@ probe dw_syscall.sys32_utimes = kernel.function("sys32_utimes") ?
 	tvp_uaddr = $tvs
 	@_SYSCALL_SYS32_UTIMES_ARGSTR
 }
-probe dw_syscall.sys32_utimes.return = kernel.function("sys32_utimes").return ?
+probe dw_syscall.sys32_utimes.return = @syscall_return("sys32_utimes")
 {
 	@_SYSCALL_SYS32_UTIMES_NAME
 	@SYSC_RETVALSTR($return)

@@ -31,16 +31,16 @@ probe syscall.times.return = dw_syscall.times.return !,
 
 # dw_times _____________________________________________________
 
-probe dw_syscall.times = kernel.function("compat_sys_times").call ?,
-                      kernel.function("sys_times").call ?
+probe dw_syscall.times = @syscall_call("compat_sys_times"),
+                      @syscall_call("sys_times")
 {
 	@_SYSCALL_TIMES_NAME
 	buf_uaddr = @__pointer($tbuf)
 	buf_str = _struct_tms_u(buf_uaddr)
 	@_SYSCALL_TIMES_ARGSTR
 }
-probe dw_syscall.times.return = kernel.function("compat_sys_times").return ?,
-                             kernel.function("sys_times").return ?
+probe dw_syscall.times.return = @syscall_return("compat_sys_times"),
+                             @syscall_return("sys_times")
 {
 	@_SYSCALL_TIMES_NAME
 	@SYSC_RETVALSTR($return)

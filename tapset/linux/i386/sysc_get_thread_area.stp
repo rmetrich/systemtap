@@ -27,14 +27,14 @@ probe syscall.get_thread_area.return = dw_syscall.get_thread_area.return !,
 
 # dw_get_thread_area _____________________________________________________
 
-probe dw_syscall.get_thread_area = kernel.function("sys_get_thread_area")
+probe dw_syscall.get_thread_area = @syscall_call("sys_get_thread_area")
 {
 	@_SYSCALL_GET_THREAD_AREA_NAME
 	u_info_uaddr = $u_info
 	u_info_str = _struct_user_desc_u(u_info_uaddr)
 	@_SYSCALL_GET_THREAD_AREA_ARGSTR
 }
-probe dw_syscall.get_thread_area.return = kernel.function("sys_get_thread_area").return
+probe dw_syscall.get_thread_area.return = @syscall_return("sys_get_thread_area")
 {
 	@_SYSCALL_GET_THREAD_AREA_NAME
 	@SYSC_RETVALSTR($return)

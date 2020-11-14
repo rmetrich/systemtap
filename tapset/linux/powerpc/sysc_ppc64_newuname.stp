@@ -21,16 +21,16 @@ probe syscall.ppc64_newuname.return = dw_syscall.ppc64_newuname.return !,
 
 # dw_ppc64_newuname _____________________________________________________
 
-probe dw_syscall.ppc64_newuname = kernel.function("ppc64_newuname") ?,
-	kernel.function("ppc_newuname") ?
+probe dw_syscall.ppc64_newuname = @syscall_call("ppc64_newuname"),
+	@syscall_call("ppc_newuname")
 {
 	@_SYSCALL_PPC64_NEWUNAME_NAME
 	name_uaddr = $name
 	@_SYSCALL_PPC64_NEWUNAME_ARGSTR
 }
 probe dw_syscall.ppc64_newuname.return =
-	kernel.function("ppc64_newuname").return ?,
-	kernel.function("ppc_newuname").return ?
+	@syscall_return("ppc64_newuname"),
+	@syscall_return("ppc_newuname")
 {
 	@_SYSCALL_PPC64_NEWUNAME_NAME
 	@SYSC_RETVALSTR($return)

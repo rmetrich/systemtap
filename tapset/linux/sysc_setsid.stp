@@ -23,12 +23,12 @@ probe syscall.setsid.return = dw_syscall.setsid.return !,
 
 # dw_setsid _____________________________________________________
 
-probe dw_syscall.setsid = kernel.function("sys_setsid").call
+probe dw_syscall.setsid = @syscall_call("sys_setsid")
 {
 	@_SYSCALL_SETSID_NAME
 	@_SYSCALL_SETSID_ARGSTR
 }
-probe dw_syscall.setsid.return = kernel.function("sys_setsid").return
+probe dw_syscall.setsid.return = @syscall_return("sys_setsid")
 {
 	@_SYSCALL_SETSID_NAME
 	@SYSC_RETVALSTR($return)

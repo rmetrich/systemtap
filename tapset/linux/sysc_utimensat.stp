@@ -49,7 +49,7 @@ probe syscall.utimensat.return = dw_syscall.utimensat.return !,
 
 # dw_utimensat _____________________________________________________
 
-probe dw_syscall.utimensat = kernel.function("sys_utimensat").call ?
+probe dw_syscall.utimensat = @syscall_call("sys_utimensat")
 {
 	@_SYSCALL_UTIMENSAT_NAME
 	dfd = __int32($dfd)
@@ -62,7 +62,7 @@ probe dw_syscall.utimensat = kernel.function("sys_utimensat").call ?
 	flags_str = _at_flag_str(__int32($flags))
 	@_SYSCALL_UTIMENSAT_ARGSTR
 }
-probe dw_syscall.utimensat.return = kernel.function("sys_utimensat").return ?
+probe dw_syscall.utimensat.return = @syscall_return("sys_utimensat")
 {
 	@_SYSCALL_UTIMENSAT_NAME
 	@SYSC_RETVALSTR($return)
@@ -146,7 +146,7 @@ probe syscall.compat_utimensat.return = dw_syscall.compat_utimensat.return !,
 
 # dw_compat_utimensat _____________________________________________________
 
-probe dw_syscall.compat_utimensat = kernel.function("compat_sys_utimensat").call ?
+probe dw_syscall.compat_utimensat = @syscall_call("compat_sys_utimensat")
 {
 	@_SYSCALL_UTIMENSAT_NAME
 	dfd = __int32($dfd)
@@ -159,7 +159,7 @@ probe dw_syscall.compat_utimensat = kernel.function("compat_sys_utimensat").call
 	flags_str = _at_flag_str(__int32($flags))
 	@_SYSCALL_UTIMENSAT_ARGSTR
 }
-probe dw_syscall.compat_utimensat.return =  kernel.function("compat_sys_utimensat").return ?
+probe dw_syscall.compat_utimensat.return =  @syscall_return("compat_sys_utimensat")
 {
 	@_SYSCALL_UTIMENSAT_NAME
 	@SYSC_RETVALSTR($return)

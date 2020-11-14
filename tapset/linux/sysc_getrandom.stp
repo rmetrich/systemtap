@@ -38,7 +38,7 @@ probe syscall.getrandom.return = dw_syscall.getrandom.return !,
 
 # dw_getrandom _____________________________________________________
 
-probe dw_syscall.getrandom = kernel.function("sys_getrandom").call ?
+probe dw_syscall.getrandom = @syscall_call("sys_getrandom")
 {
 	@_SYSCALL_GETRANDOM_NAME
 	buf = user_string_quoted($buf)
@@ -47,7 +47,7 @@ probe dw_syscall.getrandom = kernel.function("sys_getrandom").call ?
 	flags_str = _getrandom_flags_str(__uint32($flags))
 	@_SYSCALL_GETRANDOM_ARGSTR
 }
-probe dw_syscall.getrandom.return = kernel.function("sys_getrandom").return ?
+probe dw_syscall.getrandom.return = @syscall_return("sys_getrandom")
 {
 	@_SYSCALL_GETRANDOM_NAME
 	@SYSC_RETVALSTR($return)

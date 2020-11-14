@@ -37,8 +37,8 @@ probe syscall.getresuid.return = dw_syscall.getresuid.return !, nd_syscall.getre
 
 # dw_getresuid _____________________________________________________
 
-probe dw_syscall.getresuid = kernel.function("sys_getresuid16").call ?,
-                          kernel.function("sys_getresuid").call
+probe dw_syscall.getresuid = @syscall_call("sys_getresuid16"),
+                          @syscall_call("sys_getresuid")
 {
 	@_SYSCALL_GETRESUID_NAME
 	ruid_uaddr = @choose_defined($ruidp, $ruid)
@@ -46,8 +46,8 @@ probe dw_syscall.getresuid = kernel.function("sys_getresuid16").call ?,
 	suid_uaddr = @choose_defined($suidp, $suid)
 	@_SYSCALL_GETRESUID_ARGSTR
 }
-probe dw_syscall.getresuid.return = kernel.function("sys_getresuid16").return ?,
-                                 kernel.function("sys_getresuid").return
+probe dw_syscall.getresuid.return = @syscall_return("sys_getresuid16"),
+                                 @syscall_return("sys_getresuid")
 {
 	@_SYSCALL_GETRESUID_NAME
 	@SYSC_RETVALSTR($return)

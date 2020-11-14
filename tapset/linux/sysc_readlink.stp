@@ -41,7 +41,7 @@ probe syscall.readlink.return = dw_syscall.readlink.return !,
 
 # dw_readlink _____________________________________________________
 
-probe dw_syscall.readlink = kernel.function("sys_readlink").call
+probe dw_syscall.readlink = @syscall_call("sys_readlink")
 {
 	@_SYSCALL_READLINK_NAME
 	path = user_string_quoted($path)
@@ -49,7 +49,7 @@ probe dw_syscall.readlink = kernel.function("sys_readlink").call
 	bufsiz = __int32($bufsiz)
 	@_SYSCALL_READLINK_ARGSTR
 }
-probe dw_syscall.readlink.return = kernel.function("sys_readlink").return
+probe dw_syscall.readlink.return = @syscall_return("sys_readlink")
 {
 	@_SYSCALL_READLINK_NAME
 	@SYSC_RETVALSTR($return)

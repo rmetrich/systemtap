@@ -28,13 +28,13 @@ probe syscall.iopl.return = dw_syscall.iopl.return !, nd_syscall.iopl.return {}
 
 # dw_iopl _____________________________________________________
 
-probe dw_syscall.iopl = kernel.function("sys_iopl")
+probe dw_syscall.iopl = @syscall_call("sys_iopl")
 {
 	@_SYSCALL_IOPL_NAME
 	level = __uint32(@choose_defined($level, @choose_defined($unused, $regs->bx)))
 	@_SYSCALL_IOPL_ARGSTR
 }
-probe dw_syscall.iopl.return = kernel.function("sys_iopl").return
+probe dw_syscall.iopl.return = @syscall_return("sys_iopl")
 {
 	@_SYSCALL_IOPL_NAME
 	@SYSC_RETVALSTR($return)

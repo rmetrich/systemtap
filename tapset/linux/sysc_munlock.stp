@@ -32,14 +32,14 @@ probe syscall.munlock.return = dw_syscall.munlock.return !,
 
 # dw_munlock _____________________________________________________
 
-probe dw_syscall.munlock = kernel.function("sys_munlock").call ?
+probe dw_syscall.munlock = @syscall_call("sys_munlock")
 {
 	@_SYSCALL_MUNLOCK_NAME
 	addr = $start
 	len = $len
 	@_SYSCALL_MUNLOCK_ARGSTR
 }
-probe dw_syscall.munlock.return = kernel.function("sys_munlock").return ?
+probe dw_syscall.munlock.return = @syscall_return("sys_munlock")
 {
 	@_SYSCALL_MUNLOCK_NAME
 	@SYSC_RETVALSTR($return)

@@ -50,7 +50,7 @@ probe syscall.select.return = dw_syscall.select.return !,
 
 # dw_select _____________________________________________________
 
-probe dw_syscall.select = kernel.function("sys_select").call
+probe dw_syscall.select = @syscall_call("sys_select")
 {
 	@_SYSCALL_SELECT_NAME
 	n = __int32($n)
@@ -61,7 +61,7 @@ probe dw_syscall.select = kernel.function("sys_select").call
 	timeout_str = _struct_timeval_u(timeout_uaddr, 1)
 	@_SYSCALL_SELECT_ARGSTR
 }
-probe dw_syscall.select.return = kernel.function("sys_select").return
+probe dw_syscall.select.return = @syscall_return("sys_select")
 {
 	@_SYSCALL_SELECT_NAME
 	@SYSC_RETVALSTR($return)
@@ -146,7 +146,7 @@ probe syscall.compat_select.return = dw_syscall.compat_select.return !,
 
 # dw_compat_select _____________________________________________________
 
-probe dw_syscall.compat_select = kernel.function("compat_sys_select").call ?
+probe dw_syscall.compat_select = @syscall_call("compat_sys_select")
 {
 	@_SYSCALL_SELECT_NAME
 	n = __int32($n)
@@ -157,7 +157,7 @@ probe dw_syscall.compat_select = kernel.function("compat_sys_select").call ?
 	timeout_str = _struct_compat_timeval_u(timeout_uaddr, 1)
 	@_SYSCALL_SELECT_ARGSTR
 }
-probe dw_syscall.compat_select.return = kernel.function("compat_sys_select").return ?
+probe dw_syscall.compat_select.return = @syscall_return("compat_sys_select")
 {
 	@_SYSCALL_SELECT_NAME
 	@SYSC_RETVALSTR($return)

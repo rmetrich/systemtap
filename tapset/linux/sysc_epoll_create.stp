@@ -7,8 +7,8 @@ probe syscall.epoll_create.return = dw_syscall.epoll_create.return !, nd_syscall
 
 # dw_epoll_create _____________________________________________________
 
-probe dw_syscall.epoll_create = kernel.function("sys_epoll_create1").call !,
-                             kernel.function("sys_epoll_create").call ?
+probe dw_syscall.epoll_create = @syscall_call_stop("sys_epoll_create1"),
+                             @syscall_call("sys_epoll_create")
 {
 	size = @choose_defined($size, 0);
 	flags = __int32(@choose_defined($flags, 0));
@@ -20,8 +20,8 @@ probe dw_syscall.epoll_create = kernel.function("sys_epoll_create1").call !,
 		argstr = _epoll_create1_flag_str(flags);
 	}
 }
-probe dw_syscall.epoll_create.return = kernel.function("sys_epoll_create1").return !,
-                                    kernel.function("sys_epoll_create").return ?
+probe dw_syscall.epoll_create.return = @syscall_return_stop("sys_epoll_create1"),
+                                    @syscall_return("sys_epoll_create")
 {
 	flags = __int32(@entry(@choose_defined($flags, 0)));
 	name = (flags == 0) ? "epoll_create" : "epoll_create1";

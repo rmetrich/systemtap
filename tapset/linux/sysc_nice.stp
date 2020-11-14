@@ -28,13 +28,13 @@ probe syscall.nice.return = dw_syscall.nice.return !, nd_syscall.nice.return ? {
 
 # dw_nice _____________________________________________________
 
-probe dw_syscall.nice = kernel.function("sys_nice").call ?
+probe dw_syscall.nice = @syscall_call("sys_nice")
 {
 	@_SYSCALL_NICE_NAME
 	inc = __int32($increment)
 	@_SYSCALL_NICE_ARGSTR
 }
-probe dw_syscall.nice.return = kernel.function("sys_nice").return ?
+probe dw_syscall.nice.return = @syscall_return("sys_nice")
 {
 	@_SYSCALL_NICE_NAME
 	@SYSC_RETVALSTR($return)

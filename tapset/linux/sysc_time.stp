@@ -32,19 +32,19 @@ probe syscall.time.return = dw_syscall.time.return !, nd_syscall.time.return ? {
 
 # dw_time _____________________________________________________
 
-probe dw_syscall.time = kernel.function("sys32_time").call ?,
-                     kernel.function("sys_time64").call ?,
-                     kernel.function("compat_sys_time").call ?,
-                     kernel.function("sys_time").call ?
+probe dw_syscall.time = @syscall_call("sys32_time"),
+                     @syscall_call("sys_time64"),
+                     @syscall_call("compat_sys_time"),
+                     @syscall_call("sys_time")
 {
 	@_SYSCALL_TIME_NAME
 	t_uaddr = $tloc
 	@_SYSCALL_TIME_ARGSTR
 }
-probe dw_syscall.time.return = kernel.function("sys32_time").return ?,
-                            kernel.function("sys_time64").return ?,
-                            kernel.function("compat_sys_time").return ?,
-                            kernel.function("sys_time").return ?
+probe dw_syscall.time.return = @syscall_return("sys32_time"),
+                            @syscall_return("sys_time64"),
+                            @syscall_return("compat_sys_time"),
+                            @syscall_return("sys_time")
 {
 	@_SYSCALL_TIME_NAME
 	@SYSC_RETVALSTR($return)

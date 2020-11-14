@@ -37,7 +37,7 @@ probe syscall.mprotect.return = dw_syscall.mprotect.return !, nd_syscall.mprotec
 
 # dw_mprotect _____________________________________________________
 
-probe dw_syscall.mprotect = kernel.function("sys_mprotect").call ?
+probe dw_syscall.mprotect = @syscall_call("sys_mprotect")
 {
 	@_SYSCALL_MPROTECT_NAME
 	addr = $start
@@ -46,7 +46,7 @@ probe dw_syscall.mprotect = kernel.function("sys_mprotect").call ?
 	prot_str = _mprotect_prot_str(prot)
 	@_SYSCALL_MPROTECT_ARGSTR
 }
-probe dw_syscall.mprotect.return = kernel.function("sys_mprotect").return ?
+probe dw_syscall.mprotect.return = @syscall_return("sys_mprotect")
 {
 	@_SYSCALL_MPROTECT_NAME
 	@SYSC_RETVALSTR($return)

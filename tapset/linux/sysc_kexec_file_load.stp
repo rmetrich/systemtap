@@ -49,7 +49,7 @@ probe syscall.kexec_file_load.return = dw_syscall.kexec_file_load.return !, nd_s
 
 # dw_kexec_file_load _____________________________________________________
 
-probe dw_syscall.kexec_file_load = kernel.function("sys_kexec_file_load").call ?
+probe dw_syscall.kexec_file_load = @syscall_call("sys_kexec_file_load")
 {
 	@_SYSCALL_KEXEC_FILE_LOAD_NAME
 	kernel_fd = __int32($kernel_fd)
@@ -61,7 +61,7 @@ probe dw_syscall.kexec_file_load = kernel.function("sys_kexec_file_load").call ?
 	@_SYSCALL_KEXEC_FILE_LOAD_ARGSTR
 }
 probe dw_syscall.kexec_file_load.return =
-	kernel.function("sys_kexec_file_load").return ?
+	@syscall_return("sys_kexec_file_load")
 {
 	@_SYSCALL_KEXEC_FILE_LOAD_NAME
 	@SYSC_RETVALSTR($return)

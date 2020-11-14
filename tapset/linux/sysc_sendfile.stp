@@ -52,9 +52,9 @@ probe syscall.sendfile.return = dw_syscall.sendfile.return !,
 # dw_sendfile _____________________________________________________
 
 probe dw_syscall.sendfile = __syscall.sendfile ?,
-	kernel.function("compat_sys_sendfile").call ?,
-	kernel.function("compat_sys_sendfile64").call ?,
-	kernel.function("sys32_sendfile").call ?
+	@syscall_call("compat_sys_sendfile"),
+	@syscall_call("compat_sys_sendfile64"),
+	@syscall_call("sys32_sendfile")
 {
 	@_SYSCALL_SENDFILE_NAME
 	out_fd = __int32($out_fd)
@@ -63,21 +63,21 @@ probe dw_syscall.sendfile = __syscall.sendfile ?,
 	count = @__compat_ulong($count)
 	@_SYSCALL_SENDFILE_ARGSTR
 }
-probe __syscall.sendfile = kernel.function("sys_sendfile").call ?,
-	kernel.function("sys_sendfile64").call ?
+probe __syscall.sendfile = @syscall_call("sys_sendfile"),
+	@syscall_call("sys_sendfile64")
 {
 	@__syscall_gate2(@const("__NR_sendfile"), @const("__NR_sendfile64"))
 }
 probe dw_syscall.sendfile.return = __syscall.sendfile.return ?,
-	kernel.function("compat_sys_sendfile").return ?,
-	kernel.function("compat_sys_sendfile64").return ?,
-	kernel.function("sys32_sendfile").return ?
+	@syscall_return("compat_sys_sendfile"),
+	@syscall_return("compat_sys_sendfile64"),
+	@syscall_return("sys32_sendfile")
 {
 	@_SYSCALL_SENDFILE_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.sendfile.return = kernel.function("sys_sendfile").return ?,
-	kernel.function("sys_sendfile64").return ?
+probe __syscall.sendfile.return = @syscall_return("sys_sendfile"),
+	@syscall_return("sys_sendfile64")
 {
 	@__syscall_gate2(@const("__NR_sendfile"), @const("__NR_sendfile64"))
 }

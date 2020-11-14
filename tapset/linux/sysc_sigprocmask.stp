@@ -42,7 +42,7 @@ probe syscall.sigprocmask.return = dw_syscall.sigprocmask.return !,
 # dw_sigprocmask _____________________________________________________
 
 probe dw_syscall.sigprocmask = __syscall.sigprocmask ?,
-                            kernel.function("compat_sys_sigprocmask").call ?
+                            @syscall_call("compat_sys_sigprocmask")
 {
 	@_SYSCALL_SIGPROCMASK_NAME
 	how = __int32($how)
@@ -51,18 +51,18 @@ probe dw_syscall.sigprocmask = __syscall.sigprocmask ?,
 	oldset_uaddr = @__compat_ulong($oset)
 	@_SYSCALL_SIGPROCMASK_ARGSTR
 }
-probe __syscall.sigprocmask = kernel.function("sys_sigprocmask").call ?
+probe __syscall.sigprocmask = @syscall_call("sys_sigprocmask")
 {
 	@__syscall_gate(@const("__NR_sigprocmask"))
 }
 probe dw_syscall.sigprocmask.return = __syscall.sigprocmask.return ?,
-	kernel.function("compat_sys_sigprocmask").return ?
+	@syscall_return("compat_sys_sigprocmask")
 {
 	@_SYSCALL_SIGPROCMASK_NAME
 	@SYSC_RETVALSTR($return)
 }
 probe __syscall.sigprocmask.return =
-	kernel.function("sys_sigprocmask").return ?
+	@syscall_return("sys_sigprocmask")
 {
 	@__syscall_gate(@const("__NR_sigprocmask"))
 }

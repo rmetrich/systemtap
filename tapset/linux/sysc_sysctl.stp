@@ -30,15 +30,15 @@ probe syscall.sysctl.return = dw_syscall.sysctl.return !,
 
 # dw_sysctl _____________________________________________________
 
-probe dw_syscall.sysctl = kernel.function("compat_sys_sysctl").call ?,
-                          kernel.function("sys_sysctl").call ?
+probe dw_syscall.sysctl = @syscall_call("compat_sys_sysctl"),
+                          @syscall_call("sys_sysctl")
 {
 	@_SYSCALL_SYSCTL_NAME
 	args = $args
 	@_SYSCALL_SYSCTL_ARGSTR
 }
-probe dw_syscall.sysctl.return = kernel.function("compat_sys_sysctl").return ?,
-                                 kernel.function("sys_sysctl").return ?
+probe dw_syscall.sysctl.return = @syscall_return("compat_sys_sysctl"),
+                                 @syscall_return("sys_sysctl")
 {
 	@_SYSCALL_SYSCTL_NAME
 	@SYSC_RETVALSTR($return)

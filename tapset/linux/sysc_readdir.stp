@@ -40,10 +40,10 @@ probe syscall.readdir.return = dw_syscall.readdir.return !,
 
 # dw_readdir _____________________________________________________
 
-probe dw_syscall.readdir = kernel.function("compat_sys_old_readdir").call ?,
-                        kernel.function("old32_readdir").call ?,
-                        kernel.function("old_readdir").call ?,
-                        kernel.function("sys_old_readdir").call ?
+probe dw_syscall.readdir = @syscall_call("compat_sys_old_readdir"),
+                        @syscall_call("old32_readdir"),
+                        @syscall_call("old_readdir"),
+                        @syscall_call("sys_old_readdir")
 {
 	@_SYSCALL_READDIR_NAME
 	fd = __uint32($fd)
@@ -51,10 +51,10 @@ probe dw_syscall.readdir = kernel.function("compat_sys_old_readdir").call ?,
 	count = __uint32($count)
 	@_SYSCALL_READDIR_ARGSTR
 }
-probe dw_syscall.readdir.return = kernel.function("compat_sys_old_readdir").return ?,
-                               kernel.function("old32_readdir").return ?,
-                               kernel.function("old_readdir").return ?,
-                               kernel.function("sys_old_readdir").return ?
+probe dw_syscall.readdir.return = @syscall_return("compat_sys_old_readdir"),
+                               @syscall_return("old32_readdir"),
+                               @syscall_return("old_readdir"),
+                               @syscall_return("sys_old_readdir")
 {
 	@_SYSCALL_READDIR_NAME
 	@SYSC_RETVALSTR($return)

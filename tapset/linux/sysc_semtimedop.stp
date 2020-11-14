@@ -53,7 +53,7 @@ probe syscall.semtimedop.return = dw_syscall.semtimedop.return !,
 
 # dw_semtimedop _____________________________________________________
 
-probe dw_syscall.semtimedop = kernel.function("sys_semtimedop").call ?
+probe dw_syscall.semtimedop = @syscall_call("sys_semtimedop")
 {
 	# Since semop() can be implemented via semtimedop(), we need
 	# to make sure this is a real semtimedop syscall (or a
@@ -67,7 +67,7 @@ probe dw_syscall.semtimedop = kernel.function("sys_semtimedop").call ?
 	timeout_str = _struct_timespec_u(timeout_uaddr, 1)
 	@_SYSCALL_SEMTIMEDOP_ARGSTR
 }
-probe dw_syscall.semtimedop.return = kernel.function("sys_semtimedop").return ?
+probe dw_syscall.semtimedop.return = @syscall_return("sys_semtimedop")
 {
 	@__syscall_gate2(@const("__NR_semtimedop"), @const("__NR_ipc"))
 	@_SYSCALL_SEMTIMEDOP_NAME
@@ -172,7 +172,7 @@ probe dw_syscall.compat_sys_semtimedop = __syscall.compat_semtimedop ?,
 	@_SYSCALL_SEMTIMEDOP_ARGSTR
 }
 probe __syscall.compat_semtimedop =
-	kernel.function("compat_sys_semtimedop").call ?
+	@syscall_call("compat_sys_semtimedop")
 {
 	@__compat_syscall_gate_negative(@const("__NR_compat_ipc"))
 	semid = __int32($semid)
@@ -181,8 +181,8 @@ probe __syscall.compat_semtimedop =
 	timeout_uaddr = $timeout
 }
 probe __syscall.compat_ipc.semtimedop =
-	kernel.function("compat_sys_ipc").call ?,
-        kernel.function("sys32_ipc").call ?
+	@syscall_call("compat_sys_ipc"),
+        @syscall_call("sys32_ipc")
 {
         if ($call != @const("SEMTIMEDOP")) next;
         semid = __int32($first)
@@ -198,13 +198,13 @@ probe dw_syscall.compat_sys_semtimedop.return =
 	@SYSC_RETVALSTR($return)
 }
 probe __syscall.compat_sys_semtimedop.return =
-	kernel.function("compat_sys_semtimedop").return ?
+	@syscall_return("compat_sys_semtimedop")
 {
 	@__compat_syscall_gate_negative(@const("__NR_compat_ipc"))
 }
 probe __syscall.compat_ipc.semtimedop.return =
-	kernel.function("compat_sys_ipc").return ?,
-	kernel.function("sys32_ipc").return ?
+	@syscall_return("compat_sys_ipc"),
+	@syscall_return("sys32_ipc")
 {
 	if (@entry($call) != @const("SEMTIMEDOP")) next;
 }

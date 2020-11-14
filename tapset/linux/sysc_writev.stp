@@ -43,8 +43,8 @@ probe syscall.writev.return = dw_syscall.writev.return !,
 
 # dw_writev _____________________________________________________
 
-probe dw_syscall.writev = kernel.function("compat_sys_writev").call ?,
-                       kernel.function("sys_writev").call
+probe dw_syscall.writev = @syscall_call("compat_sys_writev"),
+                       @syscall_call("sys_writev")
 {
 	@_SYSCALL_WRITEV_NAME
 	vector_uaddr = $vec
@@ -54,8 +54,8 @@ probe dw_syscall.writev = kernel.function("compat_sys_writev").call ?,
 	fd = __int32($fd)
 	@_SYSCALL_WRITEV_ARGSTR
 }
-probe dw_syscall.writev.return = kernel.function("compat_sys_writev").return ?,
-                              kernel.function("sys_writev").return
+probe dw_syscall.writev.return = @syscall_return("compat_sys_writev"),
+                              @syscall_return("sys_writev")
 {
 	@_SYSCALL_WRITEV_NAME
 	@SYSC_RETVALSTR($return)

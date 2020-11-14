@@ -39,7 +39,7 @@ probe syscall.ioprio_set.return = dw_syscall.ioprio_set.return !,
 
 # dw_ioprio_set _____________________________________________________
 
-probe dw_syscall.ioprio_set = kernel.function("sys_ioprio_set").call ?
+probe dw_syscall.ioprio_set = @syscall_call("sys_ioprio_set")
 {
 	@_SYSCALL_IOPRIO_SET_NAME
 	which = __int32($which)
@@ -49,7 +49,7 @@ probe dw_syscall.ioprio_set = kernel.function("sys_ioprio_set").call ?
 	ioprio_str = _stp_ioprio_value_str(__int32($ioprio))
 	@_SYSCALL_IOPRIO_SET_ARGSTR
 }
-probe dw_syscall.ioprio_set.return = kernel.function("sys_ioprio_set").return ?
+probe dw_syscall.ioprio_set.return = @syscall_return("sys_ioprio_set")
 {
 	@_SYSCALL_IOPRIO_SET_NAME
 	@SYSC_RETVALSTR($return)

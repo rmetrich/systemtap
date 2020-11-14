@@ -18,12 +18,12 @@ probe syscall.sync.return = dw_syscall.sync.return !, nd_syscall.sync.return {}
 
 # dw_sync _____________________________________________________
 
-probe dw_syscall.sync = kernel.function("sys_sync").call
+probe dw_syscall.sync = @syscall_call("sys_sync")
 {
 	@_SYSCALL_SYNC_NAME
 	@_SYSCALL_SYNC_ARGSTR
 }
-probe dw_syscall.sync.return = kernel.function("sys_sync").return
+probe dw_syscall.sync.return = @syscall_return("sys_sync").
 {
 	@_SYSCALL_SYNC_NAME
 	@SYSC_RETVALSTR($return)

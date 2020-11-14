@@ -39,7 +39,7 @@ probe syscall.fchmodat.return = dw_syscall.fchmodat.return !, nd_syscall.fchmoda
 
 # dw_fchmodat _____________________________________________________
 
-probe dw_syscall.fchmodat = kernel.function("sys_fchmodat").call ?
+probe dw_syscall.fchmodat = @syscall_call("sys_fchmodat")
 {
 	@__syscall_compat_gate(@const("__NR_fchmodat"),
 			       @const("__NR_compat_fchmodat"))
@@ -57,7 +57,7 @@ probe dw_syscall.fchmodat = kernel.function("sys_fchmodat").call ?
 %)
 	@_SYSCALL_FCHMODAT_ARGSTR
 }
-probe dw_syscall.fchmodat.return = kernel.function("sys_fchmodat").return ?
+probe dw_syscall.fchmodat.return = @syscall_return("sys_fchmodat")
 {
 	@__syscall_compat_gate(@const("__NR_fchmodat"),
 			       @const("__NR_compat_fchmodat"))

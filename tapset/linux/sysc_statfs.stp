@@ -35,8 +35,8 @@ probe syscall.statfs.return = dw_syscall.statfs.return !,
 
 # dw_statfs _____________________________________________________
 
-probe dw_syscall.statfs = kernel.function("compat_sys_statfs").call ?,
-                       kernel.function("sys_statfs").call ?
+probe dw_syscall.statfs = @syscall_call("compat_sys_statfs"),
+                       @syscall_call("sys_statfs")
 {
 	@_SYSCALL_STATFS_NAME
 	buf_uaddr = @__pointer($buf)
@@ -44,8 +44,8 @@ probe dw_syscall.statfs = kernel.function("compat_sys_statfs").call ?,
 	@_SYSCALL_STATFS_ARGSTR
 }
 
-probe dw_syscall.statfs.return = kernel.function("compat_sys_statfs").return ?,
-                              kernel.function("sys_statfs").return ?
+probe dw_syscall.statfs.return = @syscall_return("compat_sys_statfs"),
+                              @syscall_return("sys_statfs")
 {
 	@_SYSCALL_STATFS_NAME
 	@SYSC_RETVALSTR($return)

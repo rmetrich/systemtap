@@ -53,7 +53,7 @@ probe syscall.remap_file_pages.return = dw_syscall.remap_file_pages.return !,
 
 # dw_remap_file_pages _____________________________________________________
 
-probe dw_syscall.remap_file_pages = kernel.function("sys_remap_file_pages").call ?
+probe dw_syscall.remap_file_pages = @syscall_call("sys_remap_file_pages")
 {
 	@_SYSCALL_REMAP_FILE_PAGES_NAME
 	start = __ulong($start)
@@ -65,7 +65,7 @@ probe dw_syscall.remap_file_pages = kernel.function("sys_remap_file_pages").call
 	flags_str = _mmap_flags(flags)
 	@_SYSCALL_REMAP_FILE_PAGES_ARGSTR
 }
-probe dw_syscall.remap_file_pages.return = kernel.function("sys_remap_file_pages").return ?
+probe dw_syscall.remap_file_pages.return = @syscall_return("sys_remap_file_pages")
 {
 	@_SYSCALL_REMAP_FILE_PAGES_NAME
 	@SYSC_RETVALSTR($return)

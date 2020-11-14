@@ -31,14 +31,14 @@ probe syscall.getcwd.return = dw_syscall.getcwd.return !, nd_syscall.getcwd.retu
 
 # dw_getcwd _____________________________________________________
 # long sys_getcwd(char __user *buf, unsigned long size)
-probe dw_syscall.getcwd = kernel.function("sys_getcwd").call
+probe dw_syscall.getcwd = @syscall_call("sys_getcwd")
 {
 	@_SYSCALL_GETCWD_NAME
 	buf_uaddr = $buf
 	size = $size
 	@_SYSCALL_GETCWD_ARGSTR
 }
-probe dw_syscall.getcwd.return = kernel.function("sys_getcwd").return
+probe dw_syscall.getcwd.return = @syscall_return("sys_getcwd")
 {
 	@_SYSCALL_GETCWD_NAME
 	@SYSC_RETVALSTR($return)

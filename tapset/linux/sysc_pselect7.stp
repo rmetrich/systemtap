@@ -22,7 +22,7 @@ probe syscall.pselect7.return = dw_syscall.pselect7.return !,
 
 # dw_pselect7 _____________________________________________________
 
-probe dw_syscall.pselect7 = kernel.function("sys_pselect7").call ?
+probe dw_syscall.pselect7 = @syscall_call("sys_pselect7")
 {
 	@__syscall_gate(@const("__NR_pselect7"))
 	@_SYSCALL_PSELECT7_NAME
@@ -36,7 +36,7 @@ probe dw_syscall.pselect7 = kernel.function("sys_pselect7").call ?
 	sigsetsize = $sigsetsize
 	@_SYSCALL_PSELECT7_ARGSTR
 }
-probe dw_syscall.pselect7.return = kernel.function("sys_pselect7").return ?
+probe dw_syscall.pselect7.return = @syscall_return("sys_pselect7")
 {
 	@__syscall_gate(@const("__NR_pselect7"))
 	@_SYSCALL_PSELECT7_NAME
@@ -75,7 +75,7 @@ probe syscall.compat_pselect7.return = dw_syscall.compat_pselect7.return !,
 
 # dw_compat_pselect7 _____________________________________________________
 
-probe dw_syscall.compat_pselect7 = kernel.function("compat_sys_pselect7").call ?
+probe dw_syscall.compat_pselect7 = @syscall_call("compat_sys_pselect7")
 {
 	@__compat_syscall_gate(@const("__NR_compat_pselect7"))
 	@_SYSCALL_PSELECT7_NAME
@@ -89,7 +89,7 @@ probe dw_syscall.compat_pselect7 = kernel.function("compat_sys_pselect7").call ?
 	sigsetsize = $sigsetsize
 	@_SYSCALL_PSELECT7_ARGSTR
 }
-probe dw_syscall.compat_pselect7.return = kernel.function("compat_sys_pselect7").return ?
+probe dw_syscall.compat_pselect7.return = @syscall_return("compat_sys_pselect7")
 {
 	@__compat_syscall_gate(@const("__NR_compat_pselect7"))
 	@_SYSCALL_PSELECT7_NAME

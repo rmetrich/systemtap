@@ -50,8 +50,8 @@ probe syscall.sigaltstack.return = dw_syscall.sigaltstack.return !,
 
 # dw_sigaltstack _____________________________________________________
 
-probe dw_syscall.sigaltstack = kernel.function("sys_sigaltstack").call,
-	kernel.function("compat_sys_sigaltstack").call ?
+probe dw_syscall.sigaltstack = @syscall_call("sys_sigaltstack"),
+	@syscall_call("compat_sys_sigaltstack")
 {
 	@_SYSCALL_SIGALTSTACK_NAME
 	uss_uaddr = @__pointer(@choose_defined($uss, $uss_ptr))
@@ -60,8 +60,8 @@ probe dw_syscall.sigaltstack = kernel.function("sys_sigaltstack").call,
 	uoss_uaddr = @__pointer(@choose_defined($uoss, $uoss_ptr))
 	@_SYSCALL_SIGALTSTACK_ARGSTR
 }
-probe dw_syscall.sigaltstack.return = kernel.function("sys_sigaltstack").return,
-	kernel.function("compat_sys_sigaltstack").return ?
+probe dw_syscall.sigaltstack.return = @syscall_return("sys_sigaltstack"),
+	@syscall_return("compat_sys_sigaltstack")
 {
 	@_SYSCALL_SIGALTSTACK_NAME
 	@SYSC_RETVALSTR($return)

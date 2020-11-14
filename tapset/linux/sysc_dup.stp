@@ -27,13 +27,13 @@ probe syscall.dup.return = dw_syscall.dup.return !, nd_syscall.dup.return ? {}
 
 # dw_dup _____________________________________________________
 
-probe dw_syscall.dup = kernel.function("sys_dup").call
+probe dw_syscall.dup = @syscall_call("sys_dup")
 {
 	@_SYSCALL_DUP_NAME
 	oldfd = __int32($fildes)
 	@_SYSCALL_DUP_ARGSTR
 }
-probe dw_syscall.dup.return = kernel.function("sys_dup").return
+probe dw_syscall.dup.return = @syscall_return("sys_dup")
 {
 	@_SYSCALL_DUP_NAME
 	@SYSC_RETVALSTR($return)

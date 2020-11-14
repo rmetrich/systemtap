@@ -32,13 +32,13 @@ probe syscall.set_tid_address.return = dw_syscall.set_tid_address.return !,
 
 # dw_set_tid_address _____________________________________________________
 
-probe dw_syscall.set_tid_address = kernel.function("sys_set_tid_address").call
+probe dw_syscall.set_tid_address = @syscall_call("sys_set_tid_address")
 {
 	@_SYSCALL_SET_TID_ADDRESS_NAME
 	tidptr_uaddr = $tidptr
 	@_SYSCALL_SET_TID_ADDRESS_ARGSTR
 }
-probe dw_syscall.set_tid_address.return = kernel.function("sys_set_tid_address").return
+probe dw_syscall.set_tid_address.return = @syscall_return("sys_set_tid_address")
 {
 	@_SYSCALL_SET_TID_ADDRESS_NAME
 	@SYSC_RETVALSTR($return)

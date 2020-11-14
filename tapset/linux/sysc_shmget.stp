@@ -61,7 +61,7 @@ probe syscall.shmget.return = dw_syscall.shmget.return !,
 
 # dw_shmget _____________________________________________________
 
-probe dw_syscall.shmget = kernel.function("sys_shmget").call ?
+probe dw_syscall.shmget = @syscall_call("sys_shmget")
 {
 	@_SYSCALL_SHMGET_NAME
 	key = __int32($key)
@@ -70,7 +70,7 @@ probe dw_syscall.shmget = kernel.function("sys_shmget").call ?
 	shmflg_str = _stp_shmget_flags_str(__int32($shmflg))
 	@_SYSCALL_SHMGET_ARGSTR
 }
-probe dw_syscall.shmget.return = kernel.function("sys_shmget").return ?
+probe dw_syscall.shmget.return = @syscall_return("sys_shmget")
 {
 	@_SYSCALL_SHMGET_NAME
 	@SYSC_RETVALSTR($return)

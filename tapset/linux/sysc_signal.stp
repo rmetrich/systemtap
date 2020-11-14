@@ -35,7 +35,7 @@ probe syscall.signal.return = dw_syscall.signal.return !,
 
 # dw_signal _____________________________________________________
 
-probe dw_syscall.signal = kernel.function("sys_signal").call ?
+probe dw_syscall.signal = @syscall_call("sys_signal")
 {
 	@_SYSCALL_SIGNAL_NAME
 	sig = __int32($sig)
@@ -44,7 +44,7 @@ probe dw_syscall.signal = kernel.function("sys_signal").call ?
 	handler_str = _sighandler_str(handler)
 	@_SYSCALL_SIGNAL_ARGSTR
 }
-probe dw_syscall.signal.return = kernel.function("sys_signal").return ?
+probe dw_syscall.signal.return = @syscall_return("sys_signal")
 {
 	@_SYSCALL_SIGNAL_NAME
 	@SYSC_RETVALSTR($return)

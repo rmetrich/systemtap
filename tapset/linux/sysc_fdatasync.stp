@@ -27,13 +27,13 @@ probe syscall.fdatasync.return = dw_syscall.fdatasync.return !, nd_syscall.fdata
 
 # dw_fdatasync _____________________________________________________
 
-probe dw_syscall.fdatasync = kernel.function("sys_fdatasync").call
+probe dw_syscall.fdatasync = @syscall_call("sys_fdatasync")
 {
 	@_SYSCALL_FDATASYNC_NAME
 	fd = __int32($fd)
 	@_SYSCALL_FDATASYNC_ARGSTR
 }
-probe dw_syscall.fdatasync.return = kernel.function("sys_fdatasync").return
+probe dw_syscall.fdatasync.return = @syscall_return("sys_fdatasync")
 {
 	@_SYSCALL_FDATASYNC_NAME
 	@SYSC_RETVALSTR($return)

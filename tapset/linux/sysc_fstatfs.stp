@@ -33,16 +33,16 @@ probe syscall.fstatfs.return = dw_syscall.fstatfs.return !, nd_syscall.fstatfs.r
 
 # dw_fstatfs _____________________________________________________
 
-probe dw_syscall.fstatfs = kernel.function("compat_sys_fstatfs").call ?,
-                        kernel.function("sys_fstatfs").call
+probe dw_syscall.fstatfs = @syscall_call("compat_sys_fstatfs"),
+                        @syscall_call("sys_fstatfs")
 {
 	@_SYSCALL_FSTATFS_NAME
 	fd = __int32($fd)
 	buf_uaddr = $buf
 	@_SYSCALL_FSTATFS_ARGSTR
 }
-probe dw_syscall.fstatfs.return = kernel.function("compat_sys_fstatfs").return ?,
-                               kernel.function("sys_fstatfs").return
+probe dw_syscall.fstatfs.return = @syscall_return("compat_sys_fstatfs"),
+                               @syscall_return("sys_fstatfs")
 {
 	@_SYSCALL_FSTATFS_NAME
 	@SYSC_RETVALSTR($return)

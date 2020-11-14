@@ -44,8 +44,8 @@ probe syscall.compat_lookup_dcookie.return = dw_syscall.compat_lookup_dcookie.re
 # dw_compat_lookup_dcookie _____________________________________________________
 
 probe dw_syscall.compat_lookup_dcookie =
-		kernel.function("compat_sys_lookup_dcookie") ?,
-		kernel.function("sys32_lookup_dcookie") ?
+		@syscall_call("compat_sys_lookup_dcookie"),
+		@syscall_call("sys32_lookup_dcookie")
 {
         @_SYSCALL_COMPAT_LOOKUP_DCOOKIE_NAME
         cookie = (@choose_defined($w1, $addr_high) << 32 | @choose_defined($w0, $addr_low))
@@ -54,8 +54,8 @@ probe dw_syscall.compat_lookup_dcookie =
         @_SYSCALL_COMPAT_LOOKUP_DCOOKIE_ARGSTR
 }
 probe dw_syscall.compat_lookup_dcookie.return =
-		kernel.function("compat_sys_lookup_dcookie").return ?,
-		kernel.function("sys32_lookup_dcookie").return ?
+		@syscall_return("compat_sys_lookup_dcookie"),
+		@syscall_return("sys32_lookup_dcookie")
 {
         @_SYSCALL_COMPAT_LOOKUP_DCOOKIE_NAME
         @SYSC_RETVALSTR($return)

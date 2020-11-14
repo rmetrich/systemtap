@@ -22,7 +22,7 @@ probe syscall.sys32_sigreturn.return = dw_syscall.sys32_sigreturn.return !,
 
 # dw_sys32_sigreturn _____________________________________________________
 
-probe dw_syscall.sys32_sigreturn = kernel.function("sys32_sigreturn") ?
+probe dw_syscall.sys32_sigreturn = @syscall_call("sys32_sigreturn")
 {
 	@_SYSCALL_SYS32_SIGRETURN_NAME
 	r3 = $r3
@@ -33,7 +33,7 @@ probe dw_syscall.sys32_sigreturn = kernel.function("sys32_sigreturn") ?
 	r8 = $r8
 	@_SYSCALL_SYS32_SIGRETURN_ARGSTR
 }
-probe dw_syscall.sys32_sigreturn.return = kernel.function("sys32_sigreturn").return ?
+probe dw_syscall.sys32_sigreturn.return = @syscall_return("sys32_sigreturn")
 {
 	@_SYSCALL_SYS32_SIGRETURN_NAME
 	@SYSC_RETVALSTR($return)

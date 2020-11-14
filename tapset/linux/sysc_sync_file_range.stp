@@ -33,7 +33,7 @@ probe syscall.sync_file_range.return = dw_syscall.sync_file_range.return !,
 
 # dw_sync_file_range _____________________________________________________
 
-probe dw_syscall.sync_file_range = kernel.function("sys_sync_file_range").call ?
+probe dw_syscall.sync_file_range = @syscall_call("sys_sync_file_range")
 {
 	@_SYSCALL_SYNC_FILE_RANGE_NAME
 	fd = __int32($fd)
@@ -44,7 +44,7 @@ probe dw_syscall.sync_file_range = kernel.function("sys_sync_file_range").call ?
 	@_SYSCALL_SYNC_FILE_RANGE_ARGSTR
 }
 probe dw_syscall.sync_file_range.return =
-	kernel.function("sys_sync_file_range").return ?
+	@syscall_return("sys_sync_file_range")
 {
 	@_SYSCALL_SYNC_FILE_RANGE_NAME
 	@SYSC_RETVALSTR($return)

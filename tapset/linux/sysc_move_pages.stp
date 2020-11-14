@@ -61,7 +61,7 @@ probe syscall.move_pages.return = dw_syscall.move_pages.return !, nd_syscall.mov
 # dw_move_pages _____________________________________________________
 
 probe dw_syscall.move_pages = __syscall.move_pages ?,
-                           kernel.function("compat_sys_move_pages").call ?
+                           @syscall_call("compat_sys_move_pages")
 {
 	@_SYSCALL_MOVE_PAGES_NAME
 	pages = @choose_defined($pages32, $pages)
@@ -73,17 +73,17 @@ probe dw_syscall.move_pages = __syscall.move_pages ?,
 	nr_pages = @__compat_ulong($nr_pages)
 	@_SYSCALL_MOVE_PAGES_ARGSTR
 }
-probe __syscall.move_pages = kernel.function("sys_move_pages").call
+probe __syscall.move_pages = @syscall_call("sys_move_pages")
 {
 	@__syscall_gate(@const("__NR_move_pages"))
 }
 probe dw_syscall.move_pages.return = __syscall.move_pages.return ?,
-                                  kernel.function("compat_sys_move_pages").return ?
+                                  @syscall_return("compat_sys_move_pages")
 {
 	@_SYSCALL_MOVE_PAGES_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.move_pages.return = kernel.function("sys_move_pages").return
+probe __syscall.move_pages.return = @syscall_return("sys_move_pages")
 {
 	@__syscall_gate(@const("__NR_move_pages"))
 }

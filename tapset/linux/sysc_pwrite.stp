@@ -42,7 +42,7 @@ probe syscall.pwrite.return = dw_syscall.pwrite.return !,
 
 # dw_pwrite _____________________________________________________
 
-probe dw_syscall.pwrite = kernel.function("sys_pwrite64").call
+probe dw_syscall.pwrite = @syscall_call("sys_pwrite64")
 {
 %( arch == "s390" || arch == "x86_64" %?
 	@__syscall_gate(@const("__NR_pwrite64"))
@@ -55,7 +55,7 @@ probe dw_syscall.pwrite = kernel.function("sys_pwrite64").call
 	offset = $pos
 	@_SYSCALL_PWRITE_ARGSTR
 }
-probe dw_syscall.pwrite.return = kernel.function("sys_pwrite64").return
+probe dw_syscall.pwrite.return = @syscall_return("sys_pwrite64")
 {
 %( arch == "s390" || arch == "x86_64" %?
 	@__syscall_gate(@const("__NR_pwrite64"))
@@ -160,12 +160,12 @@ probe syscall.pwrite32.return = dw_syscall.pwrite32.return !,
 
 probe dw_syscall.pwrite32 =
 %( arch == "s390" %?
-	kernel.function("compat_sys_s390_pwrite64").call ?,
+	@syscall_call("compat_sys_s390_pwrite64"),
 %)
 %( arch == "x86_64" %?
-	kernel.function("compat_sys_x86_pwrite64").call ?,
+	@syscall_call("compat_sys_x86_pwrite64"),
 %)
-	kernel.function("sys32_pwrite64").call ?
+	@syscall_call("sys32_pwrite64")
 {
 	@_SYSCALL_PWRITE_NAME
 	fd = __int32($fd)
@@ -178,12 +178,12 @@ probe dw_syscall.pwrite32 =
 }
 probe dw_syscall.pwrite32.return =
 %( arch == "s390" %?
-	kernel.function("compat_sys_s390_pwrite64").return ?,
+	@syscall_return("compat_sys_s390_pwrite64"),
 %)
 %( arch == "x86_64" %?
-	kernel.function("compat_sys_x86_pwrite64").return ?,
+	@syscall_return("compat_sys_x86_pwrite64"),
 %)
-	kernel.function("sys32_pwrite64").return ?
+	@syscall_return("sys32_pwrite64")
 {
 	@_SYSCALL_PWRITE_NAME
 	@SYSC_RETVALSTR($return)

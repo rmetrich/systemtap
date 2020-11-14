@@ -35,7 +35,7 @@ probe syscall.fchown16.return = dw_syscall.fchown16.return !, nd_syscall.fchown1
 
 # dw_fchown16 _____________________________________________________
 
-probe dw_syscall.fchown16 = kernel.function("sys_fchown16").call ?
+probe dw_syscall.fchown16 = @syscall_call("sys_fchown16")
 {
 	@_SYSCALL_FCHOWN16_NAME
 	fd = $fd
@@ -43,7 +43,7 @@ probe dw_syscall.fchown16 = kernel.function("sys_fchown16").call ?
 	group = __short($group)
 	@_SYSCALL_FCHOWN16_ARGSTR
 }
-probe dw_syscall.fchown16.return = kernel.function("sys_fchown16").return ?
+probe dw_syscall.fchown16.return = @syscall_return("sys_fchown16")
 {
 	@_SYSCALL_FCHOWN16_NAME
 	@SYSC_RETVALSTR($return)

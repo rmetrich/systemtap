@@ -18,17 +18,17 @@ probe syscall.rt_sigreturn.return = dw_syscall.rt_sigreturn.return !,
 
 # dw_rt_sigreturn _____________________________________________________
 
-probe dw_syscall.rt_sigreturn = kernel.function("ia64_rt_sigreturn").call !,
-			     kernel.function("sys_rt_sigreturn").call ?,
-                             kernel.function("sys32_rt_sigreturn").call ?
+probe dw_syscall.rt_sigreturn = @syscall_call_stop("ia64_rt_sigreturn"),
+			     @syscall_call("sys_rt_sigreturn"),
+                             @syscall_call("sys32_rt_sigreturn")
 {
 	@_SYSCALL_RT_SIGRETURN_NAME
 	@_SYSCALL_RT_SIGRETURN_ARGSTR
 }
 probe dw_syscall.rt_sigreturn.return =
-	kernel.function("ia64_rt_sigreturn").return !,
-	kernel.function("sys_rt_sigreturn").return ?,
-	kernel.function("sys32_rt_sigreturn").return ?
+	@syscall_return_stop("ia64_rt_sigreturn"),
+	@syscall_return("sys_rt_sigreturn"),
+	@syscall_return("sys32_rt_sigreturn")
 {
 	@_SYSCALL_RT_SIGRETURN_NAME
 %( arch == "mips" %?

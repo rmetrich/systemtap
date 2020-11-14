@@ -32,14 +32,14 @@ probe syscall.mlock.return = dw_syscall.mlock.return !, nd_syscall.mlock.return 
 
 # dw_mlock _____________________________________________________
 
-probe dw_syscall.mlock = kernel.function("sys_mlock").call ?
+probe dw_syscall.mlock = @syscall_call("sys_mlock")
 {
 	@_SYSCALL_MLOCK_NAME
 	addr = __ulong($start)
 	len = __ulong($len)
 	@_SYSCALL_MLOCK_ARGSTR
 }
-probe dw_syscall.mlock.return = kernel.function("sys_mlock").return ?
+probe dw_syscall.mlock.return = @syscall_return("sys_mlock")
 {
 	@_SYSCALL_MLOCK_NAME
 	@SYSC_RETVALSTR($return)

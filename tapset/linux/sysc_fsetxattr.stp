@@ -68,7 +68,7 @@ probe syscall.fsetxattr.return = dw_syscall.fsetxattr.return !, nd_syscall.fsetx
 
 # dw_fsetxattr _____________________________________________________
 
-probe dw_syscall.fsetxattr = kernel.function("sys_fsetxattr").call
+probe dw_syscall.fsetxattr = @syscall_call("sys_fsetxattr")
 {
 	@_SYSCALL_FSETXATTR_NAME
 	filedes = __int32($fd)
@@ -85,7 +85,7 @@ probe dw_syscall.fsetxattr = kernel.function("sys_fsetxattr").call
 	flags_str = _stp_xattr_flags_str(__int32($flags))
 	@_SYSCALL_FSETXATTR_ARGSTR
 }
-probe dw_syscall.fsetxattr.return = kernel.function("sys_fsetxattr").return
+probe dw_syscall.fsetxattr.return = @syscall_return("sys_fsetxattr")
 {
 	@_SYSCALL_FSETXATTR_NAME
 	@SYSC_RETVALSTR($return)

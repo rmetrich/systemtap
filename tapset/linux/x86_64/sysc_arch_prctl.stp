@@ -39,8 +39,8 @@ probe syscall.arch_prctl.return = dw_syscall.arch_prctl.return !,
 
 # dw_arch_prctl _____________________________________________________
 
-probe dw_syscall.arch_prctl = kernel.function("sys_arch_prctl").call,
-	kernel.function("compat_sys_arch_prctl").call ?
+probe dw_syscall.arch_prctl = @syscall_call("sys_arch_prctl"),
+	@syscall_call("compat_sys_arch_prctl")
 {
 	@_SYSCALL_ARCH_PRCTL_NAME
 	code = __int32(@choose_defined($code, $option))
@@ -48,8 +48,8 @@ probe dw_syscall.arch_prctl = kernel.function("sys_arch_prctl").call,
 	addr = __ulong(@choose_defined($addr, $arg2))
 	@_SYSCALL_ARCH_PRCTL_ARGSTR
 }
-probe dw_syscall.arch_prctl.return = kernel.function("sys_arch_prctl").return,
-	kernel.function("compat_sys_arch_prctl").return ?
+probe dw_syscall.arch_prctl.return = @syscall_return("sys_arch_prctl"),
+	@syscall_return("compat_sys_arch_prctl")
 {
 	@_SYSCALL_ARCH_PRCTL_NAME
 	@SYSC_RETVALSTR($return)

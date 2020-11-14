@@ -16,12 +16,12 @@ probe syscall.getpgrp.return = dw_syscall.getpgrp.return !, nd_syscall.getpgrp.r
 
 # dw_getpgrp _____________________________________________________
 
-probe dw_syscall.getpgrp = kernel.function("sys_getpgrp").call ?
+probe dw_syscall.getpgrp = @syscall_call("sys_getpgrp")
 {
 	@_SYSCALL_GETPGRP_NAME
 	@_SYSCALL_GETPGRP_ARGSTR
 }
-probe dw_syscall.getpgrp.return = kernel.function("sys_getpgrp").return ?
+probe dw_syscall.getpgrp.return = @syscall_return("sys_getpgrp")
 {
 	@_SYSCALL_GETPGRP_NAME
 	@SYSC_RETVALSTR($return)

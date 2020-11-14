@@ -21,7 +21,7 @@ probe syscall.sys32_ptrace.return = dw_syscall.sys32_ptrace.return !,
 
 # dw_sys32_ptrace _____________________________________________________
 
-probe dw_syscall.sys32_ptrace = kernel.function("sys32_ptrace") ?
+probe dw_syscall.sys32_ptrace = @syscall_call("sys32_ptrace")
 {
 	@_SYSCALL_SYS32_PTRACE_NAME
 	request = $request
@@ -30,7 +30,7 @@ probe dw_syscall.sys32_ptrace = kernel.function("sys32_ptrace") ?
 	data = $data
 	@_SYSCALL_SYS32_PTRACE_ARGSTR
 }
-probe dw_syscall.sys32_ptrace.return = kernel.function("sys32_ptrace").return ?
+probe dw_syscall.sys32_ptrace.return = @syscall_return("sys32_ptrace")
 {
 	@_SYSCALL_SYS32_PTRACE_NAME
 	@SYSC_RETVALSTR($return)

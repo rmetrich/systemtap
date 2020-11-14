@@ -86,7 +86,7 @@ probe dw_syscall.sendto = __syscall.sendto ?, __syscall.socketcall.sendto ?,
 	to_str = _struct_sockaddr_u(to_uaddr, tolen)
 	@_SYSCALL_SENDTO_ARGSTR
 }
-probe __syscall.sendto = kernel.function("sys_sendto").call ?
+probe __syscall.sendto = @syscall_call("sys_sendto")
 {
 	@__syscall_gate(@const("__NR_sendto"))
 	s = __int32($fd)
@@ -96,7 +96,7 @@ probe __syscall.sendto = kernel.function("sys_sendto").call ?
 	to_uaddr = $addr
 	tolen = __uint32($addr_len)
 }
-probe __syscall.socketcall.sendto = kernel.function("sys_socketcall").call ?
+probe __syscall.socketcall.sendto = @syscall_call("sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_SENDTO")) next;
 	s = __int32(user_ulong(&@ulong_cast($args)[0]))
@@ -107,7 +107,7 @@ probe __syscall.socketcall.sendto = kernel.function("sys_socketcall").call ?
 	tolen = __uint32(user_ulong(&@ulong_cast($args)[5]))
 }
 probe __syscall.compat_socketcall.sendto =
-	kernel.function("compat_sys_socketcall").call ?
+	@syscall_call("compat_sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_SENDTO")) next;
 	s = user_int(&@uint_cast($args)[0])
@@ -117,9 +117,9 @@ probe __syscall.compat_socketcall.sendto =
 	to_uaddr = user_uint32(&@uint_cast($args)[4])
 	tolen = user_uint32(&@uint_cast($args)[5])
 }
-probe dw_syscall.sendto.return = kernel.function("sys_sendto").return ?,
-	kernel.function("sys_socketcall").return ?,
-	kernel.function("compat_sys_socketcall").return ?
+probe dw_syscall.sendto.return = @syscall_return("sys_sendto"),
+	@syscall_return("sys_socketcall"),
+	@syscall_return("compat_sys_socketcall")
 {
 	if (@defined(@entry($call))) {
 		if (__int32(@entry($call)) != @const("SYS_SENDTO")) next;

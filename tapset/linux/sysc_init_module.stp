@@ -40,7 +40,7 @@ probe syscall.init_module.return = dw_syscall.init_module.return !,
 
 # dw_init_module _____________________________________________________
 
-probe dw_syscall.init_module = kernel.function("sys_init_module").call ?
+probe dw_syscall.init_module = @syscall_call("sys_init_module")
 {
 	@_SYSCALL_INIT_MODULE_NAME
 	umod_uaddr = $umod
@@ -48,7 +48,7 @@ probe dw_syscall.init_module = kernel.function("sys_init_module").call ?
 	uargs = user_string_quoted($uargs)
 	@_SYSCALL_INIT_MODULE_ARGSTR
 }
-probe dw_syscall.init_module.return = kernel.function("sys_init_module").return ?
+probe dw_syscall.init_module.return = @syscall_return("sys_init_module")
 {
 	@_SYSCALL_INIT_MODULE_NAME
 	@SYSC_RETVALSTR($return)

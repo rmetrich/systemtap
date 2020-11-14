@@ -37,7 +37,7 @@ probe syscall.msync.return = dw_syscall.msync.return !,
 
 # dw_msync _____________________________________________________
 
-probe dw_syscall.msync = kernel.function("sys_msync").call ?
+probe dw_syscall.msync = @syscall_call("sys_msync")
 {
 	@_SYSCALL_MSYNC_NAME
 	start = $start
@@ -46,7 +46,7 @@ probe dw_syscall.msync = kernel.function("sys_msync").call ?
 	flags_str = _msync_flag_str(flags)
 	@_SYSCALL_MSYNC_ARGSTR
 }
-probe dw_syscall.msync.return = kernel.function("sys_msync").return ?
+probe dw_syscall.msync.return = @syscall_return("sys_msync")
 {
 	@_SYSCALL_MSYNC_NAME
 	@SYSC_RETVALSTR($return)

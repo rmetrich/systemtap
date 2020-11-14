@@ -53,7 +53,7 @@ probe syscall.name_to_handle_at.return = dw_syscall.name_to_handle_at.return !,
 # dw_name_to_handle_at _____________________________________________________
 
 probe dw_syscall.name_to_handle_at =
-	kernel.function("sys_name_to_handle_at").call ?
+	@syscall_call("sys_name_to_handle_at")
 {
 	@_SYSCALL_NAME_TO_HANDLE_AT_NAME
 	dfd = __int32($dfd)
@@ -66,7 +66,7 @@ probe dw_syscall.name_to_handle_at =
 	@_SYSCALL_NAME_TO_HANDLE_AT_ARGSTR
 }
 probe dw_syscall.name_to_handle_at.return =
-	kernel.function("sys_name_to_handle_at").return ?
+	@syscall_return("sys_name_to_handle_at")
 {
 	@_SYSCALL_NAME_TO_HANDLE_AT_NAME
 	@SYSC_RETVALSTR($return)

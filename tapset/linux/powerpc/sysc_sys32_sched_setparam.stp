@@ -21,14 +21,14 @@ probe syscall.sys32_sched_setparam.return = dw_syscall.sys32_sched_setparam.retu
 
 # dw_sys32_sched_setparam _____________________________________________________
 
-probe dw_syscall.sys32_sched_setparam = kernel.function("sys32_sched_setparam") ?
+probe dw_syscall.sys32_sched_setparam = @syscall_call("sys32_sched_setparam")
 {
 	@_SYSCALL_SYS32_SCHED_SETPARAM_NAME
 	pid = $pid
 	param_uaddr = $param
 	@_SYSCALL_SYS32_SCHED_SETPARAM_ARGSTR
 }
-probe dw_syscall.sys32_sched_setparam.return = kernel.function("sys32_sched_setparam").return ?
+probe dw_syscall.sys32_sched_setparam.return = @syscall_return("sys32_sched_setparam")
 {
 	@_SYSCALL_SYS32_SCHED_SETPARAM_NAME
 	@SYSC_RETVALSTR($return)

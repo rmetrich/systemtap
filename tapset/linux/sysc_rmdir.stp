@@ -31,13 +31,13 @@ probe syscall.rmdir.return = dw_syscall.rmdir.return !, nd_syscall.rmdir.return 
 
 # dw_rmdir _____________________________________________________
 
-probe dw_syscall.rmdir = kernel.function("sys_rmdir").call
+probe dw_syscall.rmdir = @syscall_call("sys_rmdir")
 {
 	@_SYSCALL_RMDIR_NAME
 	pathname = user_string_quoted($pathname)
 	@_SYSCALL_RMDIR_ARGSTR
 }
-probe dw_syscall.rmdir.return = kernel.function("sys_rmdir").return
+probe dw_syscall.rmdir.return = @syscall_return("sys_rmdir")
 {
 	@_SYSCALL_RMDIR_NAME
 	@SYSC_RETVALSTR($return)

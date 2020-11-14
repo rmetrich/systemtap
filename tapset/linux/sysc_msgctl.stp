@@ -58,7 +58,7 @@ probe syscall.msgctl.return = dw_syscall.msgctl.return !,
 
 # dw_msgctl _____________________________________________________
 
-probe dw_syscall.msgctl = kernel.function("sys_msgctl").call ?
+probe dw_syscall.msgctl = @syscall_call("sys_msgctl")
 {
 	@__syscall_gate2(@const("__NR_msgctl"), @const("__NR_ipc"))
 	@_SYSCALL_MSGCTL_NAME
@@ -68,7 +68,7 @@ probe dw_syscall.msgctl = kernel.function("sys_msgctl").call ?
 	buf_uaddr = $buf
 	@_SYSCALL_MSGCTL_ARGSTR
 }
-probe dw_syscall.msgctl.return = kernel.function("sys_msgctl").return ?
+probe dw_syscall.msgctl.return = @syscall_return("sys_msgctl")
 {
 	@__syscall_gate2(@const("__NR_msgctl"), @const("__NR_ipc"))
 	@_SYSCALL_MSGCTL_NAME
@@ -163,15 +163,15 @@ probe dw_syscall.compat_sys_msgctl = __syscall.compat_msgctl ?,
 	cmd_str = _stp_msgctl_cmd_str(cmd)
 	@_SYSCALL_MSGCTL_ARGSTR
 }
-probe __syscall.compat_msgctl = kernel.function("compat_sys_msgctl").call ?
+probe __syscall.compat_msgctl = @syscall_call("compat_sys_msgctl")
 {
 	@__compat_syscall_gate_negative(@const("__NR_compat_ipc"))
 	msqid = __int32(@choose_defined($first, $msqid))
 	cmd = __int32(@choose_defined($second, $cmd))
 	buf_uaddr = $uptr
 }
-probe __syscall.compat_ipc.msgctl = kernel.function("compat_sys_ipc").call ?,
-				    kernel.function("sys32_ipc").call ?
+probe __syscall.compat_ipc.msgctl = @syscall_call("compat_sys_ipc"),
+				    @syscall_call("sys32_ipc")
 {
 	if (($call & 0xffff) != @const("MSGCTL")) next;
 	msqid = __int32($first)
@@ -186,13 +186,13 @@ probe dw_syscall.compat_sys_msgctl.return =
 	@SYSC_RETVALSTR($return)
 }
 probe __syscall.compat_sys_msgctl.return =
-	kernel.function("compat_sys_msgctl").return ?
+	@syscall_return("compat_sys_msgctl")
 {
 	@__compat_syscall_gate_negative(@const("__NR_compat_ipc"))
 }
 probe __syscall.compat_ipc.msgctl.return =
-	kernel.function("compat_sys_ipc").return ?,
-	kernel.function("sys32_ipc").return ?
+	@syscall_return("compat_sys_ipc"),
+	@syscall_return("sys32_ipc")
 {
 	if ((@entry($call) & 0xffff) != @const("MSGCTL")) next;
 }

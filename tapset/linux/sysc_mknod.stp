@@ -37,7 +37,7 @@ probe syscall.mknod.return = dw_syscall.mknod.return !, nd_syscall.mknod.return 
 
 # dw_mknod _____________________________________________________
 
-probe dw_syscall.mknod = kernel.function("sys_mknod").call
+probe dw_syscall.mknod = @syscall_call("sys_mknod")
 {
 	@_SYSCALL_MKNOD_NAME
 	pathname = user_string_quoted($filename)
@@ -47,7 +47,7 @@ probe dw_syscall.mknod = kernel.function("sys_mknod").call
 	@_SYSCALL_MKNOD_ARGSTR
 }
 
-probe dw_syscall.mknod.return = kernel.function("sys_mknod").return
+probe dw_syscall.mknod.return = @syscall_return("sys_mknod")
 {
 	@_SYSCALL_MKNOD_NAME
 	@SYSC_RETVALSTR($return)

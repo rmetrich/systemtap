@@ -35,8 +35,8 @@ probe syscall.sigsuspend.return = dw_syscall.sigsuspend.return !,
 # dw_sigsuspend _____________________________________________________
 
 probe dw_syscall.sigsuspend = __syscall.sigsuspend ?,
-	kernel.function("sys32_sigsuspend").call ?,
-	kernel.function("compat_sys_sigsuspend").call ?
+	@syscall_call("sys32_sigsuspend"),
+	@syscall_call("compat_sys_sigsuspend")
 {
 	@_SYSCALL_SIGSUSPEND_NAME
 %( arch == "mips" && CONFIG_TRAD_SIGNALS == "y" %?
@@ -47,18 +47,18 @@ probe dw_syscall.sigsuspend = __syscall.sigsuspend ?,
 	mask_str = _stp_sigmask_str(mask)
 	@_SYSCALL_SIGSUSPEND_ARGSTR
 }
-probe __syscall.sigsuspend = kernel.function("sys_sigsuspend").call ?
+probe __syscall.sigsuspend = @syscall_call("sys_sigsuspend")
 {
 	@_SYSCALL_GATE
 }
 probe dw_syscall.sigsuspend.return = __syscall.sigsuspend.return ?,
-	kernel.function("sys32_sigsuspend").return ?,
-	kernel.function("compat_sys_sigsuspend").return ?
+	@syscall_return("sys32_sigsuspend"),
+	@syscall_return("compat_sys_sigsuspend")
 {
 	@_SYSCALL_SIGSUSPEND_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.sigsuspend.return = kernel.function("sys_sigsuspend").return ?
+probe __syscall.sigsuspend.return = @syscall_return("sys_sigsuspend")
 {
 	@_SYSCALL_GATE
 }

@@ -78,7 +78,7 @@ probe syscall.msgsnd.return = dw_syscall.msgsnd.return !,
 
 # dw_msgsnd _____________________________________________________
 
-probe dw_syscall.msgsnd = kernel.function("sys_msgsnd").call ?
+probe dw_syscall.msgsnd = @syscall_call("sys_msgsnd")
 {
 	@__syscall_gate_compat_simple
 	@_SYSCALL_MSGSND_NAME
@@ -89,7 +89,7 @@ probe dw_syscall.msgsnd = kernel.function("sys_msgsnd").call ?
 	msgflg_str = _stp_msgflg_str(__int32($msgflg))
 	@_SYSCALL_MSGSND_ARGSTR
 }
-probe dw_syscall.msgsnd.return = kernel.function("sys_msgsnd").return ?
+probe dw_syscall.msgsnd.return = @syscall_return("sys_msgsnd")
 {
 	@__syscall_gate_compat_simple
 	@_SYSCALL_MSGSND_NAME
@@ -186,7 +186,7 @@ probe dw_syscall.compat_sys_msgsnd = __syscall.compat_msgsnd ?,
 	msgflg_str = _stp_msgflg_str(msgflg)
 	@_SYSCALL_MSGSND_ARGSTR
 }
-probe __syscall.compat_msgsnd = kernel.function("compat_sys_msgsnd").call ?
+probe __syscall.compat_msgsnd = @syscall_call("compat_sys_msgsnd")
 {
 	@__compat_syscall_gate_negative(@const("__NR_compat_ipc"))
 	msqid = __int32(@choose_defined($msqid, $first))
@@ -194,8 +194,8 @@ probe __syscall.compat_msgsnd = kernel.function("compat_sys_msgsnd").call ?
 	msgsz = __uint32(@choose_defined($msgsz, $second))
 	msgflg = __int32(@choose_defined($msgflg, $third))
 }
-probe __syscall.compat_ipc.msgsnd = kernel.function("compat_sys_ipc").call ?,
-				    kernel.function("sys32_ipc").call ?
+probe __syscall.compat_ipc.msgsnd = @syscall_call("compat_sys_ipc"),
+				    @syscall_call("sys32_ipc")
 {
 	if (($call & 0xffff) != @const("MSGSND")) next;
 	msqid = __int32($first)
@@ -211,13 +211,13 @@ probe dw_syscall.compat_sys_msgsnd.return =
 	@SYSC_RETVALSTR($return)
 }
 probe __syscall.compat_sys_msgsnd.return =
-	kernel.function("compat_sys_msgsnd").return ?
+	@syscall_return("compat_sys_msgsnd")
 {
 	@__compat_syscall_gate_negative(@const("__NR_compat_ipc"))
 }
 probe __syscall.compat_ipc.msgsnd.return =
-	kernel.function("compat_sys_ipc").return ?,
-	kernel.function("sys32_ipc").return ?
+	@syscall_return("compat_sys_ipc"),
+	@syscall_return("sys32_ipc")
 {
 	if ((@entry($call) & 0xffff) != @const("MSGSND")) next;
 }

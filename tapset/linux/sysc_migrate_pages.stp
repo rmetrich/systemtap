@@ -44,7 +44,7 @@ probe syscall.migrate_pages.return = dw_syscall.migrate_pages.return !,
 # dw_migrate_pages _____________________________________________________
 
 probe dw_syscall.migrate_pages = __syscall.migrate_pages ?,
-                              kernel.function("compat_sys_migrate_pages").call ?
+                              @syscall_call("compat_sys_migrate_pages")
 {
 	@_SYSCALL_MIGRATE_PAGES_NAME
 	pid = __int32($pid)
@@ -53,19 +53,19 @@ probe dw_syscall.migrate_pages = __syscall.migrate_pages ?,
 	maxnode = @__compat_ulong($maxnode)
 	@_SYSCALL_MIGRATE_PAGES_ARGSTR
 }
-probe __syscall.migrate_pages = kernel.function("sys_migrate_pages").call
+probe __syscall.migrate_pages = @syscall_call("sys_migrate_pages")
 {
 %( arch == "powerpc" %?
 	@__syscall_gate_compat_simple
 %)
 }
 probe dw_syscall.migrate_pages.return = __syscall.migrate_pages.return ?,
-                                     kernel.function("compat_sys_migrate_pages").return ?
+                                     @syscall_return("compat_sys_migrate_pages")
 {
 	@_SYSCALL_MIGRATE_PAGES_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.migrate_pages.return = kernel.function("sys_migrate_pages").return
+probe __syscall.migrate_pages.return = @syscall_return("sys_migrate_pages")
 {
 %( arch == "powerpc" %?
 	@__syscall_gate_compat_simple

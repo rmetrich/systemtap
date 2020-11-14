@@ -43,7 +43,7 @@ probe syscall.mq_getsetattr.return = dw_syscall.mq_getsetattr.return !, nd_sysca
 
 probe dw_syscall.mq_getsetattr =
         __syscall.mq_getsetattr,
-        kernel.function("compat_sys_mq_getsetattr").call ?
+        @syscall_call("compat_sys_mq_getsetattr")
 {
 	@_SYSCALL_MQ_GETSETATTR_NAME
 	mqdes = __int32($mqdes)
@@ -51,18 +51,18 @@ probe dw_syscall.mq_getsetattr =
 	u_omqstat_uaddr = @__pointer($u_omqstat)
 	@_SYSCALL_MQ_GETSETATTR_ARGSTR
 }
-probe __syscall.mq_getsetattr = kernel.function("sys_mq_getsetattr").call
+probe __syscall.mq_getsetattr = @syscall_call("sys_mq_getsetattr")
 {
         @__syscall_gate(@const("__NR_mq_getsetattr"))
 }
 probe dw_syscall.mq_getsetattr.return =
         __syscall.mq_getsetattr.return,
-        kernel.function("compat_sys_mq_getsetattr").return ?
+        @syscall_return("compat_sys_mq_getsetattr")
 {
 	@_SYSCALL_MQ_GETSETATTR_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.mq_getsetattr.return = kernel.function("sys_mq_getsetattr").return
+probe __syscall.mq_getsetattr.return = @syscall_return("sys_mq_getsetattr")
 {
         @__syscall_gate(@const("__NR_mq_getsetattr"))
 }

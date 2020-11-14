@@ -49,7 +49,7 @@ probe dw_syscall.exit.return = never
 
 # dw_exit _____________________________________________________
 
-probe dw_syscall.exit = kernel.function("sys_exit").call
+probe dw_syscall.exit = @syscall_call("sys_exit")
 {
 	@_SYSCALL_EXIT_NAME
 	status = __int32($error_code)

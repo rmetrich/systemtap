@@ -45,7 +45,7 @@ probe syscall.unlinkat.return = dw_syscall.unlinkat.return !,
 
 # dw_unlinkat _____________________________________________________
 
-probe dw_syscall.unlinkat = kernel.function("sys_unlinkat").call ?
+probe dw_syscall.unlinkat = @syscall_call("sys_unlinkat")
 {
 	@_SYSCALL_UNLINKAT_NAME
 	dfd = __int32($dfd)
@@ -56,7 +56,7 @@ probe dw_syscall.unlinkat = kernel.function("sys_unlinkat").call ?
 	flag_str = _at_flag_str(__uint32($flag))
 	@_SYSCALL_UNLINKAT_ARGSTR
 }
-probe dw_syscall.unlinkat.return = kernel.function("sys_unlinkat").return ?
+probe dw_syscall.unlinkat.return = @syscall_return("sys_unlinkat")
 {
 	@_SYSCALL_UNLINKAT_NAME
 	@SYSC_RETVALSTR($return)

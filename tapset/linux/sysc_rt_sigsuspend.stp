@@ -36,9 +36,9 @@ probe syscall.rt_sigsuspend.return = dw_syscall.rt_sigsuspend.return !,
 
 # dw_rt_sigsuspend _____________________________________________________
 
-probe dw_syscall.rt_sigsuspend = kernel.function("compat_sys_rt_sigsuspend").call ?,
-                              kernel.function("ia64_rt_sigsuspend").call ?,
-                              kernel.function("sys_rt_sigsuspend").call ?
+probe dw_syscall.rt_sigsuspend = @syscall_call("compat_sys_rt_sigsuspend")
+                              @syscall_call("ia64_rt_sigsuspend"),
+                              @syscall_call("sys_rt_sigsuspend")
 {
 	@_SYSCALL_RT_SIGSUSPEND_NAME
 	set_uaddr = @__pointer($unewset)
@@ -48,9 +48,9 @@ probe dw_syscall.rt_sigsuspend = kernel.function("compat_sys_rt_sigsuspend").cal
 	@_SYSCALL_RT_SIGSUSPEND_ARGSTR
 }
 probe dw_syscall.rt_sigsuspend.return =
-	kernel.function("compat_sys_rt_sigsuspend").return ?,
-	kernel.function("ia64_rt_sigsuspend").return ?,
-	kernel.function("sys_rt_sigsuspend").return ?
+	@syscall_return("compat_sys_rt_sigsuspend"),
+	@syscall_return("ia64_rt_sigsuspend"),
+	@syscall_return("sys_rt_sigsuspend")
 {
 	@_SYSCALL_RT_SIGSUSPEND_NAME
 	@SYSC_RETVALSTR($return)

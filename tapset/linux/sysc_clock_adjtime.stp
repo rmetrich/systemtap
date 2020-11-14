@@ -41,7 +41,7 @@ probe dw_syscall.clock_adjtime = __syscall.clock_adjtime ?,
 {
 	@_SYSCALL_CLOCK_ADJTIME_NAME
 }
-probe __syscall.clock_adjtime = kernel.function("sys_clock_adjtime").call
+probe __syscall.clock_adjtime = @syscall_call("sys_clock_adjtime")
 {
 	@__syscall_gate_compat_simple
 	clk_id = __int32($which_clock)
@@ -51,7 +51,7 @@ probe __syscall.clock_adjtime = kernel.function("sys_clock_adjtime").call
 	@_SYSCALL_CLOCK_ADJTIME_ARGSTR
 }
 probe __syscall.compat_clock_adjtime =
-	kernel.function("compat_sys_clock_adjtime").call ?
+	@syscall_call("compat_sys_clock_adjtime")
 {
 	clk_id = __int32($which_clock)
 	clk_id_str = _get_wc_str(clk_id)
@@ -60,13 +60,12 @@ probe __syscall.compat_clock_adjtime =
 	@_SYSCALL_CLOCK_ADJTIME_ARGSTR
 }
 probe dw_syscall.clock_adjtime.return = __syscall.clock_adjtime.return ?,
-	kernel.function("compat_sys_clock_adjtime").return ?
+	@syscall_return("compat_sys_clock_adjtime")
 {
 	@_SYSCALL_CLOCK_ADJTIME_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.clock_adjtime.return =
-	kernel.function("sys_clock_adjtime").return
+probe __syscall.clock_adjtime.return = @syscall_return("sys_clock_adjtime")
 {
 	@__syscall_gate_compat_simple
 }

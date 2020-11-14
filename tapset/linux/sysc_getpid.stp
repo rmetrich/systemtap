@@ -16,12 +16,12 @@ probe syscall.getpid.return = dw_syscall.getpid.return !, nd_syscall.getpid.retu
 
 # dw_getpid _____________________________________________________
 
-probe dw_syscall.getpid = kernel.function("sys_getpid").call
+probe dw_syscall.getpid = @syscall_call("sys_getpid")
 {
 	@_SYSCALL_GETPID_NAME
 	@_SYSCALL_GETPID_ARGSTR
 }
-probe dw_syscall.getpid.return = kernel.function("sys_getpid").return
+probe dw_syscall.getpid.return = @syscall_return("sys_getpid")
 {
 	@_SYSCALL_GETPID_NAME
 	@SYSC_RETVALSTR($return)

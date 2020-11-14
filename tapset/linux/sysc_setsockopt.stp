@@ -80,7 +80,7 @@ probe dw_syscall.setsockopt = __syscall.setsockopt ?,
 	optname_str = _sockopt_optname_str(optname)
 	@_SYSCALL_SETSOCKOPT_ARGSTR
 }
-probe __syscall.setsockopt = kernel.function("sys_setsockopt").call ?
+probe __syscall.setsockopt = @syscall_call("sys_setsockopt")
 {
 	@__syscall_gate(@const("__NR_setsockopt"))
 	fd = __int32($fd)
@@ -89,7 +89,7 @@ probe __syscall.setsockopt = kernel.function("sys_setsockopt").call ?
 	optval_uaddr = $optval
 	optlen = __uint32($optlen)
 }
-probe __syscall.socketcall.setsockopt = kernel.function("sys_socketcall").call ?
+probe __syscall.socketcall.setsockopt = @syscall_call("sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_SETSOCKOPT")) next;
 	fd = __int32(user_ulong(&@ulong_cast($args)[0]))
@@ -99,7 +99,7 @@ probe __syscall.socketcall.setsockopt = kernel.function("sys_socketcall").call ?
 	optlen = __uint32(user_ulong(&@ulong_cast($args)[4]))
 }
 probe __syscall.compat_socketcall.setsockopt =
-	kernel.function("compat_sys_socketcall").call ?
+	@syscall_call("compat_sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_SETSOCKOPT")) next;
 	fd = user_int(&@uint_cast($args)[0])
@@ -115,13 +115,13 @@ probe dw_syscall.setsockopt.return = __syscall.setsockopt.return ?,
 	@SYSC_RETVALSTR($return)
 }
 probe __syscall.setsockopt.return =
-	kernel.function("sys_setsockopt").return ?
+	@syscall_return("sys_setsockopt")
 {
 	@__syscall_gate(@const("__NR_setsockopt"))
 }
 probe __syscall.socketcall.setsockopt.return =
-	kernel.function("sys_socketcall").return ?,
-	kernel.function("compat_sys_socketcall").return ?
+	@syscall_return("sys_socketcall"),
+	@syscall_return("compat_sys_socketcall")
 {
 	if (__int32(@entry($call)) != @const("SYS_SETSOCKOPT")) next;
 }

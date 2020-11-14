@@ -78,7 +78,7 @@ probe syscall.ppoll.return = dw_syscall.ppoll.return !,
 
 # dw_ppoll _____________________________________________________
 
-probe dw_syscall.ppoll = kernel.function("sys_ppoll").call ?
+probe dw_syscall.ppoll = @syscall_call("sys_ppoll")
 {
 	@_SYSCALL_PPOLL_NAME
 	fds_uaddr = $ufds
@@ -89,7 +89,7 @@ probe dw_syscall.ppoll = kernel.function("sys_ppoll").call ?
 	sigsetsize = $sigsetsize
 	@_SYSCALL_PPOLL_ARGSTR
 }
-probe dw_syscall.ppoll.return = kernel.function("sys_ppoll").return ?
+probe dw_syscall.ppoll.return = @syscall_return("sys_ppoll")
 {
 	@_SYSCALL_PPOLL_NAME
 	@SYSC_RETVALSTR($return)
@@ -172,7 +172,7 @@ probe syscall.compat_ppoll.return = dw_syscall.compat_ppoll.return !,
 
 # dw_compat_ppoll _____________________________________________________
 
-probe dw_syscall.compat_ppoll = kernel.function("compat_sys_ppoll").call ?
+probe dw_syscall.compat_ppoll = @syscall_call("compat_sys_ppoll")
 {
 	@_SYSCALL_PPOLL_NAME
 	fds_uaddr = @__pointer($ufds)
@@ -183,7 +183,7 @@ probe dw_syscall.compat_ppoll = kernel.function("compat_sys_ppoll").call ?
 	sigsetsize = $sigsetsize
 	@_SYSCALL_PPOLL_ARGSTR
 }
-probe dw_syscall.compat_ppoll.return = kernel.function("compat_sys_ppoll").return ?
+probe dw_syscall.compat_ppoll.return = @syscall_return("compat_sys_ppoll")
 {
 	@_SYSCALL_PPOLL_NAME
 	@SYSC_RETVALSTR($return)

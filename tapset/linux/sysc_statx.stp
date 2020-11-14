@@ -61,7 +61,7 @@ probe syscall.statx.return = dw_syscall.statx.return !, nd_syscall.statx.return 
 
 # dw_statx _____________________________________________________
 
-probe dw_syscall.statx = kernel.function("sys_statx").call ?
+probe dw_syscall.statx = @syscall_call("sys_statx")
 {
 	@_SYSCALL_STATX_NAME
 	dfd = __int32($dfd)
@@ -77,7 +77,7 @@ probe dw_syscall.statx = kernel.function("sys_statx").call ?
 	# (maybe somehow initialized) *destination* buffer.
 	@_SYSCALL_STATX_ARGSTR
 }
-probe dw_syscall.statx.return = kernel.function("sys_statx").return ?
+probe dw_syscall.statx.return = @syscall_return("sys_statx")
 {
 	@_SYSCALL_STATX_NAME
 	@SYSC_RETVALSTR($return)

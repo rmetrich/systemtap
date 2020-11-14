@@ -20,14 +20,14 @@ probe syscall.ppc64_sys_stime.return = dw_syscall.ppc64_sys_stime.return !,
 
 # dw_ppc64_sys_stime _____________________________________________________
 
-probe dw_syscall.ppc64_sys_stime = kernel.function("ppc64_sys_stime") ?
+probe dw_syscall.ppc64_sys_stime = @syscall_call("ppc64_sys_stime")
 {
 	@_SYSCALL_PPC64_SYS_STIME_NAME
 	/* FIXME */
 	t_uaddr = $tptr
 	@_SYSCALL_PPC64_SYS_STIME_ARGSTR
 }
-probe dw_syscall.ppc64_sys_stime.return = kernel.function("ppc64_sys_stime").return ?
+probe dw_syscall.ppc64_sys_stime.return = @syscall_return("ppc64_sys_stime")
 {
 	@_SYSCALL_PPC64_SYS_STIME_NAME
 	@SYSC_RETVALSTR($return)

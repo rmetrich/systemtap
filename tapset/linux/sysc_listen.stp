@@ -52,20 +52,20 @@ probe dw_syscall.listen = __syscall.listen ?, __syscall.socketcall.listen ?,
 	@_SYSCALL_LISTEN_NAME
 	@_SYSCALL_LISTEN_ARGSTR
 }
-probe __syscall.listen = kernel.function("sys_listen").call ?
+probe __syscall.listen = @syscall_call("sys_listen")
 {
 	@__syscall_gate(@const("__NR_listen"))
 	sockfd = __int32($fd)
 	backlog = __int32($backlog)
 }
-probe __syscall.socketcall.listen = kernel.function("sys_socketcall").call ?
+probe __syscall.socketcall.listen = @syscall_call("sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_LISTEN")) next;
 	sockfd = __int32(user_ulong(&@ulong_cast($args)[0]))
 	backlog = __int32(user_ulong(&@ulong_cast($args)[1]))
 }
 probe __syscall.compat_socketcall.listen =
-	kernel.function("compat_sys_socketcall").call ?
+	@syscall_call("compat_sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_LISTEN")) next;
 	sockfd = user_int(&@uint_cast($args)[0])
@@ -77,13 +77,13 @@ probe dw_syscall.listen.return = __syscall.listen.return ?,
 	@_SYSCALL_LISTEN_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.listen.return = kernel.function("sys_listen").return ?
+probe __syscall.listen.return = @syscall_return("sys_listen")
 {
 	@__syscall_gate(@const("__NR_listen"))
 }
 probe __syscall.socketcall.listen.return =
-	kernel.function("sys_socketcall").return ?,
-	kernel.function("compat_sys_socketcall").return ?
+	@syscall_return("sys_socketcall"),
+	@syscall_return("compat_sys_socketcall")
 {
 	if (__int32(@entry($call)) != @const("SYS_LISTEN")) next;
 }

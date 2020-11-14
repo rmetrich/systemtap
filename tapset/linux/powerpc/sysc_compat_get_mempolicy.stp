@@ -24,7 +24,7 @@ probe syscall.compat_get_mempolicy.return = dw_syscall.compat_get_mempolicy.retu
 
 # dw_compat_get_mempolicy _____________________________________________________
 
-probe dw_syscall.compat_get_mempolicy = kernel.function("compat_get_mempolicy") ?
+probe dw_syscall.compat_get_mempolicy = @syscall_call("compat_get_mempolicy")
 {
 	@_SYSCALL_COMPAT_GET_MEMPOLICY_NAME
 	policy_uaddr = $policy
@@ -34,7 +34,7 @@ probe dw_syscall.compat_get_mempolicy = kernel.function("compat_get_mempolicy") 
 	flags = $flags
 	@_SYSCALL_COMPAT_GET_MEMPOLICY_ARGSTR
 }
-probe dw_syscall.compat_get_mempolicy.return = kernel.function("compat_get_mempolicy").return ?
+probe dw_syscall.compat_get_mempolicy.return = @syscall_return("compat_get_mempolicy")
 {
 	@_SYSCALL_COMPAT_GET_MEMPOLICY_NAME
 	@SYSC_RETVALSTR($return)

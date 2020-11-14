@@ -52,7 +52,7 @@ probe syscall.pselect6.return = dw_syscall.pselect6.return !,
 
 # dw_pselect6 _____________________________________________________
 
-probe dw_syscall.pselect6 = kernel.function("sys_pselect6").call ?
+probe dw_syscall.pselect6 = @syscall_call("sys_pselect6")
 {
 	@_SYSCALL_PSELECT6_NAME
 	nfds = __int32($n)
@@ -64,7 +64,7 @@ probe dw_syscall.pselect6 = kernel.function("sys_pselect6").call ?
 	sigmask = $sig
 	@_SYSCALL_PSELECT6_ARGSTR
 }
-probe dw_syscall.pselect6.return = kernel.function("sys_pselect6").return ?
+probe dw_syscall.pselect6.return = @syscall_return("sys_pselect6")
 {
 	@_SYSCALL_PSELECT6_NAME
 	@SYSC_RETVALSTR($return)
@@ -148,7 +148,7 @@ probe syscall.compat_pselect6.return = dw_syscall.compat_pselect6.return !,
 
 # dw_compat_pselect6 _____________________________________________________
 
-probe dw_syscall.compat_pselect6 = kernel.function("compat_sys_pselect6").call ?
+probe dw_syscall.compat_pselect6 = @syscall_call("compat_sys_pselect6")
 {
 	@_SYSCALL_PSELECT6_NAME
 	nfds = __int32($n)
@@ -160,7 +160,7 @@ probe dw_syscall.compat_pselect6 = kernel.function("compat_sys_pselect6").call ?
 	sigmask = @__pointer($sig)
 	@_SYSCALL_PSELECT6_ARGSTR
 }
-probe dw_syscall.compat_pselect6.return = kernel.function("compat_sys_pselect6").return ?
+probe dw_syscall.compat_pselect6.return = @syscall_return("compat_sys_pselect6")
 {
 	@_SYSCALL_PSELECT6_NAME
 	@SYSC_RETVALSTR($return)

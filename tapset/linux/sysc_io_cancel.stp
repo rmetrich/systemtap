@@ -39,7 +39,7 @@ probe syscall.io_cancel.return = dw_syscall.io_cancel.return !, nd_syscall.io_ca
 # long sys_io_cancel(aio_context_t ctx_id,
 #		struct iocb __user *iocb,
 #		struct io_event __user *result)
-probe dw_syscall.io_cancel = kernel.function("sys_io_cancel").call
+probe dw_syscall.io_cancel = @syscall_call("sys_io_cancel")
 {
 	@_SYSCALL_IO_CANCEL_NAME
 	ctx_id = @__compat_ulong($ctx_id)
@@ -47,7 +47,7 @@ probe dw_syscall.io_cancel = kernel.function("sys_io_cancel").call
 	result_uaddr = $result
 	@_SYSCALL_IO_CANCEL_ARGSTR
 }
-probe dw_syscall.io_cancel.return = kernel.function("sys_io_cancel").return
+probe dw_syscall.io_cancel.return = @syscall_return("sys_io_cancel")
 {
 	@_SYSCALL_IO_CANCEL_NAME
 	@SYSC_RETVALSTR($return)

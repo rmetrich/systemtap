@@ -34,8 +34,8 @@ probe syscall.clock_getres.return = dw_syscall.clock_getres.return !, nd_syscall
 
 # dw_clock_getres _____________________________________________________
 
-probe dw_syscall.clock_getres = kernel.function("compat_clock_getres").call ?,
-	kernel.function("compat_sys_clock_getres").call ?,
+probe dw_syscall.clock_getres = @syscall_call("compat_clock_getres"),
+	@syscall_call("compat_sys_clock_getres"),
 	__syscall.clock_getres ?
 {
 	@_SYSCALL_CLOCK_GETRES_NAME
@@ -44,20 +44,20 @@ probe dw_syscall.clock_getres = kernel.function("compat_clock_getres").call ?,
 	res_uaddr = $tp
 	@_SYSCALL_CLOCK_GETRES_ARGSTR
 }
-probe __syscall.clock_getres = kernel.function("sys_clock_getres").call
+probe __syscall.clock_getres = @syscall_call("sys_clock_getres")
 {
 	@__syscall_gate(@const("__NR_clock_getres"))
 }
 probe dw_syscall.clock_getres.return =
-	kernel.function("compat_clock_getres").return ?,
-	kernel.function("compat_sys_clock_getres").return ?,
+	@syscall_return("compat_clock_getres"),
+	@syscall_return("compat_sys_clock_getres"),
 	__syscall.clock_getres.return ?
 {
 	@_SYSCALL_CLOCK_GETRES_NAME
 	@SYSC_RETVALSTR($return)
 }
 probe __syscall.clock_getres.return =
-	kernel.function("sys_clock_getres").return
+	@syscall_return("sys_clock_getres")
 {
 	@__syscall_gate(@const("__NR_clock_getres"))
 }

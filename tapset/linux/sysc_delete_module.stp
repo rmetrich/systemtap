@@ -33,7 +33,7 @@ probe syscall.delete_module.return = dw_syscall.delete_module.return !, nd_sysca
 
 # dw_delete_module _____________________________________________________
 
-probe dw_syscall.delete_module = kernel.function("sys_delete_module").call ?
+probe dw_syscall.delete_module = @syscall_call("sys_delete_module")
 {
 	@_SYSCALL_DELETE_MODULE_NAME
 	name_user = user_string_quoted($name_user)
@@ -42,7 +42,7 @@ probe dw_syscall.delete_module = kernel.function("sys_delete_module").call ?
 	@_SYSCALL_DELETE_MODULE_ARGSTR
 }
 probe dw_syscall.delete_module.return =
-	kernel.function("sys_delete_module").return ?
+	@syscall_return("sys_delete_module")
 {
 	@_SYSCALL_DELETE_MODULE_NAME
 	@SYSC_RETVALSTR($return)

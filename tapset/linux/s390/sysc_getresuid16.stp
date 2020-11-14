@@ -18,8 +18,8 @@ probe syscall.getresuid16.return = dw_syscall.getresuid16.return !,
 
 # dw_getresuid16 _____________________________________________________
 
-probe dw_syscall.getresuid16 = kernel.function("sys32_getresuid16").call ?,
-	kernel.function("compat_sys_s390_getresuid16").call ?
+probe dw_syscall.getresuid16 = @syscall_call("sys32_getresuid16"),
+	@syscall_call("compat_sys_s390_getresuid16")
 {
 	@_SYSCALL_GETRESUID16_NAME
 	ruid_uaddr = @choose_defined($ruidp, $ruid)
@@ -28,8 +28,8 @@ probe dw_syscall.getresuid16 = kernel.function("sys32_getresuid16").call ?,
 	@_SYSCALL_GETRESUID16_ARGSTR
 }
 probe dw_syscall.getresuid16.return =
-	kernel.function("sys32_getresuid16").return ?,
-	kernel.function("compat_sys_s390_getresuid16").return ?
+	@syscall_return("sys32_getresuid16"),
+	@syscall_return("compat_sys_s390_getresuid16")
 {
 	@_SYSCALL_GETRESUID16_NAME
 	@SYSC_RETVALSTR($return)

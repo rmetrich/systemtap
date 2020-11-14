@@ -33,7 +33,7 @@ probe syscall.memfd_create.return = dw_syscall.memfd_create.return !, nd_syscall
 
 # dw_memfd_create _____________________________________________________
 
-probe dw_syscall.memfd_create = kernel.function("sys_memfd_create").call ?
+probe dw_syscall.memfd_create = @syscall_call("sys_memfd_create")
 {
 	@_SYSCALL_MEMFD_CREATE_NAME
 	uname = user_string_quoted($uname)
@@ -41,7 +41,7 @@ probe dw_syscall.memfd_create = kernel.function("sys_memfd_create").call ?
 	flags_str = _mfd_flags_str($flags)
 	@_SYSCALL_MEMFD_CREATE_ARGSTR
 }
-probe dw_syscall.memfd_create.return = kernel.function("sys_memfd_create").return ?
+probe dw_syscall.memfd_create.return = @syscall_return("sys_memfd_create")
 {
 	@_SYSCALL_MEMFD_CREATE_NAME
 	@SYSC_RETVALSTR($return)

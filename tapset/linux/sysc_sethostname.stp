@@ -40,7 +40,7 @@ probe syscall.sethostname.return = dw_syscall.sethostname.return !,
 
 # dw_sethostname _____________________________________________________
 
-probe dw_syscall.sethostname = kernel.function("sys_sethostname").call
+probe dw_syscall.sethostname = @syscall_call("sys_sethostname")
 {
 	@_SYSCALL_SETHOSTNAME_NAME
 	hostname_uaddr = $name
@@ -48,7 +48,7 @@ probe dw_syscall.sethostname = kernel.function("sys_sethostname").call
 	len = __int32($len)
 	@_SYSCALL_SETHOSTNAME_ARGSTR
 }
-probe dw_syscall.sethostname.return = kernel.function("sys_sethostname").return
+probe dw_syscall.sethostname.return = @syscall_return("sys_sethostname")
 {
 	@_SYSCALL_SETHOSTNAME_NAME
 	@SYSC_RETVALSTR($return)

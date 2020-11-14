@@ -48,8 +48,8 @@ probe syscall.openat.return = dw_syscall.openat.return !,
 
 # dw_openat _____________________________________________________
 
-probe dw_syscall.openat = kernel.function("compat_sys_openat").call ?,
-                       kernel.function("sys_openat").call ?
+probe dw_syscall.openat = @syscall_call("compat_sys_openat"),
+                       @syscall_call("sys_openat")
 {
 	@_SYSCALL_OPENAT_NAME
 	dfd = __int32($dfd)
@@ -60,8 +60,8 @@ probe dw_syscall.openat = kernel.function("compat_sys_openat").call ?,
 	mode = __uint32($mode)
 	@_SYSCALL_OPENAT_ARGSTR
 }
-probe dw_syscall.openat.return = kernel.function("compat_sys_openat").return ?,
-                              kernel.function("sys_openat").return ?
+probe dw_syscall.openat.return = @syscall_return("compat_sys_openat"),
+                              @syscall_return("sys_openat")
 {
 	@_SYSCALL_OPENAT_NAME
 	@SYSC_RETVALSTR($return)

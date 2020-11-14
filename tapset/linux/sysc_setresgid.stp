@@ -82,7 +82,7 @@ probe syscall.setresgid.return = dw_syscall.setresgid.return !,
 
 # dw_setresgid _____________________________________________________
 
-probe dw_syscall.setresgid = kernel.function("sys_setresgid").call
+probe dw_syscall.setresgid = @syscall_call("sys_setresgid")
 {
 	@_SYSCALL_GATE
 	@_SYSCALL_SETRESGID_NAME
@@ -91,7 +91,7 @@ probe dw_syscall.setresgid = kernel.function("sys_setresgid").call
 	sgid = __int32($sgid)
 	@_SYSCALL_SETRESGID_ARGSTR
 }
-probe dw_syscall.setresgid.return = kernel.function("sys_setresgid").return
+probe dw_syscall.setresgid.return = @syscall_return("sys_setresgid")
 {
 	@_SYSCALL_GATE
 	@_SYSCALL_SETRESGID_NAME
@@ -176,7 +176,7 @@ probe syscall.setresgid16.return = dw_syscall.setresgid16.return !,
 
 # dw_setresgid16 _____________________________________________________
 
-probe dw_syscall.setresgid16 = kernel.function("sys_setresgid16").call ?
+probe dw_syscall.setresgid16 = @syscall_call("sys_setresgid16")
 {
 	@_SYSCALL_SETRESGID_NAME
 	rgid = __short($rgid)
@@ -184,7 +184,7 @@ probe dw_syscall.setresgid16 = kernel.function("sys_setresgid16").call ?
 	sgid = __short($sgid)
 	@_SYSCALL_SETRESGID_ARGSTR
 }
-probe dw_syscall.setresgid16.return = kernel.function("sys_setresgid16").return ?
+probe dw_syscall.setresgid16.return = @syscall_return("sys_setresgid16")
 {
 	@_SYSCALL_SETRESGID_NAME
 	@SYSC_RETVALSTR($return)

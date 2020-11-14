@@ -59,7 +59,7 @@ probe dw_syscall.sendmmsg = __syscall.sendmmsg ?,
 	flags_str = _msg_flags_str(flags)
 	@_SYSCALL_SENDMMSG_ARGSTR
 }
-probe __syscall.sendmmsg = kernel.function("sys_sendmmsg").call ?
+probe __syscall.sendmmsg = @syscall_call("sys_sendmmsg")
 {
 	# Avoid probe hits from compat_sys_socketcall() calling
 	# compat_sys_sendmmsg(), which sometimes calls
@@ -73,7 +73,7 @@ probe __syscall.sendmmsg = kernel.function("sys_sendmmsg").call ?
 	flags = __uint32($flags)
 }
 probe __syscall.compat_socketcall.sendmmsg =
-	kernel.function("compat_sys_socketcall").call ?
+	@syscall_call("compat_sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_SENDMMSG")) next
 	s = user_int(&@uint_cast($args)[0])
@@ -82,7 +82,7 @@ probe __syscall.compat_socketcall.sendmmsg =
 	flags = user_uint32(&@uint_cast($args)[3])
 }
 probe __syscall.compat_sendmmsg =
-	kernel.function("compat_sys_sendmmsg").call ?
+	@syscall_call("compat_sys_sendmmsg")
 {
 	@__compat_syscall_gate(@const("__NR_compat_sendmmsg"))
 	s = __int32($fd)
@@ -97,7 +97,7 @@ probe dw_syscall.sendmmsg.return = __syscall.sendmmsg.return ?,
 	@_SYSCALL_SENDMMSG_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.sendmmsg.return = kernel.function("sys_sendmmsg").return ?
+probe __syscall.sendmmsg.return = @syscall_return("sys_sendmmsg")
 {
 	# Avoid probe hits from compat_sys_socketcall() calling
 	# compat_sys_sendmmsg(), which sometimes calls
@@ -107,12 +107,12 @@ probe __syscall.sendmmsg.return = kernel.function("sys_sendmmsg").return ?
 	@__syscall_gate_compat_simple
 }
 probe __syscall.compat_socketcall.sendmmsg.return =
-	kernel.function("compat_sys_socketcall").return ?
+	@syscall_return("compat_sys_socketcall")
 {
 	if (__int32(@entry($call)) != @const("SYS_SENDMMSG")) next
 }
 probe __syscall.compat_sendmmsg.return =
-	kernel.function("compat_sys_sendmmsg").return ?
+	@syscall_return("compat_sys_sendmmsg")
 {
 	@__compat_syscall_gate(@const("__NR_compat_sendmmsg"))
 }

@@ -23,7 +23,7 @@ probe syscall.ppc32_timer_create.return = dw_syscall.ppc32_timer_create.return !
 
 # dw_ppc32_timer_create _____________________________________________________
 
-probe dw_syscall.ppc32_timer_create = kernel.function("ppc32_timer_create") ?
+probe dw_syscall.ppc32_timer_create = @syscall_call("ppc32_timer_create")
 {
 	@_SYSCALL_PPC32_TIMER_CREATE_NAME
 	which_clock = $clock
@@ -31,7 +31,7 @@ probe dw_syscall.ppc32_timer_create = kernel.function("ppc32_timer_create") ?
 	created_timer_id = $timer_id
 	@_SYSCALL_PPC32_TIMER_CREATE_ARGSTR
 }
-probe dw_syscall.ppc32_timer_create.return = kernel.function("ppc32_timer_create").return ?
+probe dw_syscall.ppc32_timer_create.return = @syscall_return("ppc32_timer_create")
 {
 	@_SYSCALL_PPC32_TIMER_CREATE_NAME
 	@SYSC_RETVALSTR($return)

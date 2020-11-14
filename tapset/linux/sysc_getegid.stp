@@ -20,22 +20,22 @@ probe syscall.getegid.return = dw_syscall.getegid.return !,
 
 # dw_getegid _____________________________________________________
 
-probe dw_syscall.getegid = kernel.function("sys_getegid16").call ?,
-                        kernel.function("sys32_getegid16").call ?,
+probe dw_syscall.getegid = @syscall_call("sys_getegid16"),
+                        @syscall_call("sys32_getegid16"),
 %( arch == "s390" %?
-                        kernel.function("compat_sys_s390_getegid16").call ?,
+                        @syscall_call("compat_sys_s390_getegid16"),
 %)
-                        kernel.function("sys_getegid").call
+                        @syscall_call("sys_getegid")
 {
 	@_SYSCALL_GETEGID_NAME
 	@_SYSCALL_GETEGID_ARGSTR
 }
-probe dw_syscall.getegid.return = kernel.function("sys_getegid16").return ?,
-	kernel.function("sys32_getegid16").return ?,
+probe dw_syscall.getegid.return = @syscall_return("sys_getegid16"),
+	@syscall_return("sys32_getegid16"),
 %( arch == "s390" %?
-	kernel.function("compat_sys_s390_getegid16").return ?,
+	@syscall_return("compat_sys_s390_getegid16"),
 %)
-	kernel.function("sys_getegid").return
+	@syscall_return("sys_getegid")
 {
 	@_SYSCALL_GETEGID_NAME
 	@SYSC_RETVALSTR($return)

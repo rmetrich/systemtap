@@ -31,7 +31,7 @@ probe syscall.bdflush.return = dw_syscall.bdflush.return !, nd_syscall.bdflush.r
 
 # dw_bdflush _____________________________________________________
 
-probe dw_syscall.bdflush = kernel.function("sys_bdflush").call ?
+probe dw_syscall.bdflush = @syscall_call("sys_bdflush")
 {
 	@_SYSCALL_BDFLUSH_NAME
 	func = $func
@@ -42,7 +42,7 @@ probe dw_syscall.bdflush = kernel.function("sys_bdflush").call ?
 		data_str = sprintf("%d", $data)
 	@_SYSCALL_BDFLUSH_ARGSTR
 }
-probe dw_syscall.bdflush.return = kernel.function("sys_bdflush").return ?
+probe dw_syscall.bdflush.return = @syscall_return("sys_bdflush")
 {
 	@_SYSCALL_BDFLUSH_NAME
 	@SYSC_RETVALSTR($return)

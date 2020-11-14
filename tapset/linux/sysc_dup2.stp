@@ -36,7 +36,7 @@ probe syscall.dup2.return = dw_syscall.dup2.return !, nd_syscall.dup2.return {}
 
 # dw_dup2 _____________________________________________________
 
-probe dw_syscall.dup2 = kernel.function("sys_dup2").call
+probe dw_syscall.dup2 = @syscall_call("sys_dup2")
 {
 	@_SYSCALL_DUP2_NAME
 	oldfd = __int32($oldfd)
@@ -48,7 +48,7 @@ probe dw_syscall.dup2 = kernel.function("sys_dup2").call
 	flags_str = "0x0"
 	@_SYSCALL_DUP2_ARGSTR
 }
-probe dw_syscall.dup2.return = kernel.function("sys_dup2").return
+probe dw_syscall.dup2.return = @syscall_return("sys_dup2")
 {
 	@_SYSCALL_DUP2_NAME
 	@SYSC_RETVALSTR($return)

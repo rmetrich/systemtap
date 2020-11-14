@@ -10,7 +10,7 @@ probe syscall.eventfd.return = dw_syscall.eventfd.return !, nd_syscall.eventfd.r
 probe dw_syscall.eventfd = __syscall.eventfd2 ?, __syscall.eventfd ?
 {
 }
-probe __syscall.eventfd2 = kernel.function("sys_eventfd2").call
+probe __syscall.eventfd2 = @syscall_call("sys_eventfd2")
 {
 	@__syscall_compat_gate(@const("__NR_eventfd2"), @const("__NR_compat_eventfd2"))
 	name = "eventfd2"
@@ -19,7 +19,7 @@ probe __syscall.eventfd2 = kernel.function("sys_eventfd2").call
 	flags_str = _eventfd2_flag_str(flags)
 	argstr = sprintf("%u, %s", count, _eventfd2_flag_str(flags))
 }
-probe __syscall.eventfd = kernel.function("sys_eventfd").call
+probe __syscall.eventfd = @syscall_call("sys_eventfd")
 {
 	name = "eventfd"
 	count = __uint32($count)
@@ -32,12 +32,12 @@ probe dw_syscall.eventfd.return = __syscall.eventfd2.return ?,
 {
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.eventfd2.return = kernel.function("sys_eventfd2").return
+probe __syscall.eventfd2.return = @syscall_return("sys_eventfd2")
 {
 	@__syscall_compat_gate(@const("__NR_eventfd2"), @const("__NR_compat_eventfd2"))
 	name = "eventfd2"
 }
-probe __syscall.eventfd.return = kernel.function("sys_eventfd").return
+probe __syscall.eventfd.return = @syscall_return("sys_eventfd")
 {
 	name = "eventfd"
 }

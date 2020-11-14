@@ -19,16 +19,16 @@ probe syscall.pause.return = dw_syscall.pause.return !,
 
 # dw_pause _____________________________________________________
 
-probe dw_syscall.pause = kernel.function("sys_pause").call ?,
-                      kernel.function("sys32_pause").call ?,
-                      kernel.function("compat_sys_pause").call ?
+probe dw_syscall.pause = @syscall_call("sys_pause"),
+                      @syscall_call("sys32_pause"),
+                      @syscall_call("compat_sys_pause")
 {
 	@_SYSCALL_PAUSE_NAME
 	@_SYSCALL_PAUSE_ARGSTR
 }
-probe dw_syscall.pause.return = kernel.function("sys_pause").return ?,
-                             kernel.function("sys32_pause").return ?,
-                             kernel.function("compat_sys_pause").return ?
+probe dw_syscall.pause.return = @syscall_return("sys_pause"),
+                             @syscall_return("sys32_pause"),
+                             @syscall_return("compat_sys_pause")
 {
 	@_SYSCALL_PAUSE_NAME
 	@SYSC_RETVALSTR($return)

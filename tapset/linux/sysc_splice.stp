@@ -54,7 +54,7 @@ probe syscall.splice.return = dw_syscall.splice.return !,
 
 # dw_splice _____________________________________________________
 
-probe dw_syscall.splice = kernel.function("sys_splice").call ?
+probe dw_syscall.splice = @syscall_call("sys_splice")
 {
 	@_SYSCALL_SPLICE_NAME
 	fd_in = __int32($fd_in)
@@ -66,7 +66,7 @@ probe dw_syscall.splice = kernel.function("sys_splice").call ?
 	flags_str = (_stp_splice_flags_str(flags))
 	@_SYSCALL_SPLICE_ARGSTR
 }
-probe dw_syscall.splice.return = kernel.function("sys_splice").return ?
+probe dw_syscall.splice.return = @syscall_return("sys_splice")
 {
 	@_SYSCALL_SPLICE_NAME
 	@SYSC_RETVALSTR($return)

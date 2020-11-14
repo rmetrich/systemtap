@@ -19,12 +19,12 @@ probe syscall.sgetmask.return = dw_syscall.sgetmask.return !,
 
 # dw_sgetmask _____________________________________________________
 
-probe dw_syscall.sgetmask = kernel.function("sys_sgetmask").call ?
+probe dw_syscall.sgetmask = @syscall_call("sys_sgetmask")
 {
 	@_SYSCALL_SGETMASK_NAME
 	@_SYSCALL_SGETMASK_ARGSTR
 }
-probe dw_syscall.sgetmask.return = kernel.function("sys_sgetmask").return ?
+probe dw_syscall.sgetmask.return = @syscall_return("sys_sgetmask")
 {
 	@_SYSCALL_SGETMASK_NAME
 	@SYSC_RETVALSTR($return)

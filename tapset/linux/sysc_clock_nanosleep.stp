@@ -49,7 +49,7 @@ probe syscall.clock_nanosleep.return = dw_syscall.clock_nanosleep.return !, nd_s
 
 # dw_clock_nanosleep _____________________________________________________
 
-probe dw_syscall.clock_nanosleep = kernel.function("sys_clock_nanosleep").call
+probe dw_syscall.clock_nanosleep = @syscall_call("sys_clock_nanosleep")
 {
 	@__syscall_gate(@const("__NR_clock_nanosleep"))
 	@_SYSCALL_CLOCK_NANOSLEEP_NAME
@@ -66,7 +66,7 @@ probe dw_syscall.clock_nanosleep = kernel.function("sys_clock_nanosleep").call
 	@_SYSCALL_CLOCK_NANOSLEEP_ARGSTR
 }
 probe dw_syscall.clock_nanosleep.return =
-	kernel.function("sys_clock_nanosleep").return
+	@syscall_return("sys_clock_nanosleep")
 {
 	@__syscall_gate(@const("__NR_clock_nanosleep"))
 	@_SYSCALL_CLOCK_NANOSLEEP_NAME
@@ -158,8 +158,8 @@ probe syscall.compat_clock_nanosleep.return = dw_syscall.compat_clock_nanosleep.
 # dw_compat_clock_nanosleep _____________________________________________________
 
 probe dw_syscall.compat_clock_nanosleep =
-	kernel.function("compat_clock_nanosleep").call ?,
-	kernel.function("compat_sys_clock_nanosleep").call ?
+	@syscall_call("compat_clock_nanosleep"),
+	@syscall_call("compat_sys_clock_nanosleep")
 {
 	@_SYSCALL_CLOCK_NANOSLEEP_NAME
 	clk_id = __int32($which_clock)
@@ -175,8 +175,8 @@ probe dw_syscall.compat_clock_nanosleep =
 	@_SYSCALL_CLOCK_NANOSLEEP_ARGSTR
 }
 probe dw_syscall.compat_clock_nanosleep.return =
-	kernel.function("compat_clock_nanosleep").return ?,
-	kernel.function("compat_sys_clock_nanosleep").return ?
+	@syscall_return("compat_clock_nanosleep"),
+	@syscall_return("compat_sys_clock_nanosleep")
 {
 	@_SYSCALL_CLOCK_NANOSLEEP_NAME
 	@SYSC_RETVALSTR($return)

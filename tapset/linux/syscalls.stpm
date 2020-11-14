@@ -370,10 +370,14 @@
   @cast(@val, "unsigned int", "kernel<linux/types.h>:kernel<uapi/linux/types.h>")
 %)
 
+@define __kern_func(func,when,opt) %( kernel.function(@func).@when @opt %)
+@define __kern_func_optional(func,when) %( @__kern_func(@func,@when,?) %)
+@define __kern_func_required(func,when) %( @__kern_func(@func,@when,) %)
+@define __kern_func_stop(func,when) %( @__kern_func(@func,@when,!) %)
 
 // As other architectures adopt the 4.17 syscall wrapper mechanism,
 // these macros will have to be conditionalized on %( arch %).
-        
+ 
 %( arch == "ia64" %?
 @define arch_syscall_prefix %( "" %)
 @define arch_syscall0_prefix %( "" %)
@@ -381,6 +385,11 @@
 @define SYSC_CLONE_STACK_START_ARGNO %( 2 %)
 @define SYSC_CLONE_PARENT_TID_UADDR_ARGNO %( 4 %)
 @define SYSC_CLONE_CHILD_TID_UADDR_ARGNO %( 5 %)
+
+@define syscall_call(name) %( @__kern_func_optional(@name, call) %)
+@define syscall_return(name) %( @__kern_func_optional(@name, return) %)
+@define syscall_call_stop(name) %( @__kern_func_stop(@name, call) %)
+@define syscall_return_stop(name) %( @__kern_func_stop(@name, return) %)
 %)
 
 %( arch == "s390" %?
@@ -390,6 +399,11 @@
 @define SYSC_CLONE_STACK_START_ARGNO %( 1 %)
 @define SYSC_CLONE_PARENT_TID_UADDR_ARGNO %( 3 %)
 @define SYSC_CLONE_CHILD_TID_UADDR_ARGNO %( 4 %)
+
+@define syscall_call(name) %( @__kern_func_optional(@name, call) %)
+@define syscall_return(name) %( @__kern_func_optional(@name, return) %)
+@define syscall_call_stop(name) %( @__kern_func_stop(@name, call) %)
+@define syscall_return_stop(name) %( @__kern_func_stop(@name, return) %)
 %)
 
 %( arch == "x86_64" %?
@@ -399,6 +413,27 @@
 @define SYSC_CLONE_STACK_START_ARGNO %( 2 %)
 @define SYSC_CLONE_PARENT_TID_UADDR_ARGNO %( 3 %)
 @define SYSC_CLONE_CHILD_TID_UADDR_ARGNO %( @__compat_task ? 5 : 4 %)
+
+@define syscall_call(name) %(
+	@__kern_func_optional(@name, call),
+	@__kern_func_optional("__ia32_" @name, call),
+	@__kern_func_optional("__x64_" @name, call)
+%)
+@define syscall_return(name) %(
+	@__kern_func_optional(@name, return),
+	@__kern_func_optional("__ia32_" @name, return),
+	@__kern_func_optional("__x64_" @name, return)
+%)
+@define syscall_call_stop(name) %(
+	@__kern_func_stop(@name, call),
+	@__kern_func_optional("__ia32_" @name, call),
+	@__kern_func_stop("__x64_" @name, call)
+%)
+@define syscall_return_stop(name) %(
+	@__kern_func_stop(@name, return),
+	@__kern_func_optional("__ia32_" @name, return),
+	@__kern_func_stop("__x64_" @name, return)
+%)
 %)
 
 %( arch == "arm64" %?
@@ -408,6 +443,23 @@
 @define SYSC_CLONE_STACK_START_ARGNO %( 2 %)
 @define SYSC_CLONE_PARENT_TID_UADDR_ARGNO %( 3 %)
 @define SYSC_CLONE_CHILD_TID_UADDR_ARGNO %( 5 %)
+
+@define syscall_call(name) %(
+	@__kern_func_optional(@name, call),
+	@__kern_func_optional("__arm64_" @name, call)
+%)
+@define syscall_return(name) %(
+	@__kern_func_optional(@name, return),
+	@__kern_func_optional("__arm64_" @name, return)
+%)
+@define syscall_call_stop(name) %(
+	@__kern_func_stop(@name, call),
+	@__kern_func_stop("__arm64_" @name, call)
+%)
+@define syscall_return_stop(name) %(
+	@__kern_func_stop(@name, return),
+	@__kern_func_stop("__arm64_" @name, return)
+%)
 %)
 
 %( arch == "i386" || arch == "arm" || arch == "powerpc" || arch == "mips" %?
@@ -417,6 +469,11 @@
 @define SYSC_CLONE_STACK_START_ARGNO %( 2 %)
 @define SYSC_CLONE_PARENT_TID_UADDR_ARGNO %( 3 %)
 @define SYSC_CLONE_CHILD_TID_UADDR_ARGNO %( 5 %)
+
+@define syscall_call(name) %( @__kern_func_optional(@name, call) %)
+@define syscall_return(name) %( @__kern_func_optional(@name, return) %)
+@define syscall_call_stop(name) %( @__kern_func_stop(@name, call) %)
+@define syscall_return_stop(name) %( @__kern_func_stop(@name, return) %)
 %)
 
 

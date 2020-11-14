@@ -27,13 +27,13 @@ probe syscall.fsync.return = dw_syscall.fsync.return !, nd_syscall.fsync.return 
 
 # dw_fsync _____________________________________________________
 
-probe dw_syscall.fsync = kernel.function("sys_fsync").call
+probe dw_syscall.fsync = @syscall_call("sys_fsync")
 {
 	@_SYSCALL_FSYNC_NAME
 	fd = __int32($fd)
 	@_SYSCALL_FSYNC_ARGSTR
 }
-probe dw_syscall.fsync.return = kernel.function("sys_fsync").return
+probe dw_syscall.fsync.return = @syscall_return("sys_fsync")
 {
 	@_SYSCALL_FSYNC_NAME
 	@SYSC_RETVALSTR($return)

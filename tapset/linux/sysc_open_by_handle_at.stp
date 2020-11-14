@@ -45,8 +45,8 @@ probe syscall.open_by_handle_at.return = dw_syscall.open_by_handle_at.return !,
 # dw_open_by_handle_at _____________________________________________________
 
 probe dw_syscall.open_by_handle_at =
-	kernel.function("sys_open_by_handle_at").call ?,
-	kernel.function("compat_sys_open_by_handle_at").call ?
+	@syscall_call("sys_open_by_handle_at"),
+	@syscall_call("compat_sys_open_by_handle_at")
 {
 	@_SYSCALL_OPEN_BY_HANDLE_AT_NAME
 	mount_dfd = __int32($mountdirfd)
@@ -57,8 +57,8 @@ probe dw_syscall.open_by_handle_at =
 	@_SYSCALL_OPEN_BY_HANDLE_AT_ARGSTR
 }
 probe dw_syscall.open_by_handle_at.return =
-	kernel.function("sys_open_by_handle_at").return ?,
-	kernel.function("compat_sys_open_by_handle_at").return ?
+	@syscall_return("sys_open_by_handle_at"),
+	@syscall_return("compat_sys_open_by_handle_at")
 {
 	@_SYSCALL_OPEN_BY_HANDLE_AT_NAME
 	@SYSC_RETVALSTR($return)

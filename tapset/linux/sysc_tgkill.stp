@@ -42,7 +42,7 @@ probe syscall.tgkill.return = dw_syscall.tgkill.return !,
 
 # dw_tgkill _____________________________________________________
 
-probe dw_syscall.tgkill = kernel.function("sys_tgkill").call
+probe dw_syscall.tgkill = @syscall_call("sys_tgkill")
 {
 	@_SYSCALL_TGKILL_NAME
 	tgid = __int32($tgid)
@@ -51,7 +51,7 @@ probe dw_syscall.tgkill = kernel.function("sys_tgkill").call
 	sig_str = _signal_name(sig)
 	@_SYSCALL_TGKILL_ARGSTR
 }
-probe dw_syscall.tgkill.return = kernel.function("sys_tgkill").return
+probe dw_syscall.tgkill.return = @syscall_return("sys_tgkill")
 {
 	@_SYSCALL_TGKILL_NAME
 	@SYSC_RETVALSTR($return)

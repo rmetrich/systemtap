@@ -36,14 +36,14 @@ probe syscall.pivot_root.return = dw_syscall.pivot_root.return !,
 
 # dw_pivot_root _____________________________________________________
 
-probe dw_syscall.pivot_root = kernel.function("sys_pivot_root").call
+probe dw_syscall.pivot_root = @syscall_call("sys_pivot_root")
 {
 	@_SYSCALL_PIVOT_ROOT_NAME
 	new_root_str = user_string_quoted($new_root)
 	old_root_str = user_string_quoted($put_old)
 	@_SYSCALL_PIVOT_ROOT_ARGSTR
 }
-probe dw_syscall.pivot_root.return = kernel.function("sys_pivot_root").return
+probe dw_syscall.pivot_root.return = @syscall_return("sys_pivot_root")
 {
 	@_SYSCALL_PIVOT_ROOT_NAME
 	@SYSC_RETVALSTR($return)

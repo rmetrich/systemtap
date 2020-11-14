@@ -36,7 +36,7 @@ probe syscall.timerfd_create.return = dw_syscall.timerfd_create.return !,
 
 # dw_timerfd_create _____________________________________________________
 
-probe dw_syscall.timerfd_create = kernel.function("sys_timerfd_create").call ?
+probe dw_syscall.timerfd_create = @syscall_call("sys_timerfd_create")
 {
 	@_SYSCALL_TIMERFD_CREATE_NAME
 	clockid = __int32($clockid)
@@ -46,7 +46,7 @@ probe dw_syscall.timerfd_create = kernel.function("sys_timerfd_create").call ?
 	@_SYSCALL_TIMERFD_CREATE_ARGSTR
 }
 probe dw_syscall.timerfd_create.return =
-	kernel.function("sys_timerfd_create").return ?
+	@syscall_return("sys_timerfd_create")
 {
 	@_SYSCALL_TIMERFD_CREATE_NAME
 	@SYSC_RETVALSTR($return)

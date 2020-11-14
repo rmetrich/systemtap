@@ -32,14 +32,14 @@ probe syscall.getpriority.return = dw_syscall.getpriority.return !,
 
 # dw_getpriority _____________________________________________________
 
-probe dw_syscall.getpriority = kernel.function("sys_getpriority").call
+probe dw_syscall.getpriority = @syscall_call("sys_getpriority")
 {
 	@_SYSCALL_GETPRIORITY_NAME
 	which = __int32($which)
 	who = __int32($who)
 	@_SYSCALL_GETPRIORITY_ARGSTR
 }
-probe dw_syscall.getpriority.return = kernel.function("sys_getpriority").return
+probe dw_syscall.getpriority.return = @syscall_return("sys_getpriority")
 {
 	@_SYSCALL_GETPRIORITY_NAME
 	@SYSC_RETVALSTR($return)

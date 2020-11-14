@@ -73,7 +73,7 @@ probe dw_syscall.socketpair = __syscall.socketpair ?,
 	protocol_str = _sock_protocol_str(family, protocol)
 	@_SYSCALL_SOCKETPAIR_ARGSTR
 }
-probe __syscall.socketpair = kernel.function("sys_socketpair").call ?
+probe __syscall.socketpair = @syscall_call("sys_socketpair")
 {
 	@__syscall_gate(@const("__NR_socketpair"))
 	family = __int32($family)
@@ -81,7 +81,7 @@ probe __syscall.socketpair = kernel.function("sys_socketpair").call ?
 	protocol = __int32($protocol)
 	sv_uaddr = $usockvec
 }
-probe __syscall.socketcall.socketpair = kernel.function("sys_socketcall").call ?
+probe __syscall.socketcall.socketpair = @syscall_call("sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_SOCKETPAIR")) next;
 	family = __int32(user_ulong(&@ulong_cast($args)[0]))
@@ -90,7 +90,7 @@ probe __syscall.socketcall.socketpair = kernel.function("sys_socketcall").call ?
 	sv_uaddr = __uint32(user_ulong(&@ulong_cast($args)[3]))
 }
 probe __syscall.compat_socketcall.socketpair =
-	kernel.function("compat_sys_socketcall").call ?
+	@syscall_call("compat_sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_SOCKETPAIR")) next;
 	family = user_int(&@uint_cast($args)[0])
@@ -104,13 +104,13 @@ probe dw_syscall.socketpair.return = __syscall.socketpair.return ?,
 	@_SYSCALL_SOCKETPAIR_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.socketpair.return = kernel.function("sys_socketpair").return ?
+probe __syscall.socketpair.return = @syscall_return("sys_socketpair")
 {
 	@__syscall_gate(@const("__NR_socketpair"))
 }
 probe __syscall.socketcall.socketpair.return =
-	kernel.function("sys_socketcall").return ?,
-	kernel.function("compat_sys_socketcall").return ?
+	@syscall_return("sys_socketcall"),
+	@syscall_return("compat_sys_socketcall")
 {
 	if (__int32(@entry($call)) != @const("SYS_SOCKETPAIR")) next;
 }

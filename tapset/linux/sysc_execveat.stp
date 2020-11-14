@@ -64,7 +64,7 @@ probe syscall.compat_execveat.return = dw_syscall.compat_execveat.return !,
 
 # dw_execveat _____________________________________________________
 
-probe dw_syscall.execveat = kernel.function("sys_execveat").call ?
+probe dw_syscall.execveat = @syscall_call("sys_execveat")
 {
         @_SYSCALL_EXECVEAT_NAME
         dirfd = __int32($fd)
@@ -85,13 +85,13 @@ probe dw_syscall.execveat = kernel.function("sys_execveat").call ?
 	env_str = __get_argv(__envp, 0)
         @_SYSCALL_EXECVEAT_ARGSTR
 }
-probe dw_syscall.execveat.return = kernel.function("sys_execveat").return ?
+probe dw_syscall.execveat.return = @syscall_return("sys_execveat")
 {
         @_SYSCALL_EXECVEAT_NAME
         @SYSC_RETVALSTR($return)
 }
 
-probe dw_syscall.compat_execveat = kernel.function("compat_sys_execveat").call ?
+probe dw_syscall.compat_execveat = @syscall_call("compat_sys_execveat")
 {
         @_SYSCALL_EXECVEAT_NAME
         dirfd = __int32($fd)
@@ -113,7 +113,7 @@ probe dw_syscall.compat_execveat = kernel.function("compat_sys_execveat").call ?
         @_SYSCALL_EXECVEAT_ARGSTR
 }
 probe dw_syscall.compat_execveat.return =
-	kernel.function("compat_sys_execveat").return ?
+	@syscall_return("compat_sys_execveat")
 {
         @_SYSCALL_EXECVEAT_NAME
         @SYSC_RETVALSTR($return)

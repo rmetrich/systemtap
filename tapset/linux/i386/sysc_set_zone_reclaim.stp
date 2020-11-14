@@ -23,7 +23,7 @@ probe syscall.set_zone_reclaim.return = dw_syscall.set_zone_reclaim.return !,
 
 # dw_set_zone_reclaim _____________________________________________________
 
-probe dw_syscall.set_zone_reclaim = kernel.function("sys_set_zone_reclaim") ?
+probe dw_syscall.set_zone_reclaim = @syscall_call("sys_set_zone_reclaim")
 {
 	@_SYSCALL_SET_ZONE_RECLAIM_NAME
 	node = $node
@@ -31,7 +31,7 @@ probe dw_syscall.set_zone_reclaim = kernel.function("sys_set_zone_reclaim") ?
 	state = $state
 	@_SYSCALL_SET_ZONE_RECLAIM_ARGSTR
 }
-probe dw_syscall.set_zone_reclaim.return = kernel.function("sys_set_zone_reclaim").return ?
+probe dw_syscall.set_zone_reclaim.return = @syscall_return("sys_set_zone_reclaim")
 {
 	@_SYSCALL_SET_ZONE_RECLAIM_NAME
 	@SYSC_RETVALSTR($return)

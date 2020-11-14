@@ -37,7 +37,7 @@ probe syscall.bpf.return = dw_syscall.bpf.return !, nd_syscall.bpf.return ? {}
 
 # dw_bpf _____________________________________________________
 
-probe dw_syscall.bpf = kernel.function("sys_bpf") ?
+probe dw_syscall.bpf = @syscall_call("sys_bpf")
 {
 	@_SYSCALL_BPF_NAME
 	cmd = __int32($cmd)
@@ -46,7 +46,7 @@ probe dw_syscall.bpf = kernel.function("sys_bpf") ?
 	size = __uint32($size)
 	@_SYSCALL_BPF_ARGSTR
 }
-probe dw_syscall.bpf.return = kernel.function("sys_bpf").return ?
+probe dw_syscall.bpf.return = @syscall_return("sys_bpf")
 {
 	@_SYSCALL_BPF_NAME
 	@SYSC_RETVALSTR($return)

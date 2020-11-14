@@ -49,7 +49,7 @@ probe syscall.quotactl.return = dw_syscall.quotactl.return !,
 # dw_quotactl _____________________________________________________
 
 probe dw_syscall.quotactl = __syscall.quotactl ?,
-	kernel.function("sys32_quotactl").call ?
+	@syscall_call("sys32_quotactl")
 {
 	@_SYSCALL_QUOTACTL_NAME
 	cmd = __uint32($cmd)
@@ -60,7 +60,7 @@ probe dw_syscall.quotactl = __syscall.quotactl ?,
 	addr_uaddr = $addr
 	@__quotactl_argstr(_quotactl_subcmd(cmd), cmd, special, id, addr_uaddr)
 }
-probe __syscall.quotactl = kernel.function("sys_quotactl").call ?
+probe __syscall.quotactl = @syscall_call("sys_quotactl")
 {
 # sys32_quotactl() was introduced in 2.6.23.
 %( arch != "powerpc" && arch != "s390" && kernel_v >= "2.6.23" %?
@@ -68,12 +68,12 @@ probe __syscall.quotactl = kernel.function("sys_quotactl").call ?
 %)
 }
 probe dw_syscall.quotactl.return = __syscall.quotactl.return ?,
-	kernel.function("sys32_quotactl").return ?
+	@syscall_return("sys32_quotactl")
 {
 	@_SYSCALL_QUOTACTL_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.quotactl.return = kernel.function("sys_quotactl").return ?
+probe __syscall.quotactl.return = @syscall_return("sys_quotactl")
 {
 %( arch != "powerpc" && arch != "s390" && kernel_v >= "2.6.23" %?
 	@__syscall_gate_compat_simple

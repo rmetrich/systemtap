@@ -61,10 +61,10 @@ probe syscall.lseek.return = dw_syscall.lseek.return !, nd_syscall.lseek.return 
 
 probe dw_syscall.lseek = __syscall.lseek ?,
 %( arch == "powerpc" %?
-			 kernel.function("ppc32_lseek").call ?,
+			 @syscall_call("ppc32_lseek"),
 %)
-			 kernel.function("compat_sys_lseek").call ?,
-			 kernel.function("sys32_lseek").call ?
+			 @syscall_call("compat_sys_lseek"),
+			 @syscall_call("sys32_lseek")
 {
 	@_SYSCALL_LSEEK_NAME
 	fildes = __int32($fd)
@@ -73,21 +73,21 @@ probe dw_syscall.lseek = __syscall.lseek ?,
 	whence_str = _seek_whence_str(whence)
 	@_SYSCALL_LSEEK_ARGSTR
 }
-probe __syscall.lseek = kernel.function("sys_lseek").call ?
+probe __syscall.lseek = @syscall_call("sys_lseek")
 {
 	@_SYSCALL_GATE
 }
 probe dw_syscall.lseek.return = __syscall.lseek.return ?,
 %( arch == "powerpc" %?
-				kernel.function("ppc32_lseek").return ?,
+				@syscall_return("ppc32_lseek"),
 %)
-				kernel.function("compat_sys_lseek").return ?,
-				kernel.function("sys32_lseek").return ?
+				@syscall_return("compat_sys_lseek"),
+				@syscall_return("sys32_lseek")
 {
 	@_SYSCALL_LSEEK_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.lseek.return = kernel.function("sys_lseek").return ?
+probe __syscall.lseek.return = @syscall_return("sys_lseek")
 {
 	@_SYSCALL_GATE
 }

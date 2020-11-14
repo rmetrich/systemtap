@@ -68,7 +68,7 @@ probe dw_syscall.accept4 = __syscall.accept4 ?, __syscall.socketcall.accept4 ?,
 	flags_str = _sock_flags_str(flags)
 	@_SYSCALL_ACCEPT4_ARGSTR
 }
-probe __syscall.accept4 = kernel.function("sys_accept4").call
+probe __syscall.accept4 = @syscall_call("sys_accept4")
 {
 	// On all tested platforms, there wasn't a different syscall
 	// number for the compat version of accept4().
@@ -78,7 +78,7 @@ probe __syscall.accept4 = kernel.function("sys_accept4").call
 	addrlen_uaddr = $upeer_addrlen
 	flags = __int32($flags)
 }
-probe __syscall.socketcall.accept4 = kernel.function("sys_socketcall").call ?
+probe __syscall.socketcall.accept4 = @syscall_call("sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_ACCEPT4")) next;
 	sockfd = __int32(user_ulong(&@ulong_cast($args)[0]))
@@ -87,7 +87,7 @@ probe __syscall.socketcall.accept4 = kernel.function("sys_socketcall").call ?
 	flags = __int32(user_ulong(&@ulong_cast($args)[3]))
 }
 probe __syscall.compat_socketcall.accept4 =
-	kernel.function("compat_sys_socketcall").call ?
+	@syscall_call("compat_sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_ACCEPT4")) next;
 	sockfd = user_int(&@uint_cast($args)[0])
@@ -101,13 +101,13 @@ probe dw_syscall.accept4.return = __syscall.accept4.return ?,
 	@_SYSCALL_ACCEPT4_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.accept4.return = kernel.function("sys_accept4").return ?
+probe __syscall.accept4.return = @syscall_return("sys_accept4")
 {
 	@__syscall_nr_gate(@const("__NR_accept4"))
 }
 probe __syscall.socketcall.accept4.return =
-	kernel.function("sys_socketcall").return ?,
-	kernel.function("compat_sys_socketcall").return ?
+	@syscall_return("sys_socketcall"),
+	@syscall_return("compat_sys_socketcall")
 {
 	if (__int32(@entry($call)) != @const("SYS_ACCEPT4")) next;
 }

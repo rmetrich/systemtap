@@ -55,7 +55,7 @@ probe syscall.lgetxattr.return = dw_syscall.lgetxattr.return !, nd_syscall.lgetx
 
 # dw_lgetxattr _____________________________________________________
 
-probe dw_syscall.lgetxattr = kernel.function("sys_lgetxattr").call
+probe dw_syscall.lgetxattr = @syscall_call("sys_lgetxattr")
 {
 	@_SYSCALL_LGETXATTR_NAME
 	path = user_string_quoted(@choose_defined($pathname, $path))
@@ -68,7 +68,7 @@ probe dw_syscall.lgetxattr = kernel.function("sys_lgetxattr").call
 	size = __ulong($size)
 	@_SYSCALL_LGETXATTR_ARGSTR
 }
-probe dw_syscall.lgetxattr.return = kernel.function("sys_lgetxattr").return
+probe dw_syscall.lgetxattr.return = @syscall_return("sys_lgetxattr")
 {
 	@_SYSCALL_LGETXATTR_NAME
 	@SYSC_RETVALSTR($return)

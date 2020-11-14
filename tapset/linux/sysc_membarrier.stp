@@ -33,7 +33,7 @@ probe syscall.membarrier.return = dw_syscall.membarrier.return !,
 
 # dw_membarrier _____________________________________________________
 
-probe dw_syscall.membarrier = kernel.function("sys_membarrier").call ?
+probe dw_syscall.membarrier = @syscall_call("sys_membarrier")
 {
 	@_SYSCALL_MEMBARRIER_NAME
 	cmd = __int32($cmd)
@@ -41,7 +41,7 @@ probe dw_syscall.membarrier = kernel.function("sys_membarrier").call ?
 	flags = __int32($flags)
 	@_SYSCALL_MEMBARRIER_ARGSTR
 }
-probe dw_syscall.membarrier.return = kernel.function("sys_membarrier").return ?
+probe dw_syscall.membarrier.return = @syscall_return("sys_membarrier")
 {
 	@_SYSCALL_MEMBARRIER_NAME
 	@SYSC_RETVALSTR($return)

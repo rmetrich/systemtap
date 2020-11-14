@@ -34,7 +34,7 @@ probe syscall.access.return = dw_syscall.access.return !, nd_syscall.access.retu
 
 # dw_access _____________________________________________________
 
-probe dw_syscall.access = kernel.function("sys_access").call
+probe dw_syscall.access = @syscall_call("sys_access")
 {
 	@_SYSCALL_ACCESS_NAME
 	pathname = user_string_quoted($filename)
@@ -42,7 +42,7 @@ probe dw_syscall.access = kernel.function("sys_access").call
 	mode_str = _access_mode_str(__int32($mode))
 	@_SYSCALL_ACCESS_ARGSTR
 }
-probe dw_syscall.access.return = kernel.function("sys_access").return
+probe dw_syscall.access.return = @syscall_return("sys_access")
 {
 	@_SYSCALL_ACCESS_NAME
 	@SYSC_RETVALSTR($return)

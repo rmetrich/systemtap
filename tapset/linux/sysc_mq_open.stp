@@ -55,7 +55,7 @@ probe syscall.mq_open.return = dw_syscall.mq_open.return !, nd_syscall.mq_open.r
 # dw_mq_open _____________________________________________________
 
 probe dw_syscall.mq_open = __syscall.mq_open,
-                        kernel.function("compat_sys_mq_open").call ?
+                        @syscall_call("compat_sys_mq_open")
 {
 	@_SYSCALL_MQ_OPEN_NAME
 	name_uaddr = @__pointer($u_name)
@@ -67,18 +67,18 @@ probe dw_syscall.mq_open = __syscall.mq_open,
 	@_SYSCALL_MQ_OPEN_ARGSTR
 }
 
-probe __syscall.mq_open = kernel.function("sys_mq_open").call
+probe __syscall.mq_open = @syscall_call("sys_mq_open")
 {
 	@__syscall_gate_compat_simple
 }
 probe dw_syscall.mq_open.return =
         __syscall.mq_open.return,
-        kernel.function("compat_sys_mq_open").return ?
+        @syscall_return("compat_sys_mq_open")
 {
 	@_SYSCALL_MQ_OPEN_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.mq_open.return = kernel.function("sys_mq_open").return
+probe __syscall.mq_open.return = @syscall_return("sys_mq_open")
 {
         @__syscall_gate(@const("__NR_mq_open"))
 }

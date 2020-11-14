@@ -28,13 +28,13 @@ probe syscall.io_destroy.return = dw_syscall.io_destroy.return !,
 
 # dw_io_destroy _____________________________________________________
 
-probe dw_syscall.io_destroy = kernel.function("sys_io_destroy").call
+probe dw_syscall.io_destroy = @syscall_call("sys_io_destroy")
 {
 	@_SYSCALL_IO_DESTROY_NAME
 	ctx = @__compat_ulong($ctx)
 	@_SYSCALL_IO_DESTROY_ARGSTR
 }
-probe dw_syscall.io_destroy.return = kernel.function("sys_io_destroy").return
+probe dw_syscall.io_destroy.return = @syscall_return("sys_io_destroy")
 {
 	@_SYSCALL_IO_DESTROY_NAME
 	@SYSC_RETVALSTR($return)

@@ -52,7 +52,7 @@ probe syscall.mq_timedreceive.return = dw_syscall.mq_timedreceive.return !,
 
 probe dw_syscall.mq_timedreceive =
 	__syscall.mq_timedreceive ?,
-	kernel.function("compat_sys_mq_timedreceive").call ?
+	@syscall_call("compat_sys_mq_timedreceive")
 {
 	@_SYSCALL_MQ_TIMEDRECEIVE_NAME
 	mqdes = __int32($mqdes)
@@ -66,18 +66,18 @@ probe dw_syscall.mq_timedreceive =
 %)
 	@_SYSCALL_MQ_TIMEDRECEIVE_ARGSTR
 }
-probe __syscall.mq_timedreceive = kernel.function("sys_mq_timedreceive").call
+probe __syscall.mq_timedreceive = @syscall_call("sys_mq_timedreceive")
 {
         @__syscall_gate(@const("__NR_mq_timedreceive"))
 }
 probe dw_syscall.mq_timedreceive.return =
         __syscall.mq_timedreceive.return,
-        kernel.function("compat_sys_mq_timedreceive").return ?
+        @syscall_return("compat_sys_mq_timedreceive")
 {
 	@_SYSCALL_MQ_TIMEDRECEIVE_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.mq_timedreceive.return = kernel.function("sys_mq_timedreceive").return
+probe __syscall.mq_timedreceive.return = @syscall_return("sys_mq_timedreceive")
 {
 	@__syscall_gate_compat_simple
 }

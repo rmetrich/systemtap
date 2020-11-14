@@ -21,14 +21,14 @@ probe syscall.compat_timer_gettime.return = dw_syscall.compat_timer_gettime.retu
 
 # dw_compat_timer_gettime _____________________________________________________
 
-probe dw_syscall.compat_timer_gettime = kernel.function("compat_timer_gettime") ?
+probe dw_syscall.compat_timer_gettime = @syscall_call("compat_timer_gettime")
 {
 	@_SYSCALL_COMPAT_TIMER_GETTIME_NAME
 	timer_id = $timer_id
 	setting_uaddr = $setting
 	@_SYSCALL_COMPAT_TIMER_GETTIME_ARGSTR
 }
-probe dw_syscall.compat_timer_gettime.return = kernel.function("compat_timer_gettime").return ?
+probe dw_syscall.compat_timer_gettime.return = @syscall_return("compat_timer_gettime")
 {
 	@_SYSCALL_COMPAT_TIMER_GETTIME_NAME
 	@SYSC_RETVALSTR($return)

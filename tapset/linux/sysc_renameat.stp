@@ -54,7 +54,7 @@ probe syscall.renameat.return = dw_syscall.renameat.return !,
 
 # dw_renameat _____________________________________________________
 
-probe dw_syscall.renameat = kernel.function("sys_renameat").call ?
+probe dw_syscall.renameat = @syscall_call("sys_renameat")
 {
 	@__syscall_compat_gate(@const("__NR_renameat"), @const("__NR_compat_renameat"))
 	@_SYSCALL_RENAMEAT_NAME
@@ -68,7 +68,7 @@ probe dw_syscall.renameat = kernel.function("sys_renameat").call ?
 	newname_str = user_string_quoted($newname)
 	@_SYSCALL_RENAMEAT_ARGSTR
 }
-probe dw_syscall.renameat.return = kernel.function("sys_renameat").return ?
+probe dw_syscall.renameat.return = @syscall_return("sys_renameat")
 {
 	@__syscall_compat_gate(@const("__NR_renameat"), @const("__NR_compat_renameat"))
 	@_SYSCALL_RENAMEAT_NAME

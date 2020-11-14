@@ -31,14 +31,14 @@ probe syscall.flock.return = dw_syscall.flock.return !, nd_syscall.flock.return 
 
 # dw_flock _____________________________________________________
 
-probe dw_syscall.flock = kernel.function("sys_flock").call
+probe dw_syscall.flock = @syscall_call("sys_flock")
 {
 	@_SYSCALL_FLOCK_NAME
 	fd = __int32($fd)
 	operation = $cmd
 	@_SYSCALL_FLOCK_ARGSTR
 }
-probe dw_syscall.flock.return = kernel.function("sys_flock").return
+probe dw_syscall.flock.return = @syscall_return("sys_flock")
 {
 	@_SYSCALL_FLOCK_NAME
 	@SYSC_RETVALSTR($return)

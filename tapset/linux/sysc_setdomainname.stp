@@ -50,7 +50,7 @@ probe syscall.setdomainname.return = dw_syscall.setdomainname.return !,
 
 # dw_setdomainname _____________________________________________________
 
-probe dw_syscall.setdomainname = kernel.function("sys_setdomainname").call
+probe dw_syscall.setdomainname = @syscall_call("sys_setdomainname")
 {
 	@_SYSCALL_SETDOMAINNAME_NAME
 	domainname_uaddr = $name
@@ -61,7 +61,7 @@ probe dw_syscall.setdomainname = kernel.function("sys_setdomainname").call
 	len = __int32($len)
 	@_SYSCALL_SETDOMAINNAME_ARGSTR
 }
-probe dw_syscall.setdomainname.return = kernel.function("sys_setdomainname").return
+probe dw_syscall.setdomainname.return = @syscall_return("sys_setdomainname")
 {
 	@_SYSCALL_SETDOMAINNAME_NAME
 	@SYSC_RETVALSTR($return)

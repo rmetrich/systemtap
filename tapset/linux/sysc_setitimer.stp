@@ -41,7 +41,7 @@ probe syscall.setitimer.return = dw_syscall.setitimer.return !,
 
 # dw_setitimer _____________________________________________________
 
-probe dw_syscall.setitimer = kernel.function("sys_setitimer").call
+probe dw_syscall.setitimer = @syscall_call("sys_setitimer")
 {
 	@_SYSCALL_SETITIMER_NAME
 	which = __int32($which)
@@ -51,7 +51,7 @@ probe dw_syscall.setitimer = kernel.function("sys_setitimer").call
 	ovalue_uaddr = $ovalue
 	@_SYSCALL_SETITIMER_ARGSTR
 }
-probe dw_syscall.setitimer.return = kernel.function("sys_setitimer").return
+probe dw_syscall.setitimer.return = @syscall_return("sys_setitimer")
 {
 	@_SYSCALL_SETITIMER_NAME
 	@SYSC_RETVALSTR($return)
@@ -135,7 +135,7 @@ probe syscall.compat_setitimer.return = dw_syscall.compat_setitimer.return !,
 
 # dw_compat_setitimer _____________________________________________________
 
-probe dw_syscall.compat_setitimer = kernel.function("compat_sys_setitimer").call ?
+probe dw_syscall.compat_setitimer = @syscall_call("compat_sys_setitimer")
 {
 	@_SYSCALL_SETITIMER_NAME
 	which = __int32($which)
@@ -145,7 +145,7 @@ probe dw_syscall.compat_setitimer = kernel.function("compat_sys_setitimer").call
 	ovalue_uaddr = @__pointer($out)
 	@_SYSCALL_SETITIMER_ARGSTR
 }
-probe dw_syscall.compat_setitimer.return = kernel.function("compat_sys_setitimer").return ?
+probe dw_syscall.compat_setitimer.return = @syscall_return("compat_sys_setitimer")
 {
 	@_SYSCALL_SETITIMER_NAME
 	@SYSC_RETVALSTR($return)

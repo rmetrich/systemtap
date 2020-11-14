@@ -28,13 +28,13 @@ probe syscall.chdir.return = dw_syscall.chdir.return !, nd_syscall.chdir.return 
 
 # dw_chdir _____________________________________________________
 
-probe dw_syscall.chdir = kernel.function("sys_chdir").call
+probe dw_syscall.chdir = @syscall_call("sys_chdir")
 {
 	@_SYSCALL_CHDIR_NAME
 	path = user_string_quoted($filename)
 	@_SYSCALL_CHDIR_ARGSTR
 }
-probe dw_syscall.chdir.return = kernel.function("sys_chdir").return
+probe dw_syscall.chdir.return = @syscall_return("sys_chdir")
 {
 	@_SYSCALL_CHDIR_NAME
 	@SYSC_RETVALSTR($return)

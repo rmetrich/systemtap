@@ -21,8 +21,8 @@ probe syscall.compat_truncate64.return = dw_syscall.compat_truncate64.return !,
 
 # dw_compat_truncate64 _____________________________________________________
 
-probe dw_syscall.compat_truncate64 = kernel.function("sys32_truncate64").call ?,
-	kernel.function("compat_sys_s390_truncate64").call ?
+probe dw_syscall.compat_truncate64 = @syscall_call("sys32_truncate64"),
+	@syscall_call("compat_sys_s390_truncate64")
 {
         @_SYSCALL_COMPAT_TRUNCATE64_NAME
 	path_uaddr = @__pointer($path)
@@ -31,8 +31,8 @@ probe dw_syscall.compat_truncate64 = kernel.function("sys32_truncate64").call ?,
 	@_SYSCALL_COMPAT_TRUNCATE64_ARGSTR
 }
 probe dw_syscall.compat_truncate64.return =
-	kernel.function("sys32_truncate64").return ?,
-	kernel.function("compat_sys_s390_truncate64").return ?
+	@syscall_return("sys32_truncate64"),
+	@syscall_return("compat_sys_s390_truncate64")
 {
 	@_SYSCALL_COMPAT_TRUNCATE64_NAME
 	@SYSC_RETVALSTR($return)

@@ -18,14 +18,14 @@ probe syscall.sigreturn.return = dw_syscall.sigreturn.return !,
 
 # dw_sigreturn _____________________________________________________
 
-probe dw_syscall.sigreturn = kernel.function("sys_sigreturn").call ?,
-                          kernel.function("sys32_sigreturn").call ?
+probe dw_syscall.sigreturn = @syscall_call("sys_sigreturn"),
+                          @syscall_call("sys32_sigreturn")
 {
 	@_SYSCALL_SIGRETURN_NAME
 	@_SYSCALL_SIGRETURN_ARGSTR
 }
-probe dw_syscall.sigreturn.return = kernel.function("sys_sigreturn").return ?,
-                                 kernel.function("sys32_sigreturn").return ?
+probe dw_syscall.sigreturn.return = @syscall_return("sys_sigreturn"),
+                                 @syscall_return("sys32_sigreturn")
 {
 	@_SYSCALL_SIGRETURN_NAME
 %( arch == "mips" && CONFIG_TRAD_SIGNALS == "y" %?

@@ -27,13 +27,13 @@ probe syscall.fchdir.return = dw_syscall.fchdir.return !, nd_syscall.fchdir.retu
 
 # dw_fchdir _____________________________________________________
 
-probe dw_syscall.fchdir = kernel.function("sys_fchdir").call
+probe dw_syscall.fchdir = @syscall_call("sys_fchdir")
 {
 	@_SYSCALL_FCHDIR_NAME
 	fd = __int32($fd)
 	@_SYSCALL_FCHDIR_ARGSTR
 }
-probe dw_syscall.fchdir.return = kernel.function("sys_fchdir").return
+probe dw_syscall.fchdir.return = @syscall_return("sys_fchdir")
 {
 	@_SYSCALL_FCHDIR_NAME
 	@SYSC_RETVALSTR($return)

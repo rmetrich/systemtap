@@ -20,13 +20,13 @@ probe syscall.sys32_sysinfo.return = dw_syscall.sys32_sysinfo.return !,
 
 # dw_sys32_sysinfo _____________________________________________________
 
-probe dw_syscall.sys32_sysinfo = kernel.function("sys32_sysinfo") ?
+probe dw_syscall.sys32_sysinfo = @syscall_call("sys32_sysinfo")
 {
 	@_SYSCALL_SYS32_SYSINFO_NAME
 	info_uaddr = $info
 	@_SYSCALL_SYS32_SYSINFO_ARGSTR
 }
-probe dw_syscall.sys32_sysinfo.return = kernel.function("sys32_sysinfo").return ?
+probe dw_syscall.sys32_sysinfo.return = @syscall_return("sys32_sysinfo")
 {
 	@_SYSCALL_SYS32_SYSINFO_NAME
 	@SYSC_RETVALSTR($return)

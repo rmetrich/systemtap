@@ -24,7 +24,7 @@ probe syscall.execve.return = dw_syscall.execve.return !, nd_syscall.execve.retu
 
 # dw_execve _____________________________________________________
 
-probe dw_syscall.execve = kernel.function("sys_execve").call
+probe dw_syscall.execve = @syscall_call("sys_execve")
 {
 	@_SYSCALL_EXECVE_NAME
 	filename = user_string_quoted(@choose_defined($regs->bx, $regs->ebx))
@@ -32,7 +32,7 @@ probe dw_syscall.execve = kernel.function("sys_execve").call
 	env_str = __get_argv(@choose_defined($regs->dx, $regs->edx), 0)
 	@_SYSCALL_EXECVE_ARGSTR
 }
-probe dw_syscall.execve.return = kernel.function("sys_execve").return
+probe dw_syscall.execve.return = @syscall_return("sys_execve")
 {
 	@_SYSCALL_EXECVE_NAME
 	@SYSC_RETVALSTR($return)

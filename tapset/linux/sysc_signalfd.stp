@@ -39,11 +39,11 @@ probe dw_syscall.signalfd = __syscall.signalfd4 !, __syscall.signalfd ?
 		       	 	 $sizemask, _signalfd4_flags_str(flags))
 	}
 }
-probe __syscall.signalfd4 = kernel.function("sys_signalfd4").call
+probe __syscall.signalfd4 = @syscall_call("sys_signalfd4")
 {
 	@__syscall_gate(@const("__NR_signalfd4"))
 }
-probe __syscall.signalfd = kernel.function("sys_signalfd").call
+probe __syscall.signalfd = @syscall_call("sys_signalfd")
 {
 	@__syscall_gate(@const("__NR_signalfd"))
 }
@@ -52,20 +52,20 @@ probe dw_syscall.signalfd.return = __syscall.signalfd4.return !,
 {
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.signalfd4.return = kernel.function("sys_signalfd4").return
+probe __syscall.signalfd4.return = @syscall_return("sys_signalfd4")
 {
 	@__syscall_gate(@const("__NR_signalfd4"))
 	flags = __int32(@entry($flags))
 	name = (flags == 0) ? "signalfd" : "signalfd4"
 }
-probe __syscall.signalfd.return = kernel.function("sys_signalfd").return
+probe __syscall.signalfd.return = @syscall_return("sys_signalfd")
 {
 	@__syscall_gate(@const("__NR_signalfd"))
 	flags = 0
 	name = "signalfd"
 }
-probe dw_syscall.compat_signalfd = kernel.function("compat_sys_signalfd4").call !,
-                                kernel.function("compat_sys_signalfd").call ?
+probe dw_syscall.compat_signalfd = @syscall_call_stop("compat_sys_signalfd4"),
+                                @syscall_call("compat_sys_signalfd")
 {
 	flags = __int32(@choose_defined($flags, 0))
 	if (flags == 0) {
@@ -79,8 +79,8 @@ probe dw_syscall.compat_signalfd = kernel.function("compat_sys_signalfd4").call 
 	}
 }
 probe dw_syscall.compat_signalfd.return =
-		kernel.function("compat_sys_signalfd4").return !,
-		kernel.function("compat_sys_signalfd").return ?
+		@syscall_return_stop("compat_sys_signalfd4"),
+		@syscall_return("compat_sys_signalfd")
 {
 	flags = __int32(@entry(@choose_defined($flags, 0)))
 	name = (flags == 0) ? "signalfd" : "signalfd4"
@@ -333,7 +333,7 @@ probe __tp_syscall.compat_signalfd4 = kernel.trace("sys_enter")
 {
         %( @_IS_SREG_KERNEL %? @_SYSCALL_SIGNALFD4_REGARGS_STORE %)
 }
-probe __tp_syscall.compat_signalfd = kernel.function("sys_enter")
+probe __tp_syscall.compat_signalfd = @syscall_call("sys_enter")
 {
 	__set_syscall_pt_regs($regs)
 	@__compat_syscall_gate(@const("__NR_compat_signalfd"))

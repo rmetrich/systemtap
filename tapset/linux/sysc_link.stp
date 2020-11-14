@@ -34,14 +34,14 @@ probe syscall.link.return = dw_syscall.link.return !, nd_syscall.link.return ? {
 
 # dw_link _____________________________________________________
 
-probe dw_syscall.link = kernel.function("sys_link").call
+probe dw_syscall.link = @syscall_call("sys_link")
 {
 	@_SYSCALL_LINK_NAME
 	oldpath = user_string_quoted($oldname)
 	newpath = user_string_quoted($newname)
 	@_SYSCALL_LINK_ARGSTR
 }
-probe dw_syscall.link.return = kernel.function("sys_link").return
+probe dw_syscall.link.return = @syscall_return("sys_link")
 {
 	@_SYSCALL_LINK_NAME
 	@SYSC_RETVALSTR($return)

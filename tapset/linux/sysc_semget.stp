@@ -60,7 +60,7 @@ probe syscall.semget.return = dw_syscall.semget.return !,
 
 # dw_semget _____________________________________________________
 
-probe dw_syscall.semget = kernel.function("sys_semget").call ?
+probe dw_syscall.semget = @syscall_call("sys_semget")
 {
 	@_SYSCALL_SEMGET_NAME
 	key = __int32($key)
@@ -70,7 +70,7 @@ probe dw_syscall.semget = kernel.function("sys_semget").call ?
 	semflg_str = __sem_flags(__int32($semflg))
 	@_SYSCALL_SEMGET_ARGSTR
 }
-probe dw_syscall.semget.return = kernel.function("sys_semget").return ?
+probe dw_syscall.semget.return = @syscall_return("sys_semget")
 {
 	@_SYSCALL_SEMGET_NAME
 	@SYSC_RETVALSTR($return)

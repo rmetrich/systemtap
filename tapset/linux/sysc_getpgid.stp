@@ -27,14 +27,14 @@ probe syscall.getpgid.return = dw_syscall.getpgid.return !, nd_syscall.getpgid.r
 
 # dw_getpgid _____________________________________________________
 
-probe dw_syscall.getpgid = kernel.function("sys_getpgid").call
+probe dw_syscall.getpgid = @syscall_call("sys_getpgid")
 {
 	@__syscall_compat_gate(@const("__NR_getpgid"), @const("__NR_compat_getpgid"))
 	@_SYSCALL_GETPGID_NAME
 	pid = __int32($pid)
 	@_SYSCALL_GETPGID_ARGSTR
 }
-probe dw_syscall.getpgid.return = kernel.function("sys_getpgid").return
+probe dw_syscall.getpgid.return = @syscall_return("sys_getpgid"
 {
 	@__syscall_compat_gate(@const("__NR_getpgid"), @const("__NR_compat_getpgid"))
 	@_SYSCALL_GETPGID_NAME

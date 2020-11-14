@@ -45,7 +45,7 @@ probe syscall.epoll_wait.return = dw_syscall.epoll_wait.return !, nd_syscall.epo
 
 # dw_epoll_wait _____________________________________________________
 
-probe dw_syscall.epoll_wait = kernel.function("compat_sys_epoll_wait").call ?,
+probe dw_syscall.epoll_wait = @syscall_call("compat_sys_epoll_wait"),
 			      __syscall.epoll_wait ?
 {
 %( arch != "s390" || kernel_v < "3.15" %?
@@ -59,7 +59,7 @@ probe dw_syscall.epoll_wait = kernel.function("compat_sys_epoll_wait").call ?,
 	timeout = __int32($timeout)
 	@_SYSCALL_EPOLL_WAIT_ARGSTR
 }
-probe __syscall.epoll_wait = kernel.function("sys_epoll_wait").call ?
+probe __syscall.epoll_wait = @syscall_call("sys_epoll_wait")
 {
 %( arch == "s390" && kernel_v >= "3.15" %?
 	# s390 switched from assembly compat wrappers to C-based
@@ -68,7 +68,7 @@ probe __syscall.epoll_wait = kernel.function("sys_epoll_wait").call ?
 %)
 }
 probe dw_syscall.epoll_wait.return =
-	kernel.function("compat_sys_epoll_wait").return ?,
+	@syscall_return("compat_sys_epoll_wait"),
 	__syscall.epoll_wait.return ?
 {
 %( arch != "s390" || kernel_v < "3.15" %?
@@ -78,7 +78,7 @@ probe dw_syscall.epoll_wait.return =
 	@_SYSCALL_EPOLL_WAIT_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.epoll_wait.return = kernel.function("sys_epoll_wait").return ?
+probe __syscall.epoll_wait.return = @syscall_return("sys_epoll_wait")
 {
 %( arch == "s390" && kernel_v >= "3.15" %?
 	@__syscall_gate(@const("__NR_epoll_wait"))

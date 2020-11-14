@@ -49,7 +49,7 @@ probe syscall.perf_event_open.return = dw_syscall.perf_event_open.return !,
 
 # dw_perf_event_open _____________________________________________________
 
-probe dw_syscall.perf_event_open = kernel.function("sys_perf_event_open").call ?
+probe dw_syscall.perf_event_open = @syscall_call("sys_perf_event_open")
 {
 	@_SYSCALL_PERF_EVENT_OPEN_NAME
 	attr_uaddr = $attr_uptr
@@ -61,7 +61,7 @@ probe dw_syscall.perf_event_open = kernel.function("sys_perf_event_open").call ?
 	@_SYSCALL_PERF_EVENT_OPEN_ARGSTR
 }
 probe dw_syscall.perf_event_open.return =
-	kernel.function("sys_perf_event_open").return ?
+	@syscall_return("sys_perf_event_open")
 {
 	@_SYSCALL_PERF_EVENT_OPEN_NAME
 	@SYSC_RETVALSTR($return)

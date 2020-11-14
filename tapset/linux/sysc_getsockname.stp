@@ -61,14 +61,14 @@ probe dw_syscall.getsockname = __syscall.getsockname ?,
 	@_SYSCALL_GETSOCKNAME_NAME
 	@_SYSCALL_GETSOCKNAME_ARGSTR
 }
-probe __syscall.getsockname = kernel.function("sys_getsockname").call ?
+probe __syscall.getsockname = @syscall_call("sys_getsockname")
 {
 	@__syscall_gate(@const("__NR_getsockname"))
 	s = __int32($fd)
 	name_uaddr = $usockaddr
 	namelen_uaddr = $usockaddr_len
 }
-probe __syscall.socketcall.getsockname = kernel.function("sys_socketcall").call ?
+probe __syscall.socketcall.getsockname = @syscall_call("sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_GETSOCKNAME")) next;
 	s = __int32(user_ulong(&@ulong_cast($args)[0]))
@@ -76,7 +76,7 @@ probe __syscall.socketcall.getsockname = kernel.function("sys_socketcall").call 
 	namelen_uaddr = user_ulong(&@ulong_cast($args)[2])
 }
 probe __syscall.compat_socketcall.getsockname =
-	kernel.function("compat_sys_socketcall").call ?
+	@syscall_call("compat_sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_GETSOCKNAME")) next;
 	s = user_int(&@uint_cast($args)[0])
@@ -89,13 +89,13 @@ probe dw_syscall.getsockname.return = __syscall.getsockname.return ?,
 	@_SYSCALL_GETSOCKNAME_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.getsockname.return = kernel.function("sys_getsockname").return ?
+probe __syscall.getsockname.return = @syscall_return("sys_getsockname")
 {
 	@__syscall_gate(@const("__NR_getsockname"))
 }
 probe __syscall.socketcall.getsockname.return =
-	kernel.function("sys_socketcall").return ?,
-	kernel.function("compat_sys_socketcall").return ?
+	@syscall_return("sys_socketcall"),
+	@syscall_return("compat_sys_socketcall")
 {
 	if (__int32(@entry($call)) != @const("SYS_GETSOCKNAME")) next;
 }

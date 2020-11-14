@@ -17,12 +17,12 @@ probe syscall.gettid.return = dw_syscall.gettid.return !,
 
 # dw_gettid _____________________________________________________
 
-probe dw_syscall.gettid = kernel.function("sys_gettid").call
+probe dw_syscall.gettid = @syscall_call("sys_gettid")
 {
 	@_SYSCALL_GETTID_NAME
 	@_SYSCALL_GETTID_ARGSTR
 }
-probe dw_syscall.gettid.return = kernel.function("sys_gettid").return
+probe dw_syscall.gettid.return = @syscall_return("sys_gettid")
 {
 	@_SYSCALL_GETTID_NAME
 	@SYSC_RETVALSTR($return)

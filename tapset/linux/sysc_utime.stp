@@ -50,7 +50,7 @@ probe syscall.utime.return = dw_syscall.utime.return !,
 
 # dw_utime _____________________________________________________
 
-probe dw_syscall.utime = kernel.function("sys_utime").call ?
+probe dw_syscall.utime = @syscall_call("sys_utime")
 {
 	@_SYSCALL_UTIME_NAME
 	filename_uaddr = $filename
@@ -61,7 +61,7 @@ probe dw_syscall.utime = kernel.function("sys_utime").call ?
 	modtime = user_long(&@cast($times, "utimbuf")->modtime)
 	@_SYSCALL_UTIME_ARGSTR
 }
-probe dw_syscall.utime.return = kernel.function("sys_utime").return ?
+probe dw_syscall.utime.return = @syscall_return("sys_utime")
 {
 	@_SYSCALL_UTIME_NAME
 	@SYSC_RETVALSTR($return)
@@ -139,7 +139,7 @@ probe syscall.compat_utime.return = dw_syscall.compat_utime.return !,
 
 # dw_compat_utime _____________________________________________________
 
-probe dw_syscall.compat_utime = kernel.function("compat_sys_utime").call ?
+probe dw_syscall.compat_utime = @syscall_call("compat_sys_utime")
 {
 	@_SYSCALL_UTIME_NAME
 	filename_uaddr = @__pointer($filename)
@@ -149,7 +149,7 @@ probe dw_syscall.compat_utime = kernel.function("compat_sys_utime").call ?
 	modtime = _struct_compat_utimbuf_modtime(buf_uaddr)
 	@_SYSCALL_UTIME_ARGSTR
 }
-probe dw_syscall.compat_utime.return = kernel.function("compat_sys_utime").return ?
+probe dw_syscall.compat_utime.return = @syscall_return("compat_sys_utime")
 {
 	@_SYSCALL_UTIME_NAME
 	@SYSC_RETVALSTR($return)

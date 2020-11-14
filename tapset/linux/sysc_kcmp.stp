@@ -45,7 +45,7 @@ probe syscall.kcmp.return = dw_syscall.kcmp.return !, nd_syscall.kcmp.return ? {
 
 # dw_kcmp _____________________________________________________
 
-probe dw_syscall.kcmp = kernel.function("sys_kcmp") ?
+probe dw_syscall.kcmp = @syscall_call("sys_kcmp")
 {
 	@_SYSCALL_KCMP_NAME
 	pid1 = __int32($pid1)
@@ -56,7 +56,7 @@ probe dw_syscall.kcmp = kernel.function("sys_kcmp") ?
 	idx2 = @__compat_ulong($idx2)
 	@_SYSCALL_KCMP_ARGSTR
 }
-probe dw_syscall.kcmp.return = kernel.function("sys_kcmp").return ?
+probe dw_syscall.kcmp.return = @syscall_return("sys_kcmp")
 {
 	@_SYSCALL_KCMP_NAME
 	@SYSC_RETVALSTR($return)

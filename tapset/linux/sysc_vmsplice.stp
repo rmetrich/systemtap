@@ -46,7 +46,7 @@ probe syscall.vmsplice.return = dw_syscall.vmsplice.return !,
 
 # dw_vmsplice _____________________________________________________
 
-probe dw_syscall.vmsplice = kernel.function("sys_vmsplice").call ?
+probe dw_syscall.vmsplice = @syscall_call("sys_vmsplice")
 {
 	@__syscall_gate_compat_simple
 	@_SYSCALL_VMSPLICE_NAME
@@ -57,7 +57,7 @@ probe dw_syscall.vmsplice = kernel.function("sys_vmsplice").call ?
 	flags_str = _stp_splice_flags_str(flags)
 	@_SYSCALL_VMSPLICE_ARGSTR
 }
-probe dw_syscall.vmsplice.return = kernel.function("sys_vmsplice").return ?
+probe dw_syscall.vmsplice.return = @syscall_return("sys_vmsplice")
 {
 	@__syscall_gate_compat_simple
 	@_SYSCALL_VMSPLICE_NAME
@@ -144,7 +144,7 @@ probe syscall.compat_vmsplice.return = dw_syscall.compat_vmsplice.return !,
 
 # dw_compat_vmsplice _____________________________________________________
 
-probe dw_syscall.compat_vmsplice = kernel.function("compat_sys_vmsplice").call ?
+probe dw_syscall.compat_vmsplice = @syscall_call("compat_sys_vmsplice")
 {
 	@_SYSCALL_VMSPLICE_NAME
 	fd = __int32($fd)
@@ -154,7 +154,7 @@ probe dw_syscall.compat_vmsplice = kernel.function("compat_sys_vmsplice").call ?
 	flags_str = _stp_splice_flags_str(flags)
 	@_SYSCALL_VMSPLICE_ARGSTR
 }
-probe dw_syscall.compat_vmsplice.return = kernel.function("compat_sys_vmsplice").return ?
+probe dw_syscall.compat_vmsplice.return = @syscall_return("compat_sys_vmsplice")
 {
 	@_SYSCALL_VMSPLICE_NAME
 	@SYSC_RETVALSTR($return)

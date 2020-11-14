@@ -36,7 +36,7 @@ probe syscall.dup3.return = dw_syscall.dup3.return !, nd_syscall.dup3.return ? {
 
 # dw_dup3 _____________________________________________________
 
-probe dw_syscall.dup3 = kernel.function("sys_dup3").call ?
+probe dw_syscall.dup3 = @syscall_call("sys_dup3")
 {
 	@__syscall_compat_gate(@const("__NR_dup3"), @const("__NR_compat_dup3"))
 	@_SYSCALL_DUP3_NAME
@@ -46,7 +46,7 @@ probe dw_syscall.dup3 = kernel.function("sys_dup3").call ?
 	flags_str = _dup3_flag_str(flags)
 	@_SYSCALL_DUP3_ARGSTR
 }
-probe dw_syscall.dup3.return = kernel.function("sys_dup3").return ?
+probe dw_syscall.dup3.return = @syscall_return("sys_dup3")
 {
 	@__syscall_compat_gate(@const("__NR_dup3"), @const("__NR_compat_dup3"))
 	@_SYSCALL_DUP3_NAME

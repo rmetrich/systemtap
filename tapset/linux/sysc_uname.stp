@@ -33,22 +33,22 @@ probe syscall.uname.return = dw_syscall.uname.return !, nd_syscall.uname.return 
 
 # dw_uname _____________________________________________________
 
-probe dw_syscall.uname = kernel.function("sys_uname").call ?,
-                      kernel.function("sys_olduname").call ?,
-                      kernel.function("sys32_olduname").call ?,
-                      kernel.function("sys32_uname").call ?,
-                      kernel.function("sys_newuname").call ?
+probe dw_syscall.uname = @syscall_call("sys_uname"),
+                      @syscall_call("sys_olduname"),
+                      @syscall_call("sys32_olduname"),
+                      @syscall_call("sys32_uname"),
+                      @syscall_call("sys_newuname")
 {
 	@_SYSCALL_UNAME_NAME
 	name_uaddr = $name
 	@_SYSCALL_UNAME_ARGSTR
 }
 
-probe dw_syscall.uname.return = kernel.function("sys_uname").return ?,
-                             kernel.function("sys_olduname").return ?,
-                             kernel.function("sys32_olduname").return ?,
-                             kernel.function("sys32_uname").return ?,
-                             kernel.function("sys_newuname").return ?
+probe dw_syscall.uname.return = @syscall_return("sys_uname"),
+                             @syscall_return("sys_olduname"),
+                             @syscall_return("sys32_olduname"),
+                             @syscall_return("sys32_uname"),
+                             @syscall_return("sys_newuname")
 {
 	@_SYSCALL_UNAME_NAME
 	@SYSC_RETVALSTR($return)

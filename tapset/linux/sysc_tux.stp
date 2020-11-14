@@ -17,14 +17,14 @@ probe syscall.tux.return = dw_syscall.tux.return !, nd_syscall.tux.return ? {}
 
 # dw_tux _____________________________________________________
 
-probe dw_syscall.tux = kernel.function("sys_tux").call ?
+probe dw_syscall.tux = @syscall_call("sys_tux") 
 {
 	@_SYSCALL_TUX_NAME
 	action = $action
 	u_info_uaddr = $u_info
 	@_SYSCALL_TUX_ARGSTR
 }
-probe dw_syscall.tux.return = kernel.function("sys_tux").return ?
+probe dw_syscall.tux.return = @syscall_return("sys_tux")
 {
 	@_SYSCALL_TUX_NAME
 	@SYSC_RETVALSTR($return)

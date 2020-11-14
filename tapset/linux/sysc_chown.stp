@@ -36,7 +36,7 @@ probe syscall.chown.return = dw_syscall.chown.return !, nd_syscall.chown.return 
 
 # dw_chown _____________________________________________________
 
-probe dw_syscall.chown = kernel.function("sys_chown").call
+probe dw_syscall.chown = @syscall_call("sys_chown")
 {
 	// Avoid chown16() calling chown().
 %( arch == "x86_64" %?
@@ -51,7 +51,7 @@ probe dw_syscall.chown = kernel.function("sys_chown").call
 	group = __int32($group)
 	@_SYSCALL_CHOWN_ARGSTR
 }
-probe dw_syscall.chown.return = kernel.function("sys_chown").return
+probe dw_syscall.chown.return = @syscall_return("sys_chown")
 {
 %( arch == "x86_64" %?
 	@__syscall_compat_gate(@const("__NR_chown"), @const("__NR_ia32_chown32"))

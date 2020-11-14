@@ -16,14 +16,14 @@ probe syscall.gethostname.return = dw_syscall.gethostname.return !, nd_syscall.g
 
 # dw_gethostname _____________________________________________________
 
-probe dw_syscall.gethostname = kernel.function("sys_gethostname").call ?
+probe dw_syscall.gethostname = @syscall_call("sys_gethostname")
 {
 	@_SYSCALL_GETHOSTNAME_NAME
 	name_uaddr = $name
 	len = __int32($len)
 	@_SYSCALL_GETHOSTNAME_ARGSTR
 }
-probe dw_syscall.gethostname.return = kernel.function("sys_gethostname").return ?
+probe dw_syscall.gethostname.return = @syscall_return("sys_gethostname")
 {
 	@_SYSCALL_GETHOSTNAME_NAME
 	@SYSC_RETVALSTR($return)

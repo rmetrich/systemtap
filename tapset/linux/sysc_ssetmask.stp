@@ -31,14 +31,14 @@ probe syscall.ssetmask.return = dw_syscall.ssetmask.return !,
 
 # dw_ssetmask _____________________________________________________
 
-probe dw_syscall.ssetmask = kernel.function("sys_ssetmask").call ?
+probe dw_syscall.ssetmask = @syscall_call("sys_ssetmask")
 {
 	@_SYSCALL_SSETMASK_NAME
 	newmask = __int32($newmask)
 	newmask_str = _stp_sigmask_str(__int32($newmask))
 	@_SYSCALL_SSETMASK_ARGSTR
 }
-probe dw_syscall.ssetmask.return = kernel.function("sys_ssetmask").return ?
+probe dw_syscall.ssetmask.return = @syscall_return("sys_ssetmask")
 {
 	@_SYSCALL_SSETMASK_NAME
 	@SYSC_RETVALSTR($return)

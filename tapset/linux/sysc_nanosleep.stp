@@ -42,7 +42,7 @@ probe syscall.compat_nanosleep.return = dw_syscall.compat_nanosleep.return !,
 
 # dw_nanosleep _____________________________________________________
 
-probe dw_syscall.nanosleep = kernel.function("sys_nanosleep").call
+probe dw_syscall.nanosleep = @syscall_call("sys_nanosleep")
 {
 	@_SYSCALL_NANOSLEEP_NAME
 	req_uaddr = $rqtp
@@ -50,12 +50,12 @@ probe dw_syscall.nanosleep = kernel.function("sys_nanosleep").call
 	rem_uaddr = $rmtp
 	@_SYSCALL_NANOSLEEP_ARGSTR
 }
-probe dw_syscall.nanosleep.return = kernel.function("sys_nanosleep").return
+probe dw_syscall.nanosleep.return = @syscall_return("sys_nanosleep")
 {
 	@_SYSCALL_NANOSLEEP_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe dw_syscall.compat_nanosleep = kernel.function("compat_sys_nanosleep").call ?
+probe dw_syscall.compat_nanosleep = @syscall_call("compat_sys_nanosleep")
 {
 	@_SYSCALL_NANOSLEEP_NAME
 	req_uaddr = @__pointer($rqtp)
@@ -63,7 +63,7 @@ probe dw_syscall.compat_nanosleep = kernel.function("compat_sys_nanosleep").call
 	rem_uaddr = @__pointer($rmtp)
 	@_SYSCALL_NANOSLEEP_ARGSTR
 }
-probe dw_syscall.compat_nanosleep.return = kernel.function("compat_sys_nanosleep").return ?
+probe dw_syscall.compat_nanosleep.return = @syscall_return("compat_sys_nanosleep")
 {
 	@_SYSCALL_NANOSLEEP_NAME
 	@SYSC_RETVALSTR($return)

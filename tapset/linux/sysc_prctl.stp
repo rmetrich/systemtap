@@ -50,7 +50,7 @@ probe syscall.prctl.return = dw_syscall.prctl.return !, nd_syscall.prctl.return 
 
 # dw_prctl _____________________________________________________
 
-probe dw_syscall.prctl = kernel.function("sys_prctl").call
+probe dw_syscall.prctl = @syscall_call("sys_prctl")
 {
 	@_SYSCALL_PRCTL_NAME
 	option = __int32($option)
@@ -60,7 +60,7 @@ probe dw_syscall.prctl = kernel.function("sys_prctl").call
 	arg5 = $arg5
 	@_SYSCALL_PRCTL_ARGSTR
 }
-probe dw_syscall.prctl.return = kernel.function("sys_prctl").return
+probe dw_syscall.prctl.return = @syscall_return("sys_prctl")
 {
 	@_SYSCALL_PRCTL_NAME
 	@SYSC_RETVALSTR($return)

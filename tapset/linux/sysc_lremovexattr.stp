@@ -51,7 +51,7 @@ probe syscall.lremovexattr.return = dw_syscall.lremovexattr.return !, nd_syscall
 
 # dw_lremovexattr _____________________________________________________
 
-probe dw_syscall.lremovexattr = kernel.function("sys_lremovexattr").call
+probe dw_syscall.lremovexattr = @syscall_call("sys_lremovexattr")
 {
 	@_SYSCALL_LREMOVEXATTR_NAME
 	name_uaddr = $name
@@ -64,7 +64,7 @@ probe dw_syscall.lremovexattr = kernel.function("sys_lremovexattr").call
 	path = user_string_quoted(@choose_defined($pathname, $path))
 	@_SYSCALL_LREMOVEXATTR_ARGSTR
 }
-probe dw_syscall.lremovexattr.return = kernel.function("sys_lremovexattr").return
+probe dw_syscall.lremovexattr.return = @syscall_return("sys_lremovexattr")
 {
 	@_SYSCALL_LREMOVEXATTR_NAME
 	@SYSC_RETVALSTR($return)

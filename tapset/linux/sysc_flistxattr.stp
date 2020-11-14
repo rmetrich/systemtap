@@ -35,7 +35,7 @@ probe syscall.flistxattr.return = dw_syscall.flistxattr.return !, nd_syscall.fli
 
 # dw_flistxattr _____________________________________________________
 
-probe dw_syscall.flistxattr = kernel.function("sys_flistxattr").call
+probe dw_syscall.flistxattr = @syscall_call("sys_flistxattr")
 {
 	@_SYSCALL_FLISTXATTR_NAME
 	filedes = __int32($fd)
@@ -43,7 +43,7 @@ probe dw_syscall.flistxattr = kernel.function("sys_flistxattr").call
 	size = __ulong($size)
 	@_SYSCALL_FLISTXATTR_ARGSTR
 }
-probe dw_syscall.flistxattr.return = kernel.function("sys_flistxattr").return
+probe dw_syscall.flistxattr.return = @syscall_return("sys_flistxattr")
 {
 	@_SYSCALL_FLISTXATTR_NAME
 	@SYSC_RETVALSTR($return)

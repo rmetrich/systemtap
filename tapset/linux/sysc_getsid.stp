@@ -28,13 +28,13 @@ probe syscall.getsid.return = dw_syscall.getsid.return !,
 
 # dw_getsid _____________________________________________________
 
-probe dw_syscall.getsid = kernel.function("sys_getsid").call
+probe dw_syscall.getsid = @syscall_call("sys_getsid")
 {
 	@_SYSCALL_GETSID_NAME
 	pid = __int32($pid)
 	@_SYSCALL_GETSID_ARGSTR
 }
-probe dw_syscall.getsid.return = kernel.function("sys_getsid").return
+probe dw_syscall.getsid.return = @syscall_return("sys_getsid")
 {
 	@_SYSCALL_GETSID_NAME
 	@SYSC_RETVALSTR($return)

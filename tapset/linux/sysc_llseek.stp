@@ -49,7 +49,7 @@ probe syscall.llseek.return = dw_syscall.llseek.return !, nd_syscall.llseek.retu
 
 # dw_llseek _____________________________________________________
 
-probe dw_syscall.llseek = kernel.function("sys_llseek").call ?
+probe dw_syscall.llseek = @syscall_call("sys_llseek")
 {
 	@_SYSCALL_LLSEEK_NAME
 	fd = __int32($fd)
@@ -60,7 +60,7 @@ probe dw_syscall.llseek = kernel.function("sys_llseek").call ?
 	whence_str = _seek_whence_str(@choose_defined($whence, $origin))
 	@_SYSCALL_LLSEEK_ARGSTR
 }
-probe dw_syscall.llseek.return = kernel.function("sys_llseek").return ?
+probe dw_syscall.llseek.return = @syscall_return("sys_llseek")
 {
 	@_SYSCALL_LLSEEK_NAME
 	@SYSC_RETVALSTR($return)

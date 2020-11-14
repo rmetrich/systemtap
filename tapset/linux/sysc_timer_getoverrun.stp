@@ -31,13 +31,13 @@ probe syscall.timer_getoverrun.return = dw_syscall.timer_getoverrun.return !,
 
 # dw_timer_getoverrun _____________________________________________________
 
-probe dw_syscall.timer_getoverrun = kernel.function("sys_timer_getoverrun").call
+probe dw_syscall.timer_getoverrun = @syscall_call("sys_timer_getoverrun")
 {
 	@_SYSCALL_TIMER_GETOVERRUN_NAME
 	timerid = __int32($timer_id)
 	@_SYSCALL_TIMER_GETOVERRUN_ARGSTR
 }
-probe dw_syscall.timer_getoverrun.return = kernel.function("sys_timer_getoverrun").return
+probe dw_syscall.timer_getoverrun.return = @syscall_return("sys_timer_getoverrun")
 {
 	@_SYSCALL_TIMER_GETOVERRUN_NAME
 	@SYSC_RETVALSTR($return)

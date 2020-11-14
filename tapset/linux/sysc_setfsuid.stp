@@ -56,24 +56,24 @@ probe syscall.setfsuid.return = dw_syscall.setfsuid.return !,
 
 # dw_setfsuid _____________________________________________________
 
-probe dw_syscall.setfsuid = kernel.function("sys_setfsuid16").call ?,
+probe dw_syscall.setfsuid = @syscall_call("sys_setfsuid16"),
 			    __syscall.setfsuid ?
 {
 	@_SYSCALL_SETFSUID_NAME
 	fsuid = __int32($uid)
 	@_SYSCALL_SETFSUID_ARGSTR
 }
-probe __syscall.setfsuid = kernel.function("sys_setfsuid").call ?
+probe __syscall.setfsuid = @syscall_call("sys_setfsuid")
 {
 	@_SYSCALL_GATE
 }
-probe dw_syscall.setfsuid.return = kernel.function("sys_setfsuid16").return ?,
+probe dw_syscall.setfsuid.return = @syscall_return("sys_setfsuid16"),
 				   __syscall.setfsuid.return ?
 {
 	@_SYSCALL_SETFSUID_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.setfsuid.return = kernel.function("sys_setfsuid").return ?
+probe __syscall.setfsuid.return = @syscall_return("sys_setfsuid")
 {
 	@_SYSCALL_GATE
 }

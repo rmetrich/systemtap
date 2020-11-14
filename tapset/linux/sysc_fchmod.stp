@@ -31,7 +31,7 @@ probe syscall.fchmod.return = dw_syscall.fchmod.return !, nd_syscall.fchmod.retu
 
 # dw_fchmod _____________________________________________________
 
-probe dw_syscall.fchmod = kernel.function("sys_fchmod").call
+probe dw_syscall.fchmod = @syscall_call("sys_fchmod")
 {
 	@_SYSCALL_FCHMOD_NAME
 	fildes = __int32($fd)
@@ -45,7 +45,7 @@ probe dw_syscall.fchmod = kernel.function("sys_fchmod").call
 %)
 	@_SYSCALL_FCHMOD_ARGSTR
 }
-probe dw_syscall.fchmod.return = kernel.function("sys_fchmod").return
+probe dw_syscall.fchmod.return = @syscall_return("sys_fchmod")
 {
 	@_SYSCALL_FCHMOD_NAME
 	@SYSC_RETVALSTR($return)

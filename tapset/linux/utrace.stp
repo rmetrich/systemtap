@@ -22,7 +22,7 @@ function _utrace_syscall_arg:long (n:long) %{	/* pure */ /* myproc-unprivileged 
     STAP_RETVALUE = arg;
 %}
 
-function _utrace_syscall_return:long () %{	/* pure */ /* stable */ /* myproc-unprivileged */
+function _utrace_@syscall_return:long () %{	/* pure */ /* stable */ /* myproc-unprivileged */
     /*
      * Here's the reason for the "unsigned long" cast.  Since all
      * values inside systemtap are 64-bit numbers, return values were

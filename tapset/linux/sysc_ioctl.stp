@@ -38,7 +38,7 @@ probe syscall.ioctl.return = dw_syscall.ioctl.return !, nd_syscall.ioctl.return 
 # dw_ioctl _____________________________________________________
 
 probe dw_syscall.ioctl = __syscall.ioctl ?,
-	kernel.function("compat_sys_ioctl").call ?
+	@syscall_call("compat_sys_ioctl")
 {
 	@_SYSCALL_IOCTL_NAME
 	fd = __int32($fd)
@@ -46,18 +46,18 @@ probe dw_syscall.ioctl = __syscall.ioctl ?,
 	argp = @__compat_ulong(@choose_defined($arg, $arg32))
 	@_SYSCALL_IOCTL_ARGSTR
 }
-probe __syscall.ioctl = kernel.function("sys_ioctl").call
+probe __syscall.ioctl = @syscall_call("sys_ioctl")
 {
 	@__syscall_gate(@const("__NR_ioctl"))
 }
 probe dw_syscall.ioctl.return =
 	__syscall.ioctl.return ?,
-	kernel.function("compat_sys_ioctl").return ?
+	@syscall_return("compat_sys_ioctl")
 {
 	@_SYSCALL_IOCTL_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.ioctl.return = kernel.function("sys_ioctl").return
+probe __syscall.ioctl.return = @syscall_return("sys_ioctl")
 {
 	@__syscall_gate(@const("__NR_ioctl"))
 }

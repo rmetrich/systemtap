@@ -22,7 +22,7 @@ probe syscall.compat_truncate64.return = dw_syscall.compat_truncate64.return !,
 # dw_compat_truncate64 _____________________________________________________
 
 probe dw_syscall.compat_truncate64 =
-	kernel.function("compat_sys_truncate64").call ?
+	@syscall_call("compat_sys_truncate64")
 {
 	@_SYSCALL_COMPAT_TRUNCATE64_NAME
 	path_uaddr = $path
@@ -31,7 +31,7 @@ probe dw_syscall.compat_truncate64 =
 	@_SYSCALL_COMPAT_TRUNCATE64_ARGSTR
 }
 probe dw_syscall.compat_truncate64.return =
-	kernel.function("compat_sys_truncate64").return ?
+	@syscall_return("compat_sys_truncate64")
 {
 	@_SYSCALL_COMPAT_TRUNCATE64_NAME
 	@SYSC_RETVALSTR($return)

@@ -20,13 +20,13 @@ probe syscall.vm86_warning.return = dw_syscall.vm86_warning.return !,
 
 # dw_vm86_warning _____________________________________________________
 
-probe dw_syscall.vm86_warning = kernel.function("sys32_vm86_warning") ?
+probe dw_syscall.vm86_warning = @syscall_call("sys32_vm86_warning")
 {
 	@_SYSCALL_VM86_WARNING_NAME
 	@_SYSCALL_VM86_WARNING_ARGSTR
 }
 probe dw_syscall.vm86_warning.return =
-	kernel.function("sys32_vm86_warning").return ?
+	@syscall_return("sys32_vm86_warning")
 {
 	@_SYSCALL_VM86_WARNING_NAME
 	@SYSC_RETVALSTR($return)

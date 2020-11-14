@@ -21,8 +21,8 @@ probe syscall.getresgid16.return = dw_syscall.getresgid16.return !,
 
 # dw_getresgid16 _____________________________________________________
 
-probe dw_syscall.getresgid16 = kernel.function("sys32_getresgid16").call ?,
-	kernel.function("compat_sys_s390_getresgid16").call ?
+probe dw_syscall.getresgid16 = @syscall_call("sys32_getresgid16"),
+	@syscall_call("compat_sys_s390_getresgid16")
 {
 	@_SYSCALL_GETRESGID16_NAME
 	rgid_uaddr = @choose_defined($rgidp, $rgid)
@@ -31,8 +31,8 @@ probe dw_syscall.getresgid16 = kernel.function("sys32_getresgid16").call ?,
 	@_SYSCALL_GETRESGID16_ARGSTR
 }
 probe dw_syscall.getresgid16.return =
-	kernel.function("sys32_getresgid16").return ?,
-	kernel.function("compat_sys_s390_getresgid16").return ?
+	@syscall_return("sys32_getresgid16"),
+	@syscall_return("compat_sys_s390_getresgid16")
 {
 	@_SYSCALL_GETRESGID16_NAME
 	@SYSC_RETVALSTR($return)

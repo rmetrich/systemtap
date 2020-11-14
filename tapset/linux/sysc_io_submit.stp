@@ -42,7 +42,7 @@ probe syscall.io_submit.return = dw_syscall.io_submit.return !, nd_syscall.io_su
 # dw_io_submit _____________________________________________________
 
 probe dw_syscall.io_submit = __syscall.io_submit,
-	kernel.function("compat_sys_io_submit").call ?
+	@syscall_call("compat_sys_io_submit")
 {
 	@_SYSCALL_IO_SUBMIT_NAME
 	ctx_id = @__compat_ulong($ctx_id)
@@ -50,17 +50,17 @@ probe dw_syscall.io_submit = __syscall.io_submit,
 	iocbpp_uaddr = @choose_defined($iocbpp, $iocb)
 	@_SYSCALL_IO_SUBMIT_ARGSTR
 }
-probe __syscall.io_submit = kernel.function("sys_io_submit").call
+probe __syscall.io_submit = @syscall_call("sys_io_submit")
 {
 	@__syscall_gate(@const("__NR_io_submit"))
 }
 probe dw_syscall.io_submit.return = __syscall.io_submit.return,
-	kernel.function("compat_sys_io_submit").return ?
+	@syscall_return("compat_sys_io_submit")
 {
 	@_SYSCALL_IO_SUBMIT_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.io_submit.return = kernel.function("sys_io_submit").return
+probe __syscall.io_submit.return = @syscall_return("sys_io_submit")
 {
 	@__syscall_gate(@const("__NR_io_submit"))
 }

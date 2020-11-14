@@ -37,27 +37,27 @@ probe syscall.compat_getitimer.return = dw_syscall.compat_getitimer.return !,
 
 # dw_getitimer _____________________________________________________
 
-probe dw_syscall.getitimer = kernel.function("sys_getitimer").call
+probe dw_syscall.getitimer = @syscall_call("sys_getitimer")
 {
 	@_SYSCALL_GETITIMER_NAME
 	which = __int32($which)
 	value_uaddr = $value
 	@_SYSCALL_GETITIMER_ARGSTR
 }
-probe dw_syscall.getitimer.return = kernel.function("sys_getitimer").return
+probe dw_syscall.getitimer.return = @syscall_return("sys_getitimer")
 {
 	@_SYSCALL_GETITIMER_NAME
 	@SYSC_RETVALSTR($return)
 }
 # long compat_sys_getitimer(int which, struct compat_itimerval __user *it
-probe dw_syscall.compat_getitimer = kernel.function("compat_sys_getitimer").call ?
+probe dw_syscall.compat_getitimer = @syscall_call("compat_sys_getitimer")
 {
 	@_SYSCALL_GETITIMER_NAME
 	which = __int32($which)
 	value_uaddr = @__pointer($it)
 	@_SYSCALL_GETITIMER_ARGSTR
 }
-probe dw_syscall.compat_getitimer.return = kernel.function("compat_sys_getitimer").return ?
+probe dw_syscall.compat_getitimer.return = @syscall_return("compat_sys_getitimer")
 {
 	@_SYSCALL_GETITIMER_NAME
 	@SYSC_RETVALSTR($return)

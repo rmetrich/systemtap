@@ -21,7 +21,7 @@ probe syscall.compat_execve.return = dw_syscall.compat_execve.return !,
 
 # dw_compat_execve _____________________________________________________
 
-probe dw_syscall.compat_execve = kernel.function("sys32_execve").call ?
+probe dw_syscall.compat_execve = @syscall_call("sys32_execve")
 {
 	@_SYSCALL_COMPAT_EXECVE_NAME
 	filename = user_string_quoted($name)
@@ -29,7 +29,7 @@ probe dw_syscall.compat_execve = kernel.function("sys32_execve").call ?
 	env_str = __get_compat_argv($envp, 0)
 	@_SYSCALL_COMPAT_EXECVE_ARGSTR
 }
-probe dw_syscall.compat_execve.return = kernel.function("sys32_execve").return ?
+probe dw_syscall.compat_execve.return = @syscall_return("sys32_execve")
 {
 	@_SYSCALL_COMPAT_EXECVE_NAME
 	@SYSC_RETVALSTR($return)

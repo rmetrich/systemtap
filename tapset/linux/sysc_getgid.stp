@@ -18,22 +18,22 @@ probe syscall.getgid.return = dw_syscall.getgid.return !, nd_syscall.getgid.retu
 
 # dw_getgid _____________________________________________________
 
-probe dw_syscall.getgid = kernel.function("sys_getgid16").call ?,
-                       kernel.function("sys32_getgid16").call ?,
+probe dw_syscall.getgid = @syscall_call("sys_getgid16"),
+                       @syscall_call("sys32_getgid16"),
 %( arch == "s390" %?
-                       kernel.function("compat_sys_s390_getgid16").call ?,
+                       @syscall_call("compat_sys_s390_getgid16"),
 %)
-                       kernel.function("sys_getgid").call
+                       @syscall_call("sys_getgid")
 {
 	@_SYSCALL_GETGID_NAME
 	@_SYSCALL_GETGID_ARGSTR
 }
-probe dw_syscall.getgid.return = kernel.function("sys_getgid16").return ?,
-	kernel.function("sys32_getgid16").return ?,
+probe dw_syscall.getgid.return = @syscall_return("sys_getgid16"),
+	@syscall_return("sys32_getgid16"),
 %( arch == "s390" %?
-	kernel.function("compat_sys_s390_getgid16").return ?,
+	@syscall_return("compat_sys_s390_getgid16"),
 %)
-	kernel.function("sys_getgid").return
+	@syscall_return("sys_getgid")
 {
 	@_SYSCALL_GETGID_NAME
 	@SYSC_RETVALSTR($return)

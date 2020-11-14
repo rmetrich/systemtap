@@ -20,7 +20,7 @@ probe syscall.sys32_rt_sigqueueinfo.return = dw_syscall.sys32_rt_sigqueueinfo.re
 
 # dw_sys32_rt_sigqueueinfo _____________________________________________________
 
-probe dw_syscall.sys32_rt_sigqueueinfo = kernel.function("sys32_rt_sigqueueinfo") ?
+probe dw_syscall.sys32_rt_sigqueueinfo = @syscall_call("sys32_rt_sigqueueinfo")
 {
 	@_SYSCALL_SYS32_RT_SIGQUEUEINFO_NAME
 	pid = $pid
@@ -29,7 +29,7 @@ probe dw_syscall.sys32_rt_sigqueueinfo = kernel.function("sys32_rt_sigqueueinfo"
 	uinfo_uaddr = $uinfo
 	@_SYSCALL_SYS32_RT_SIGQUEUEINFO_ARGSTR
 }
-probe dw_syscall.sys32_rt_sigqueueinfo.return = kernel.function("sys32_rt_sigqueueinfo").return ?
+probe dw_syscall.sys32_rt_sigqueueinfo.return = @syscall_return("sys32_rt_sigqueueinfo")
 {
 	@_SYSCALL_SYS32_RT_SIGQUEUEINFO_NAME
 	@SYSC_RETVALSTR($return)

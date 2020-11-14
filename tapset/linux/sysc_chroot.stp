@@ -28,13 +28,13 @@ probe syscall.chroot.return = dw_syscall.chroot.return !, nd_syscall.chroot.retu
 
 # dw_chroot _____________________________________________________
 
-probe dw_syscall.chroot = kernel.function("sys_chroot").call
+probe dw_syscall.chroot = @syscall_call("sys_chroot")
 {
 	@_SYSCALL_CHROOT_NAME
 	path = user_string_quoted($filename)
 	@_SYSCALL_CHROOT_ARGSTR
 }
-probe dw_syscall.chroot.return = kernel.function("sys_chroot").return
+probe dw_syscall.chroot.return = @syscall_return("sys_chroot")
 {
 	@_SYSCALL_CHROOT_NAME
 	@SYSC_RETVALSTR($return)

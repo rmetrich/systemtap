@@ -68,14 +68,14 @@ probe dw_syscall.recvmsg = __syscall.recvmsg ?, __syscall.socketcall.recvmsg ?
 	flags_str = _msg_flags_str(flags)
 	@_SYSCALL_RECVMSG_ARGSTR
 }
-probe __syscall.recvmsg = kernel.function("sys_recvmsg").call ?
+probe __syscall.recvmsg = @syscall_call("sys_recvmsg")
 {
 	@__syscall_gate(@const("__NR_recvmsg"))
 	s = __int32($fd)
 	msg_uaddr = $msg
 	flags = __uint32($flags)
 }
-probe __syscall.socketcall.recvmsg = kernel.function("sys_socketcall").call ?
+probe __syscall.socketcall.recvmsg = @syscall_call("sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_RECVMSG")) next;
 	s = __int32(user_ulong(&@ulong_cast($args)[0]))
@@ -89,12 +89,12 @@ probe dw_syscall.recvmsg.return = __syscall.recvmsg.return ?,
 	@_SYSCALL_RECVMSG_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.recvmsg.return = kernel.function("sys_recvmsg").return ?
+probe __syscall.recvmsg.return = @syscall_return("sys_recvmsg")
 {
 	@__syscall_gate(@const("__NR_recvmsg"))
 }
 probe __syscall.socketcall.recvmsg.return =
-	kernel.function("sys_socketcall").return ?
+	@syscall_return("sys_socketcall")
 {
 	if (__int32(@entry($call)) != @const("SYS_RECVMSG")) next;
 }
@@ -271,7 +271,7 @@ probe syscall.compat_sys_recvmsg.return = dw_syscall.compat_sys_recvmsg.return !
 # dw_compat_sys_recvmsg _____________________________________________________
 
 probe dw_syscall.compat_sys_recvmsg =
-	kernel.function("compat_sys_socketcall").call ?
+	@syscall_call("compat_sys_socketcall")
 {
 	if (__int32($call) != @const("SYS_RECVMSG")) next;
 	@_SYSCALL_RECVMSG_NAME
@@ -282,7 +282,7 @@ probe dw_syscall.compat_sys_recvmsg =
 	@_SYSCALL_RECVMSG_ARGSTR
 }
 probe dw_syscall.compat_sys_recvmsg.return =
- 	kernel.function("compat_sys_socketcall").return ?
+ 	@syscall_return("compat_sys_socketcall")
 {
 	if (__int32(@entry($call)) != @const("SYS_RECVMSG")) next;
 	@_SYSCALL_RECVMSG_NAME

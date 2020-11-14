@@ -46,7 +46,7 @@ probe syscall.mknodat.return = dw_syscall.mknodat.return !,
 
 # dw_mknodat _____________________________________________________
 
-probe dw_syscall.mknodat = kernel.function("sys_mknodat").call ?
+probe dw_syscall.mknodat = @syscall_call("sys_mknodat")
 {
 	@__syscall_compat_gate(@const("__NR_mknodat"), @const("__NR_compat_mknodat"))
 	@_SYSCALL_MKNODAT_NAME
@@ -58,7 +58,7 @@ probe dw_syscall.mknodat = kernel.function("sys_mknodat").call ?
 	dev = __uint32($dev)
 	@_SYSCALL_MKNODAT_ARGSTR
 }
-probe dw_syscall.mknodat.return = kernel.function("sys_mknodat").return ?
+probe dw_syscall.mknodat.return = @syscall_return("sys_mknodat")
 {
 	@__syscall_compat_gate(@const("__NR_mknodat"), @const("__NR_compat_mknodat"))
 	@_SYSCALL_MKNODAT_NAME

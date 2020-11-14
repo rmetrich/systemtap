@@ -38,7 +38,7 @@ probe syscall.syslog.return = dw_syscall.syslog.return !,
 
 # dw_syslog _____________________________________________________
 
-probe dw_syscall.syslog = kernel.function("sys_syslog").call
+probe dw_syscall.syslog = @syscall_call("sys_syslog")
 {
 	@_SYSCALL_SYSLOG_NAME
 	type = __int32($type)
@@ -46,7 +46,7 @@ probe dw_syscall.syslog = kernel.function("sys_syslog").call
 	len = __int32($len)
 	@_SYSCALL_SYSLOG_ARGSTR
 }
-probe dw_syscall.syslog.return = kernel.function("sys_syslog").return
+probe dw_syscall.syslog.return = @syscall_return("sys_syslog")
 {
 	@_SYSCALL_SYSLOG_NAME
 	@SYSC_RETVALSTR($return)

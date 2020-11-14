@@ -49,7 +49,7 @@ probe syscall.fchownat.return = dw_syscall.fchownat.return !, nd_syscall.fchowna
 
 # dw_fchownat _____________________________________________________
 
-probe dw_syscall.fchownat = kernel.function("sys_fchownat").call ?
+probe dw_syscall.fchownat = @syscall_call("sys_fchownat")
 {
 	@__syscall_compat_gate(@const("__NR_fchownat"),
 			       @const("__NR_compat_fchownat"))
@@ -63,7 +63,7 @@ probe dw_syscall.fchownat = kernel.function("sys_fchownat").call ?
 	flags_str = _at_flag_str(__int32($flag))
 	@_SYSCALL_FCHOWNAT_ARGSTR
 }
-probe dw_syscall.fchownat.return = kernel.function("sys_fchownat").return ?
+probe dw_syscall.fchownat.return = @syscall_return("sys_fchownat")
 {
 	@__syscall_compat_gate(@const("__NR_fchownat"),
 			       @const("__NR_compat_fchownat"))

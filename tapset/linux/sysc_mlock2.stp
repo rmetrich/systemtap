@@ -38,7 +38,7 @@ probe syscall.mlock2.return = dw_syscall.mlock2.return !, nd_syscall.mlock2.retu
 
 # dw_mlock2 _____________________________________________________
 
-probe dw_syscall.mlock2 = kernel.function("sys_mlock2").call ?
+probe dw_syscall.mlock2 = @syscall_call("sys_mlock2")
 {
 	@_SYSCALL_MLOCK2_NAME
 	addr = __ulong($start)
@@ -47,7 +47,7 @@ probe dw_syscall.mlock2 = kernel.function("sys_mlock2").call ?
 	flags_str = _stp_mlock2_str(__int32($flags))
 	@_SYSCALL_MLOCK2_ARGSTR
 }
-probe dw_syscall.mlock2.return = kernel.function("sys_mlock2").return ?
+probe dw_syscall.mlock2.return = @syscall_return("sys_mlock2")
 {
 	@_SYSCALL_MLOCK2_NAME
 	@SYSC_RETVALSTR($return)

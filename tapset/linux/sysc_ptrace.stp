@@ -45,8 +45,8 @@ probe syscall.ptrace.return = dw_syscall.ptrace.return !,
 
 # dw_ptrace _____________________________________________________
 
-probe dw_syscall.ptrace = kernel.function("sys_ptrace").call ?,
-		kernel.function("compat_sys_ptrace").call ?
+probe dw_syscall.ptrace = @syscall_call("sys_ptrace"),
+		@syscall_call("compat_sys_ptrace")
 {
 	@_SYSCALL_PTRACE_NAME
 	request = @__compat_ulong($request)
@@ -55,8 +55,8 @@ probe dw_syscall.ptrace = kernel.function("sys_ptrace").call ?,
 	data = @__compat_ulong(@choose_defined($data, $cdata))
 	@_SYSCALL_PTRACE_ARGSTR
 }
-probe dw_syscall.ptrace.return = kernel.function("sys_ptrace").return ?,
-	kernel.function("compat_sys_ptrace").return ?
+probe dw_syscall.ptrace.return = @syscall_return("sys_ptrace"),
+	@syscall_return("compat_sys_ptrace")
 {
 	@_SYSCALL_PTRACE_NAME
 	@SYSC_RETVALSTR($return)

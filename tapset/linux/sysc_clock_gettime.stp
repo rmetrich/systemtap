@@ -34,7 +34,7 @@ probe syscall.clock_gettime.return = dw_syscall.clock_gettime.return !, nd_sysca
 # dw_clock_gettime _____________________________________________________
 
 probe dw_syscall.clock_gettime = __syscall.clock_gettime,
-	kernel.function("compat_sys_clock_gettime").call ?
+	@syscall_call("compat_sys_clock_gettime")
 {
 	@_SYSCALL_CLOCK_GETTIME_NAME
 	clk_id = __int32($which_clock)
@@ -42,18 +42,18 @@ probe dw_syscall.clock_gettime = __syscall.clock_gettime,
 	tp_uaddr = $tp
 	@_SYSCALL_CLOCK_GETTIME_ARGSTR
 }
-probe __syscall.clock_gettime = kernel.function("sys_clock_gettime").call
+probe __syscall.clock_gettime = @syscall_call("sys_clock_gettime")
 {
 	@__syscall_gate(@const("__NR_clock_gettime"))
 }
 probe dw_syscall.clock_gettime.return = __syscall.clock_gettime.return,
-	kernel.function("compat_sys_clock_gettime").return ?
+	@syscall_return("compat_sys_clock_gettime")
 {
 	@_SYSCALL_CLOCK_GETTIME_NAME
 	@SYSC_RETVALSTR($return)
 }
 probe __syscall.clock_gettime.return =
-	kernel.function("sys_clock_gettime").return
+	@syscall_return("sys_clock_gettime")
 {
 	@__syscall_gate(@const("__NR_clock_gettime"))
 }

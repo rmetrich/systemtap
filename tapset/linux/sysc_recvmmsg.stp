@@ -49,7 +49,7 @@ probe syscall.recvmmsg.return = dw_syscall.recvmmsg.return !,
 
 # dw_recvmmsg _____________________________________________________
 
-probe dw_syscall.recvmmsg = kernel.function("sys_recvmmsg").call ?
+probe dw_syscall.recvmmsg = @syscall_call("sys_recvmmsg")
 {
 	@_SYSCALL_RECVMMSG_NAME
 	s = __int32($fd)
@@ -61,7 +61,7 @@ probe dw_syscall.recvmmsg = kernel.function("sys_recvmmsg").call ?
 	timeout_str = _struct_timespec_u(timeout_uaddr, 1)
 	@_SYSCALL_RECVMMSG_ARGSTR
 }
-probe dw_syscall.recvmmsg.return = kernel.function("sys_recvmmsg").return ?
+probe dw_syscall.recvmmsg.return = @syscall_return("sys_recvmmsg")
 {
 	@_SYSCALL_RECVMMSG_NAME
 	@SYSC_RETVALSTR($return)
@@ -147,7 +147,7 @@ probe syscall.compat_recvmmsg.return = dw_syscall.compat_recvmmsg.return !,
 
 # dw_compat_recvmmsg _____________________________________________________
 
-probe dw_syscall.compat_recvmmsg = kernel.function("compat_sys_recvmmsg").call ?
+probe dw_syscall.compat_recvmmsg = @syscall_call("compat_sys_recvmmsg")
 {
 	@_SYSCALL_RECVMMSG_NAME
 	s = __int32($fd)
@@ -160,7 +160,7 @@ probe dw_syscall.compat_recvmmsg = kernel.function("compat_sys_recvmmsg").call ?
 	@_SYSCALL_RECVMMSG_ARGSTR
 }
 probe dw_syscall.compat_recvmmsg.return =
-	kernel.function("compat_sys_recvmmsg").return ?
+	@syscall_return("compat_sys_recvmmsg")
 {
 	@_SYSCALL_RECVMMSG_NAME
 	@SYSC_RETVALSTR($return)

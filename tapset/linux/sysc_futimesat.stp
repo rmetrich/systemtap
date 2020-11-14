@@ -52,7 +52,7 @@ probe syscall.compat_futimesat.return = dw_syscall.compat_futimesat.return !,
 
 # dw_futimesat _____________________________________________________
 
-probe dw_syscall.futimesat = kernel.function("sys_futimesat").call ?
+probe dw_syscall.futimesat = @syscall_call("sys_futimesat")
 {
 	@__syscall_gate(@const("__NR_futimesat"))
 	@_SYSCALL_FUTIMESAT_NAME
@@ -64,7 +64,7 @@ probe dw_syscall.futimesat = kernel.function("sys_futimesat").call ?
 	tvp_str = _struct_timeval_u(tvp_uaddr, 2)
 	@_SYSCALL_FUTIMESAT_ARGSTR
 }
-probe dw_syscall.compat_futimesat = kernel.function("compat_sys_futimesat").call ?
+probe dw_syscall.compat_futimesat = @syscall_call("compat_sys_futimesat")
 {
 	@__compat_syscall_gate(@const("__NR_compat_futimesat"))
 	@_SYSCALL_FUTIMESAT_NAME
@@ -76,14 +76,14 @@ probe dw_syscall.compat_futimesat = kernel.function("compat_sys_futimesat").call
 	tvp_str = _struct_compat_timeval_u(tvp_uaddr, 2)
 	@_SYSCALL_FUTIMESAT_ARGSTR
 }
-probe dw_syscall.futimesat.return = kernel.function("sys_futimesat").return ?
+probe dw_syscall.futimesat.return = @syscall_return("sys_futimesat")
 {
 	@__syscall_gate(@const("__NR_futimesat"))
 	@_SYSCALL_FUTIMESAT_NAME
 	@SYSC_RETVALSTR($return)
 }
 probe dw_syscall.compat_futimesat.return =
-	kernel.function("compat_sys_futimesat").return ?
+	@syscall_return("compat_sys_futimesat")
 {
 	@__compat_syscall_gate(@const("__NR_compat_futimesat"))
 	@_SYSCALL_FUTIMESAT_NAME

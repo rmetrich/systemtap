@@ -37,7 +37,7 @@ probe syscall.lchown.return = dw_syscall.lchown.return !, nd_syscall.lchown.retu
 
 # dw_lchown _____________________________________________________
 
-probe dw_syscall.lchown = kernel.function("sys_lchown").call
+probe dw_syscall.lchown = @syscall_call("sys_lchown")
 {
 	// Avoid lchown16() calling lchown().
 %( arch == "x86_64" %?
@@ -52,7 +52,7 @@ probe dw_syscall.lchown = kernel.function("sys_lchown").call
 	group = __int32($group)
 	@_SYSCALL_LCHOWN_ARGSTR
 }
-probe dw_syscall.lchown.return = kernel.function("sys_lchown").return
+probe dw_syscall.lchown.return = @syscall_return("sys_lchown")
 {
 %( arch == "x86_64" %?
 	@__syscall_compat_gate(@const("__NR_lchown"), @const("__NR_ia32_lchown32"))

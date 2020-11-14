@@ -21,14 +21,14 @@ probe syscall.sys32_rt_sigpending.return = dw_syscall.sys32_rt_sigpending.return
 
 # dw_sys32_rt_sigpending _____________________________________________________
 
-probe dw_syscall.sys32_rt_sigpending = kernel.function("sys32_rt_sigpending") ?
+probe dw_syscall.sys32_rt_sigpending = @syscall_call("sys32_rt_sigpending")
 {
 	@_SYSCALL_SYS32_RT_SIGPENDING_NAME
 	set_uaddr = $set
 	sigsetsize = $sigsetsize
 	@_SYSCALL_SYS32_RT_SIGPENDING_ARGSTR
 }
-probe dw_syscall.sys32_rt_sigpending.return = kernel.function("sys32_rt_sigpending").return ?
+probe dw_syscall.sys32_rt_sigpending.return = @syscall_return("sys32_rt_sigpending")
 {
 	@_SYSCALL_SYS32_RT_SIGPENDING_NAME
 	@SYSC_RETVALSTR($return)

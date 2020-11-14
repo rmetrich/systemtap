@@ -29,13 +29,13 @@ probe syscall.syncfs.return = dw_syscall.syncfs.return !,
 
 # dw_syncfs _____________________________________________________
 
-probe dw_syscall.syncfs = kernel.function("sys_syncfs").call ?
+probe dw_syscall.syncfs = @syscall_call("sys_syncfs")
 {
 	@_SYSCALL_SYNCFS_NAME
 	fd = __int32($fd)
 	@_SYSCALL_SYNCFS_ARGSTR
 }
-probe dw_syscall.syncfs.return = kernel.function("sys_syncfs").return ?
+probe dw_syscall.syncfs.return = @syscall_return("sys_syncfs")
 {
 	@_SYSCALL_SYNCFS_NAME
 	@SYSC_RETVALSTR($return)

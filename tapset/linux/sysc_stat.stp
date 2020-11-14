@@ -42,18 +42,18 @@ probe syscall.stat.return = dw_syscall.stat.return !, nd_syscall.stat.return ? {
 
 # dw_stat _____________________________________________________
 
-probe dw_syscall.stat = kernel.function("sys_stat").call ?,
-                     kernel.function("sys_newstat").call ?,
-                     kernel.function("sys32_stat64").call ?,
-                     kernel.function("sys_stat64").call ?,
-                     kernel.function("sys_oabi_stat64").call ?,
+probe dw_syscall.stat = @syscall_call("sys_stat"),
+                     @syscall_call("sys_newstat"),
+                     @syscall_call("sys32_stat64"),
+                     @syscall_call("sys_stat64"),
+                     @syscall_call("sys_oabi_stat64"),
 %( arch == "s390" %?
-                     kernel.function("compat_sys_s390_stat64").call ?,
+                     @syscall_call("compat_sys_s390_stat64"),
 %)
 %( arch == "x86_64" %?
-                     kernel.function("compat_sys_x86_stat64").call ?,
+                     @syscall_call("compat_sys_x86_stat64"),
 %)
-                     kernel.function("compat_sys_newstat").call ?
+                     @syscall_call("compat_sys_newstat")
 {
 	@_SYSCALL_STAT_NAME
 	filename_uaddr = $filename
@@ -61,18 +61,18 @@ probe dw_syscall.stat = kernel.function("sys_stat").call ?,
 	buf_uaddr = $statbuf
 	@_SYSCALL_STAT_ARGSTR
 }
-probe dw_syscall.stat.return = kernel.function("sys_stat").return ?,
-                            kernel.function("sys_newstat").return ?,
-                            kernel.function("sys32_stat64").return ?,
-                            kernel.function("sys_stat64").return ?,
-                            kernel.function("sys_oabi_stat64").return ?,
+probe dw_syscall.stat.return = @syscall_return("sys_stat"),
+                            @syscall_return("sys_newstat"),
+                            @syscall_return("sys32_stat64"),
+                            @syscall_return("sys_stat64"),
+                            @syscall_return("sys_oabi_stat64"),
 %( arch == "s390" %?
-                            kernel.function("compat_sys_s390_stat64").return ?,
+                            @syscall_return("compat_sys_s390_stat64"),
 %)
 %( arch == "x86_64" %?
-                            kernel.function("compat_sys_x86_stat64").return ?,
+                            @syscall_return("compat_sys_x86_stat64"),
 %)
-                            kernel.function("compat_sys_newstat").return ?
+                            @syscall_return("compat_sys_newstat")
 {
 	@_SYSCALL_STAT_NAME
 	@SYSC_RETVALSTR($return)

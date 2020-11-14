@@ -37,7 +37,7 @@ probe syscall.madvise.return = dw_syscall.madvise.return !, nd_syscall.madvise.r
 
 # dw_madvise _____________________________________________________
 
-probe dw_syscall.madvise = kernel.function("sys_madvise").call ?
+probe dw_syscall.madvise = @syscall_call("sys_madvise")
 {
 	@_SYSCALL_MADVISE_NAME
 	start = __ulong($start)
@@ -46,7 +46,7 @@ probe dw_syscall.madvise = kernel.function("sys_madvise").call ?
 	advice_str = _madvice_advice_str(advice)
 	@_SYSCALL_MADVISE_ARGSTR
 }
-probe dw_syscall.madvise.return = kernel.function("sys_madvise").return ?
+probe dw_syscall.madvise.return = @syscall_return("sys_madvise")
 {
 	@_SYSCALL_MADVISE_NAME
 	@SYSC_RETVALSTR($return)

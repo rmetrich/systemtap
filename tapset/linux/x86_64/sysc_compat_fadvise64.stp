@@ -80,8 +80,8 @@ probe syscall.compat_fadvise64.return = dw_syscall.compat_fadvise64.return !,
 
 # dw_compat_fadvise64 _____________________________________________________
 
-probe dw_syscall.compat_fadvise64 = kernel.function("sys32_fadvise64").call ?,
-	kernel.function("compat_sys_x86_fadvise64").call ?
+probe dw_syscall.compat_fadvise64 = @syscall_call("sys32_fadvise64"),
+	@syscall_call("compat_sys_x86_fadvise64")
 {
 	@_SYSCALL_COMPAT_FADVISE64_NAME
 	fd = __int32($fd)
@@ -92,8 +92,8 @@ probe dw_syscall.compat_fadvise64 = kernel.function("sys32_fadvise64").call ?,
 	@_SYSCALL_COMPAT_FADVISE64_ARGSTR
 }
 probe dw_syscall.compat_fadvise64.return =
-	kernel.function("sys32_fadvise64").return ?,
-	kernel.function("compat_sys_x86_fadvise64").return ?
+	@syscall_return("sys32_fadvise64"),
+	@syscall_return("compat_sys_x86_fadvise64")
 {
 	@_SYSCALL_COMPAT_FADVISE64_NAME
 	@SYSC_RETVALSTR($return)
@@ -182,8 +182,8 @@ probe syscall.compat_fadvise64_64.return = dw_syscall.compat_fadvise64_64.return
 
 # dw_compat_fadvise64_64 _____________________________________________________
 
-probe dw_syscall.compat_fadvise64_64 = kernel.function("sys32_fadvise64_64").call ?,
-	kernel.function("compat_sys_x86_fadvise64_64").call ?
+probe dw_syscall.compat_fadvise64_64 = @syscall_call("sys32_fadvise64_64"),
+	@syscall_call("compat_sys_x86_fadvise64_64")
 {
 	@_SYSCALL_COMPAT_FADVISE64_NAME
 	fd = __int32($fd)
@@ -194,8 +194,8 @@ probe dw_syscall.compat_fadvise64_64 = kernel.function("sys32_fadvise64_64").cal
 	@_SYSCALL_COMPAT_FADVISE64_ARGSTR
 }
 probe dw_syscall.compat_fadvise64_64.return =
-	kernel.function("sys32_fadvise64_64").return ?,
-	kernel.function("compat_sys_x86_fadvise64_64").return ?
+	@syscall_return("sys32_fadvise64_64"),
+	@syscall_return("compat_sys_x86_fadvise64_64")
 {
 	@_SYSCALL_COMPAT_FADVISE64_NAME
 	@SYSC_RETVALSTR($return)

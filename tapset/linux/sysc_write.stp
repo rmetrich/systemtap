@@ -42,8 +42,8 @@ probe syscall.write.return = dw_syscall.write.return !, nd_syscall.write.return 
 
 probe dw_syscall.write =
 %( arch == "s390" %?
-	__syscall.write, kernel.function("sys32_write").call ?,
-	kernel.function("compat_sys_s390_write").call ?
+	__syscall.write, @syscall_call("sys32_write"),
+	@syscall_call("compat_sys_s390_write")
 %:
 	__syscall.write
 %)
@@ -55,7 +55,7 @@ probe dw_syscall.write =
 	buf_str = user_buffer_quoted(buf_uaddr, count, syscall_string_trunc)
 	@_SYSCALL_WRITE_ARGSTR
 }
-probe __syscall.write = kernel.function("sys_write").call
+probe __syscall.write = @syscall_call("sys_write")
 {
 %( arch == "s390" %?
 	@__syscall_gate(@const("__NR_write"))
@@ -63,8 +63,8 @@ probe __syscall.write = kernel.function("sys_write").call
 }
 probe dw_syscall.write.return =
 %( arch == "s390" %?
-	__syscall.write.return, kernel.function("sys32_write").return ?,
-	kernel.function("compat_sys_s390_write").return ?
+	__syscall.write.return, @syscall_return("sys32_write"),
+	@syscall_return("compat_sys_s390_write")
 %:
 	__syscall.write.return
 %)
@@ -72,7 +72,7 @@ probe dw_syscall.write.return =
 	@_SYSCALL_WRITE_NAME
 	@SYSC_RETVALSTR($return)
 }
-probe __syscall.write.return = kernel.function("sys_write").return
+probe __syscall.write.return = @syscall_return("sys_write")
 {
 %( arch == "s390" %?
 	@__syscall_gate(@const("__NR_write"))

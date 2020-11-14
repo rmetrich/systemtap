@@ -32,7 +32,7 @@ probe syscall.pkey_alloc.return = dw_syscall.pkey_alloc.return !, nd_syscall.pke
 
 # dw_pkey_alloc _____________________________________________________
 
-probe dw_syscall.pkey_alloc = kernel.function("sys_pkey_alloc").call
+probe dw_syscall.pkey_alloc = @syscall_call("sys_pkey_alloc")
 {
 	@_SYSCALL_PKEY_ALLOC_NAME
 	flags = __ulong($flags)
@@ -40,7 +40,7 @@ probe dw_syscall.pkey_alloc = kernel.function("sys_pkey_alloc").call
 	init_val_str = _pkey_alloc_init_val_str(init_val)
 	@_SYSCALL_PKEY_ALLOC_ARGSTR
 }
-probe dw_syscall.pkey_alloc.return = kernel.function("sys_pkey_alloc").return
+probe dw_syscall.pkey_alloc.return = @syscall_return("sys_pkey_alloc")
 {
 	@_SYSCALL_PKEY_ALLOC_NAME
 	@SYSC_RETVALSTR($return)

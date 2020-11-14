@@ -17,7 +17,7 @@ probe syscall.fallocate.return = dw_syscall.fallocate.return !, nd_syscall.fallo
 
 # dw_fallocate _____________________________________________________
 
-probe dw_syscall.fallocate = kernel.function("sys_fallocate").call ?
+probe dw_syscall.fallocate = @syscall_call("sys_fallocate")
 {
 	@__syscall_gate_compat_simple
 	@_SYSCALL_FALLOCATE_NAME
@@ -28,7 +28,7 @@ probe dw_syscall.fallocate = kernel.function("sys_fallocate").call ?
 	len = $len
 	@_SYSCALL_FALLOCATE_ARGSTR
 }
-probe dw_syscall.fallocate.return = kernel.function("sys_fallocate").return ?
+probe dw_syscall.fallocate.return = @syscall_return("sys_fallocate")
 {
 	@__syscall_gate_compat_simple
 	@_SYSCALL_FALLOCATE_NAME

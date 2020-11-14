@@ -122,7 +122,7 @@ probe dw_syscall.fanotify_mark = __syscall.fanotify_mark ?,
 	dirfd_str = _dfd_str(dirfd)
 	@_SYSCALL_FANOTIFY_MARK_ARGSTR
 }
-probe __syscall.fanotify_mark = kernel.function("sys_fanotify_mark").call ?
+probe __syscall.fanotify_mark = @syscall_call("sys_fanotify_mark")
 {
 	@__syscall_gate_compat_simple
 	fanotify_fd = __int32($fanotify_fd)
@@ -132,7 +132,7 @@ probe __syscall.fanotify_mark = kernel.function("sys_fanotify_mark").call ?
 	pathname = user_string_quoted(@__pointer($pathname))
 }
 probe __syscall.compat_fanotify_mark =
-	kernel.function("compat_sys_fanotify_mark").call ?
+	@syscall_call("compat_sys_fanotify_mark")
 {
 	fanotify_fd = __int32($fanotify_fd)
 	flags = __uint32($flags)
@@ -144,8 +144,8 @@ probe __syscall.compat_fanotify_mark =
 	pathname = user_string_quoted(@__pointer($pathname))
 }
 probe dw_syscall.fanotify_mark.return =
-	kernel.function("sys_fanotify_mark").return ?,
-	kernel.function("compat_sys_fanotify_mark").return ?
+	@syscall_return("sys_fanotify_mark"),
+	@syscall_return("compat_sys_fanotify_mark")
 {
 	@_SYSCALL_FANOTIFY_MARK_NAME
 	@SYSC_RETVALSTR($return)

@@ -43,7 +43,7 @@ probe syscall.execve.return = dw_syscall.execve.return !,
 
 # dw_execve _____________________________________________________
 
-probe dw_syscall.execve = kernel.function("sys_execve").call
+probe dw_syscall.execve = @syscall_call("sys_execve")
 {
 	@_SYSCALL_EXECVE_NAME
 %( kernel_v < "2.6.32" %?
@@ -60,7 +60,7 @@ probe dw_syscall.execve = kernel.function("sys_execve").call
 %)
 	@_SYSCALL_EXECVE_ARGSTR
 }
-probe dw_syscall.execve.return = kernel.function("sys_execve").return
+probe dw_syscall.execve.return = @syscall_return("sys_execve")
 {
 	@_SYSCALL_EXECVE_NAME
 	@SYSC_RETVALSTR($return)
@@ -101,7 +101,7 @@ probe syscall.compat_execve.return = dw_syscall.compat_execve.return !,
 
 # dw_compat_execve _____________________________________________________
 
-probe dw_syscall.compat_execve = kernel.function("sys32_execve").call ?
+probe dw_syscall.compat_execve = @syscall_call("sys32_execve")
 {
 	@_SYSCALL_EXECVE_NAME
 %( kernel_v < "2.6.32" %?
@@ -118,7 +118,7 @@ probe dw_syscall.compat_execve = kernel.function("sys32_execve").call ?
 %)
 	@_SYSCALL_EXECVE_ARGSTR
 }
-probe dw_syscall.compat_execve.return = kernel.function("sys32_execve").return ?
+probe dw_syscall.compat_execve.return = @syscall_return("sys32_execve")
 {
 	@_SYSCALL_EXECVE_NAME
 	@SYSC_RETVALSTR($return)

@@ -18,7 +18,7 @@ probe syscall.fork.return = dw_syscall.fork.return !, nd_syscall.fork.return ? {
 
 # dw_fork _____________________________________________________
 
-probe dw_syscall.fork = kernel.function("sys_fork").call ?
+probe dw_syscall.fork = @syscall_call("sys_fork")
 {
 %(systemtap_v < "2.3" %?
 	regs = 0
@@ -33,7 +33,7 @@ probe dw_syscall.fork = kernel.function("sys_fork").call ?
 	@_SYSCALL_FORK_NAME
 	@_SYSCALL_FORK_ARGSTR
 }
-probe dw_syscall.fork.return = kernel.function("sys_fork").return ?
+probe dw_syscall.fork.return = @syscall_return("sys_fork")
 {
 	@_SYSCALL_FORK_NAME
 	@SYSC_RETVALSTR($return)

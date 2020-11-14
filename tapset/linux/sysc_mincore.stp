@@ -36,7 +36,7 @@ probe syscall.mincore.return = dw_syscall.mincore.return !, nd_syscall.mincore.r
 
 # dw_mincore _____________________________________________________
 
-probe dw_syscall.mincore = kernel.function("sys_mincore").call ?
+probe dw_syscall.mincore = @syscall_call("sys_mincore")
 {
 	@_SYSCALL_MINCORE_NAME
 	start = $start
@@ -44,7 +44,7 @@ probe dw_syscall.mincore = kernel.function("sys_mincore").call ?
 	vec_uaddr = $vec
 	@_SYSCALL_MINCORE_ARGSTR
 }
-probe dw_syscall.mincore.return = kernel.function("sys_mincore").return ?
+probe dw_syscall.mincore.return = @syscall_return("sys_mincore")
 {
 	@_SYSCALL_MINCORE_NAME
 	@SYSC_RETVALSTR($return)

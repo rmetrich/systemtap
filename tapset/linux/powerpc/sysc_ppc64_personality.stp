@@ -27,14 +27,14 @@ probe syscall.ppc64_personality.return = dw_syscall.ppc64_personality.return !,
 # dw_ppc64_personality _____________________________________________________
 
 %( systemtap_v <= "3.1" %?
-probe dw_syscall.ppc64_personality = kernel.function("ppc64_personality").call ?
+probe dw_syscall.ppc64_personality = @syscall_call("ppc64_personality")
 {
 	@_SYSCALL_PPC64_PERSONALITY_NAME
 	persona = $personality
 	@_SYSCALL_PPC64_PERSONALITY_ARGSTR
 }
 probe dw_syscall.ppc64_personality.return =
-	kernel.function("ppc64_personality").return ?
+	@syscall_return("ppc64_personality")
 {
 	@_SYSCALL_PPC64_PERSONALITY_NAME
 	@SYSC_RETVALSTR($return)

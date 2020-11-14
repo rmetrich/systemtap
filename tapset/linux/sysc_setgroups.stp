@@ -36,24 +36,24 @@ probe syscall.setgroups.return = dw_syscall.setgroups.return !,
 
 # dw_setgroups _____________________________________________________
 
-probe dw_syscall.setgroups = kernel.function("sys_setgroups16").call ?,
-                          kernel.function("sys32_setgroups16").call ?,
+probe dw_syscall.setgroups = @syscall_call("sys_setgroups16"),
+                          @syscall_call("sys32_setgroups16"),
 %( arch == "s390" %?
-                          kernel.function("compat_sys_s390_setgroups16").call ?,
+                          @syscall_call("compat_sys_s390_setgroups16"),
 %)
-                          kernel.function("sys_setgroups").call ?
+                          @syscall_call("sys_setgroups")
 {
 	@_SYSCALL_SETGROUPS_NAME
 	size = __int32($gidsetsize)
 	list_uaddr = $grouplist
 	@_SYSCALL_SETGROUPS_ARGSTR
 }
-probe dw_syscall.setgroups.return = kernel.function("sys_setgroups16").return ?,
-	kernel.function("sys32_setgroups16").return ?,
+probe dw_syscall.setgroups.return = @syscall_return("sys_setgroups16"),
+	@syscall_return("sys32_setgroups16"),
 %( arch == "s390" %?
-	kernel.function("compat_sys_s390_setgroups16").return ?,
+	@syscall_return("compat_sys_s390_setgroups16"),
 %)
-	kernel.function("sys_setgroups").return ?
+	@syscall_return("sys_setgroups")
 {
 	@_SYSCALL_SETGROUPS_NAME
 	@SYSC_RETVALSTR($return)

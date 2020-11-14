@@ -29,15 +29,13 @@ probe syscall.alarm.return = dw_syscall.alarm.return !, nd_syscall.alarm.return 
 
 # dw_alarm _____________________________________________________
 
-probe dw_syscall.alarm = kernel.function("sys32_alarm").call ?,
-                      kernel.function("sys_alarm").call ?
+probe dw_syscall.alarm = @syscall_call("sys32_alarm"), @syscall_call("sys_alarm")
 {
 	@_SYSCALL_ALARM_NAME
 	seconds = __uint32($seconds)
 	@_SYSCALL_ALARM_ARGSTR
 }
-probe dw_syscall.alarm.return = kernel.function("sys32_alarm").return ?,
-                             kernel.function("sys_alarm").return ?
+probe dw_syscall.alarm.return = @syscall_return("sys32_alarm"), @syscall_return("sys_alarm")
 {
 	@_SYSCALL_ALARM_NAME
 	@SYSC_RETVALSTR($return)
